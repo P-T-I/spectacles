@@ -1,0 +1,16 @@
+.content-wrapper {
+    background-color: #031f30;
+}
+
+.content-header {
+    color: whitesmoke;
+}
+
+.main-header {
+    background-color: #343a40;
+	border-bottom: 1px solid #4b545c;
+}
+
+.main-header ul li a i {
+    color: whitesmoke;
+}

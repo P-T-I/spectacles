@@ -1,0 +1,7 @@
+.login-page, .register-page {
+    background-color: #031f30;
+}
+
+.card {
+	box-shadow: 0 0 1px rgba(0,0,0,.125),0 1px 150px rgba(255, 255, 255, 0.51);
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spectacles | {{ get_version() }}</title>
+
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/spectacles_round.png') }}">
+
+  <!-- Font Awesome Icons -->
+  <link href="{{ url_for('static', filename='css/fa/all.min.css') }}" rel="stylesheet" />
+  <!-- Theme style -->
+  <link href="{{ url_for('static', filename='css/adminlte/adminlte.min.css') }}" rel="stylesheet" />
+  <!-- My style -->
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+  {% block head_css %}
+  {% endblock %}
+
+  <!-- jQuery -->
+  <script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.min.js') }}"></script>
+  <!-- Bootstrap 4 -->
+  <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap/bootstrap.bundle.min.js') }}"></script>
+  <!-- AdminLTE App -->
+  <script type="text/javascript" src="{{ url_for('static', filename='js/adminlte/adminlte.min.js') }}"></script>
+  {% block head_scripts %}
+  {% endblock %}
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+  {% include "partials/navbar.html" %}
+  {% include "partials/sidebar.html" %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    {% include "partials/header.html" %}
+
+    <!-- Main content -->
+    <div class="content">
+      {% block body %}
+      {% endblock %}
+    </div>
+    <!-- /.content -->
+  </div>
+
+</div>
+{% block body_scripts %}
+{% endblock %}
+</body>
+</html>
