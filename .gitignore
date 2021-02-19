@@ -130,3 +130,5 @@ dmypy.json
 .idea
 config.py
 .env_*
+logs
+spec_dev_data

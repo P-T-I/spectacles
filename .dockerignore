@@ -143,4 +143,5 @@ cython_debug/
 .gitignore
 .idea
 /.git/
-
+logs
+spec_dev_data
