@@ -19,7 +19,7 @@ services:
     volumes:
       - "./spec_dev_data/spec_mysql_data:/var/lib/mysql"
     networks:
-      - spec_backend
+      - spec_network
 
   phpmyadmin:
     depends_on:
@@ -31,7 +31,27 @@ services:
     env_file:
       - .env_dev
     networks:
-      - spec_backend
+      - spec_network
+
+  flask:
+    image: spec-flask
+    build:
+      context: .
+      dockerfile: .docker/images/flask/dockerfile-flask
+    hostname: flask
+    restart: always
+    env_file:
+      - .env_dev
+    depends_on:
+      - mysql
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/app
+    networks:
+      - spec_network
+    entrypoint:
+      - /app/scripts/entry_point.sh
 
 networks:
-  spec_backend:
+  spec_network:

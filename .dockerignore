@@ -146,3 +146,4 @@ cython_debug/
 logs
 spec_dev_data
 spectacles.db
+/migrations/
