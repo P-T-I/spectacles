@@ -137,3 +137,5 @@ spectacles.db
 data/
 /client_secrets.json
 *.pem
+*.crt
+*.key
