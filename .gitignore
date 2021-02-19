@@ -132,3 +132,4 @@ config.py
 .env_*
 logs
 spec_dev_data
+spectacles.db

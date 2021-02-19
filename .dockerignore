@@ -145,3 +145,4 @@ cython_debug/
 /.git/
 logs
 spec_dev_data
+spectacles.db
