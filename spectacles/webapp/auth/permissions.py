@@ -18,7 +18,7 @@ def user_required(fn):
 
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        if current_user.perms.lower() != "read_only":
+        if current_user.role.lower() != "user":
             return fn(*args, **kwargs)
         else:
             logger.warning(
@@ -37,7 +37,7 @@ def admin_required(fn):
 
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        if current_user.perms.lower() != "admin":
+        if current_user.role.lower() != "admin":
             logger.warning(
                 "User {} tried to perform illegal action to "
                 "admin protected endpoints!!".format(current_user.name)

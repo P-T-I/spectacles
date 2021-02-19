@@ -12,6 +12,7 @@ class users(UserMixin, db.Model):
     email = db.Column("email", db.String(48))
     password = db.Column("password", db.String(512))
     status = db.Column("status", db.Integer, default=0)
+    role = db.Column("role", db.String(16), default="user")
     avatar_s = db.Column(db.String(64))
     avatar_m = db.Column(db.String(64))
     avatar_l = db.Column(db.String(64))
