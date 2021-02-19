@@ -27,10 +27,10 @@ avatars = Avatars()
 
 config = Config()
 
-# if config.OPENID_LOGIN:
-#     from flask_oidc import OpenIDConnect
-#
-#     oidc = OpenIDConnect()
+if config.OPENID_LOGIN:
+    from flask_oidc import OpenIDConnect
+
+    oidc = OpenIDConnect()
 
 
 def create_app(version):
@@ -49,8 +49,8 @@ def create_app(version):
     migrate.init_app(app, db)
     avatars.init_app(app)
 
-    # if config.OPENID_LOGIN:
-    #     oidc.init_app(app)
+    if config.OPENID_LOGIN:
+        oidc.init_app(app)
 
     login_manager.init_app(app)
     login_manager.login_message = "You must be logged in to access this page!!!"
@@ -64,6 +64,10 @@ def create_app(version):
     from spectacles.webapp.auth import auth as auth_blueprint
 
     app.register_blueprint(auth_blueprint)
+
+    from spectacles.webapp.token_auth import token_auth as token_auth_blueprint
+
+    app.register_blueprint(token_auth_blueprint)
 
     from spectacles.webapp.errors import errors as error_blueprint
 

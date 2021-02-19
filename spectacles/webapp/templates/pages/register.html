@@ -10,9 +10,10 @@
             <div class="card-body">
                 <p class="login-box-msg">Register</p>
 
-                <form action="../../index.html" method="post">
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Username">
+                        {{ form.username(class_="form-control") }}
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -20,7 +21,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email">
+                        {{ form.email(class_="form-control") }}
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
@@ -28,7 +29,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password">
+                        {{ form.password(class_="form-control") }}
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -36,7 +37,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Retype password">
+                        {{ form.confirm_password(class_="form-control") }}
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -49,13 +50,31 @@
                         </div>
                         <!-- /.col -->
                         <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block">Register</button>
+                            {{ form.submit(class_="btn btn-primary btn-block") }}
                         </div>
                         <!-- /.col -->
                     </div>
                 </form>
 
                 <a href="{{ url_for('auth.func_login') }}" class="text-center">I already have a membership</a>
+                {% if form.errors %}
+                    <div class="alert alert-error">
+                        {% for field, errors in form.errors.items() %}
+                            {% for each in errors %}
+                                {% for error in each %}
+                                <div class="alert_cat">
+                                    {{error}}
+                                </div>
+                                <ul>
+                                    {% for item in each[error] %}
+                                    <li> {{ item }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
             <!-- /.form-box -->
         </div><!-- /.card -->

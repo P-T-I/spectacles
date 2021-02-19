@@ -43,7 +43,7 @@ class users(UserMixin, db.Model):
     def generate_avatar(self):
         avatar = Identicon()
         try:
-            filenames = avatar.generate(text=self.name)
+            filenames = avatar.generate(text=self.username)
             self.avatar_s = filenames[0]
             self.avatar_m = filenames[1]
             self.avatar_l = filenames[2]

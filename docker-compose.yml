@@ -48,10 +48,33 @@ services:
       - 5000:5000
     volumes:
       - .:/app
+      - "./spec_dev_data/avatars:/app/data/avatars"
+      - "./spec_dev_data/db:/app/data/db"
+      - "./spec_dev_data/log:/app/data/log"
     networks:
       - spec_network
     entrypoint:
       - /app/scripts/entry_point.sh
+
+  registry:
+    restart: on-failure
+    image: registry:2
+    ports:
+      - 5010:5000
+    environment:
+      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/data
+      - REGISTRY_AUTH=token
+      - REGISTRY_AUTH_TOKEN_REALM=https://localhost:5000/token_auth
+      - REGISTRY_AUTH_TOKEN_SERVICE=Authentication
+      - REGISTRY_AUTH_TOKEN_ISSUER=DCSC_KEEPER_OF_TOKENS
+      - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/mnt/local/certs/RootCA.crt
+      - REGISTRY_HTTP_TLS_CERTIFICATE=/mnt/local/certs/RootCA.crt
+      - REGISTRY_HTTP_TLS_KEY=/mnt/local/certs/RootCA.key
+    volumes:
+      - "./registry_auth/data:/mnt/registry/data"
+      - "./registry_auth/certs:/mnt/local/certs"
+    networks:
+      - spec_network
 
 networks:
   spec_network:

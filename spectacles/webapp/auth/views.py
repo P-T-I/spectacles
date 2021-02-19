@@ -49,25 +49,23 @@ def verify_password(password, password_hash):
     return check_password_hash(password_hash, password)
 
 
-@auth.route("/forgot_password", methods=["GET", "POST"])
-def forgot_password():
-
-    return render_template("pages/forgot_password.html")
-
-
 @auth.route("/register", methods=["GET", "POST"])
 def register():
 
     form = RegistrationForm()
     if form.validate_on_submit():
 
+        # check if this is the first account to created; thus the admin....
+        usercount = users.query.filter().count()
+
         # Create variables for easy access
         newuser = users()
 
-        newuser.name = form.name.data
-        newuser.fullname = form.fullname.data
+        newuser.username = form.username.data
         newuser.email = form.email.data
-        newuser.phone = form.phone.data
+
+        if usercount is None or usercount == 0:
+            newuser.role = "admin"
 
         newuser.hash_password(form.password.data)
 
@@ -75,11 +73,12 @@ def register():
 
         db.session.add(newuser)
         db.session.commit()
-        msg = "You have successfully registered!"
 
-        # Show registration form with message (if any)
-        return render_template("pages/register.html", form=form, msg=msg)
+        login_user(newuser)
+
+        return redirect(url_for("home.index"))
     else:
+
         return render_template("pages/register.html", form=form)
 
 
@@ -91,12 +90,8 @@ def func_login():
     form = LoginForm()
     if form.validate_on_submit():
 
-        # error output message
-        msg = ""
-        # Check if "username" and "password" POST requests exist (user submitted form)
-
-        # Check if account exists using MySQL
-        account = users.query.filter_by(name=form.username.data).first()
+        # Check if account exists
+        account = users.query.filter_by(username=form.username.data).first()
 
         if account and verify_password(form.password.data, account.password):
             login_user(account)

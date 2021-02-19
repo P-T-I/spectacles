@@ -9,19 +9,20 @@
                 <a href="https://github.com/P-T-I/spectacles" class="h1"><b>Spectacles</b></a>
             </div>
             <div class="card-body">
-                <p class="login-box-msg">Sign in to start your session</p>
+                <p class="login-box-msg">Please sign in</p>
 
-                <form action="../../index3.html" method="post">
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email">
+                        {{ form.username(class_="form-control") }}
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                                <span class="fas fa-user"></span>
                             </div>
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password">
+                        {{ form.password(class_="form-control") }}
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -33,25 +34,23 @@
                         </div>
                         <!-- /.col -->
                         <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                            {{ form.submit(class_="btn btn-primary btn-block") }}
                         </div>
                         <!-- /.col -->
                     </div>
                 </form>
-
+                {% if openid %}
                 <div class="social-auth-links text-center mt-2 mb-3">
-                    <a href="#" class="btn btn-block btn-danger">
-                        <i class="fab fa-openid mr-2"></i> Sign in using OpendId
+                    <a href="{{ url_for('auth.oidc_login') }}" class="btn btn-block btn-danger">
+                        <i class="fab fa-openid mr-2"></i> Sign in using OpenId
                     </a>
                 </div>
+                {% endif %}
                 <!-- /.social-auth-links -->
-
-                <p class="mb-1">
-                    <a href="{{ url_for('auth.forgot_password') }}">I forgot my password</a>
-                </p>
                 <p class="mb-0">
                     <a href="{{ url_for('auth.register') }}" class="text-center">Register</a>
                 </p>
+                <div class="msg">{{ msg }}</div>
             </div>
             <!-- /.card-body -->
         </div>

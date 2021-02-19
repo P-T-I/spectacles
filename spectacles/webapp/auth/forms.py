@@ -7,7 +7,6 @@ from wtforms.validators import (
     InputRequired,
     ValidationError,
     DataRequired,
-    Regexp,
 )
 
 from spectacles.webapp.app.models import users
@@ -15,16 +14,16 @@ from spectacles.webapp.app.models import users
 
 class LoginForm(FlaskForm):
     username = StringField(
-        "username", validators=[InputRequired()], render_kw={"placeholder": "username"}
+        "username", validators=[InputRequired()], render_kw={"placeholder": "Username"}
     )
     password = PasswordField(
-        "password", validators=[InputRequired()], render_kw={"placeholder": "password"},
+        "password", validators=[InputRequired()], render_kw={"placeholder": "Password"},
     )
     submit = SubmitField("Login")
 
 
 def validate_username(form, field):
-    user = users.query.filter_by(name=field.data).first()
+    user = users.query.filter_by(username=field.data).first()
     if user:
         raise ValidationError({"Username is already in use": []})
 
@@ -91,34 +90,23 @@ class RegistrationForm(FlaskForm):
     Form for users to create new account
     """
 
-    name = StringField(
-        "name", validators=[validate_username], render_kw={"placeholder": "username"}
-    )
-    fullname = StringField(
-        "fullname", validators=[DataRequired()], render_kw={"placeholder": "full name"}
-    )
-    phone = StringField(
-        "phone",
-        validators=[
-            DataRequired(),
-            Regexp(
-                regex=r"^((\+|00(\s|\s?\-\s?)?)31(\s|\s?\-\s?)?(\(0\)[\-\s]?)?|0)[1-9]((\s|\s?\-\s?)?[0-9])((\s|\s?-\s?)?[0-9])((\s|\s?-\s?)?[0-9])\s?[0-9]\s?[0-9]\s?[0-9]\s?[0-9]\s?[0-9]$",
-                message={"Not a valid phone number.": []},
-            ),
-        ],
-        render_kw={"placeholder": "telephone"},
-    )
-    password = PasswordField(
-        "password",
-        validators=[validate_password, password_check],
-        render_kw={"placeholder": "password"},
-    )
-    confirm_password = PasswordField(
-        "Confirm password", render_kw={"placeholder": "confirm password"}
+    username = StringField(
+        "username",
+        validators=[validate_username],
+        render_kw={"placeholder": "Username"},
     )
     email = EmailField(
         "email",
         validators=[DataRequired()],
         render_kw={"placeholder": "email address"},
     )
+    password = PasswordField(
+        "password",
+        validators=[validate_password, password_check],
+        render_kw={"placeholder": "Password"},
+    )
+    confirm_password = PasswordField(
+        "Confirm password", render_kw={"placeholder": "Retype password"}
+    )
+
     submit = SubmitField("Register")
