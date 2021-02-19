@@ -135,3 +135,5 @@ spec_dev_data
 spectacles.db
 /migrations/
 data/
+/client_secrets.json
+*.pem
