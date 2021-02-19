@@ -1,0 +1,37 @@
+version: '3.5'
+
+services:
+
+  mysql:
+    image: spec-mysql
+    build:
+      context: .
+      dockerfile: .docker/images/mysql/dockerfile-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    hostname: mysql
+    restart: always
+    env_file:
+      - .env_dev
+    ports:
+      - 3306:3306
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - "./spec_dev_data/spec_mysql_data:/var/lib/mysql"
+    networks:
+      - spec_backend
+
+  phpmyadmin:
+    depends_on:
+      - mysql
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 8088:80
+    env_file:
+      - .env_dev
+    networks:
+      - spec_backend
+
+networks:
+  spec_backend:

@@ -3,9 +3,9 @@ import os
 from subprocess import run, PIPE, STDOUT
 
 argparser = argparse.ArgumentParser(
-    description="migrate/update the APT database schema"
+    description="migrate/update the spectacles database schema"
 )
-argparser.add_argument("-o", action="store_true", help="Use the Production APT config")
+
 argparser.add_argument("-i", action="store_true", help="Setup new migration directory")
 argparser.add_argument("-m", action="store_true", help="Migrate the database")
 argparser.add_argument("-u", action="store_true", help="Update the database")
@@ -14,13 +14,6 @@ args = argparser.parse_args()
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
 if __name__ == "__main__":
-
-    if args.o:
-        os.environ["FLASK_ENV"] = "production"
-
-    else:
-        if os.getenv("FLASK_ENV") is None:
-            os.environ["FLASK_ENV"] = "development"
 
     os.environ["FLASK_APP"] = "docker_run.py"
 

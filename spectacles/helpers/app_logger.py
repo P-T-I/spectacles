@@ -17,7 +17,7 @@ class AppLogger(HelperLogger):
         )
 
         crf = RotatingFileHandler(
-            filename=self.config.LOG_FILE_NAME, maxBytes=100000000, backupCount=5
+            filename=self.config.LOG_FILE_PATH, maxBytes=100000000, backupCount=5
         )
         crf.setLevel(logging.DEBUG)
         crf.setFormatter(formatter)
