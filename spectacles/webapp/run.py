@@ -1,3 +1,4 @@
+import hashlib
 import logging
 import random
 import time
@@ -10,6 +11,7 @@ from flask_fontawesome import FontAwesome
 from flask_login import LoginManager, current_user
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from jinja2 import evalcontextfilter
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 
@@ -68,6 +70,10 @@ def create_app(version):
     from spectacles.webapp.token_auth import token_auth as token_auth_blueprint
 
     app.register_blueprint(token_auth_blueprint)
+
+    from spectacles.webapp.admin import admin as admin_blueprint
+
+    app.register_blueprint(admin_blueprint)
 
     from spectacles.webapp.errors import errors as error_blueprint
 

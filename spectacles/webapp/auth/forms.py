@@ -110,3 +110,4 @@ class RegistrationForm(FlaskForm):
     )
 
     submit = SubmitField("Register")
+    save = SubmitField("Save")

@@ -32,3 +32,17 @@
 #user_data {
     font-size: 14px;
 }
+
+.center_middle {
+    margin: auto;
+}
+
+.users img.table-avatar {
+    border-radius:50%;
+    display:inline;
+    width:1.7rem
+}
+
+.error-page {
+    color: whitesmoke;
+}

@@ -1,17 +1,105 @@
 {% extends "base.html" %}
 
+{% block head_css %}
+<link href="{{ url_for('static', filename='css/sweetalert2/bootstrap-4.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
+{% block head_scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/sweetalert2/sweetalert2.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/show_message.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/user_page.js') }}"></script>
+{% endblock %}
+
 {% block body %}
 <div class="container-fluid">
     <div class="row">
         <!-- /.col-md-6 -->
+        {% if form %}
+        <div class="center_middle">
+            <div class="card card-outline card-secondary">
+                <div class="card-header text-center">
+                    <a href="https://github.com/P-T-I/spectacles" class="h1"><b>Spectacles</b></a>
+                </div>
+                <div class="card-body">
+                    <p class="login-box-msg">Create new user</p>
+
+                    <form action="" method="post">
+                        {{ form.hidden_tag() }}
+                        <div class="input-group mb-3">
+                            {{ form.username(class_="form-control") }}
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            {{ form.email(class_="form-control") }}
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-envelope"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            {{ form.password(class_="form-control") }}
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            {{ form.confirm_password(class_="form-control") }}
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-8">
+
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-4">
+                                {{ form.save(class_="btn btn-success btn-block") }}
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                    </form>
+
+                    {% if form.errors %}
+                    <div class="alert alert-error">
+                        {% for field, errors in form.errors.items() %}
+                        {% for each in errors %}
+                        {% for error in each %}
+                        <div class="alert_cat">
+                            {{error}}
+                        </div>
+                        <ul>
+                            {% for item in each[error] %}
+                            <li> {{ item }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endfor %}
+                        {% endfor %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- /.form-box -->
+            </div>
+        </div>
+        {% else %}
         <div class="col-lg-12">
             <div class="card card-outline card-secondary">
                 <div class="card-header">
                     <h5 class="m-0">Current users</h5>
-                    <a class="new_user"><i class="fas fa-user-plus"></i></a>
+                    <a class="new_user" href="{{ url_for('admin.add_users') }}"><i class="fas fa-user-plus"></i></a>
                 </div>
                 <div class="card-body">
-                    <table class="table table-striped">
+                    <table class="table table-striped users">
                         <thead>
                         <tr>
                             <th width="1%">
@@ -47,8 +135,18 @@
                     </table>
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
     <!-- /.row -->
 </div>
+
+{% endblock %}
+
+{% block body_scripts %}
+<script>
+    $(document).ready(function(){
+        SetAllEventListeners()
+    });
+</script>
 {% endblock %}
