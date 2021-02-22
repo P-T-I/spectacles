@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- /.col-md-6 -->
+        <div class="col-lg-12">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <h5 class="m-0">Current users</h5>
+                    <a class="new_user"><i class="fas fa-user-plus"></i></a>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th width="1%">
+                                #
+                            </th>
+                            <th class="text-center" width="5%">
+                            </th>
+                            <th width="15%">
+                                Username
+                            </th>
+                            <th width="10%">
+                                User role
+                            </th>
+                            <th width="10%" class="text-center">
+                                Groups
+                            </th>
+                            <th width="10%" class="text-center">
+                                Namespaces
+                            </th>
+                            <th width="10%" class="text-center">
+                                Registries
+                            </th>
+                            <th width="10%" class="text-center">
+                                Repos
+                            </th>
+                            <th width="10%" class="text-center">
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="user_data">
+                        {% include "partials/user_list.html" %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+</div>
+{% endblock %}

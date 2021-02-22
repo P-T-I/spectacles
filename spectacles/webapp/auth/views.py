@@ -66,6 +66,7 @@ def register():
 
         if usercount is None or usercount == 0:
             newuser.role = "admin"
+            newuser.status = 99
 
         newuser.hash_password(form.password.data)
 

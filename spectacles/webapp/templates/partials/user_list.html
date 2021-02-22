@@ -1,0 +1,25 @@
+{% for item in users %}
+<tr>
+    <td>
+        {{loop.index}}
+    </td>
+    <td class="text-center">
+        <img alt="Avatar" class="table-avatar" src="/avatars/{{item.avatar_l}}" title="{{item.username}}">
+    </td>
+    <td>
+        {{item.username|title}}
+    </td>
+    <td>{{item.role|title}}</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td class="project-actions text-right">
+        <a class="btn btn-danger btn-xs" href="#">
+            <i class="fas fa-trash">
+            </i>
+            Delete
+        </a>
+    </td>
+</tr>
+{% endfor %}

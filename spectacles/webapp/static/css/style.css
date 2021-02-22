@@ -14,3 +14,21 @@
 .main-header ul li a i {
     color: whitesmoke;
 }
+
+.card {
+	box-shadow: 0 0 1px rgba(0,0,0,.125),0 1px 30px rgba(153, 153, 153, 0.8);
+}
+
+.new_user {
+    float: right;
+    color: #343a40;
+    cursor: pointer;
+}
+
+.new_user:hover {
+    color: grey;
+}
+
+#user_data {
+    font-size: 14px;
+}
