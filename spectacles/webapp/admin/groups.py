@@ -4,7 +4,7 @@ import time
 from flask import render_template, url_for, redirect, request, jsonify
 from flask_login import login_required
 
-from spectacles.webapp.app.models import groups
+from spectacles.webapp.app.models import groups, users, groupmembers
 from spectacles.webapp.run import db
 from . import admin
 from .forms import GroupForm
@@ -71,10 +71,39 @@ def del_groups():
 
         total_groups = groups.query.filter().all()
 
-        return {"group_data": render_template("partials/group_list.html", header="Groups", groups=total_groups),
-                "status": msg_status.OK,
-                "msg": "Group {} deleted!".format(found_name)}
+        return {
+            "group_data": render_template(
+                "partials/group_list.html", header="Groups", groups=total_groups
+            ),
+            "status": msg_status.OK,
+            "msg": "Group {} deleted!".format(found_name),
+        }
     except Exception as err:
         return jsonify(
             {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
         )
+
+
+@admin.route("/groups/get_user_list", methods=["POST"])
+@login_required
+@admin_required
+def get_user_list():
+    post_data = dict(request.json)
+
+    group_id = post_data["id"]
+
+    all_users = (
+        users.query.join(groupmembers).filter(groupmembers.groupid != group_id).all()
+    )
+
+    userdetails = [
+        {
+            "value": x.id,
+            "name": x.username,
+            "avatar": "/avatars/{}".format(x.avatar_l),
+            "email": x.email,
+        }
+        for x in all_users
+    ]
+
+    return jsonify({"user_list": userdetails})

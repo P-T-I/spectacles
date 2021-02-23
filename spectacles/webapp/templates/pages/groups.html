@@ -3,10 +3,13 @@
 {% block head_css %}
 <link href="{{ url_for('static', filename='css/icheck-bootstrap/icheck-bootstrap.min.css') }}" rel="stylesheet" />
 <link href="{{ url_for('static', filename='css/sweetalert2/bootstrap-4.min.css') }}" rel="stylesheet" />
+<link href="{{ url_for('static', filename='css/tagify/tagify.min.css') }}" rel="stylesheet" />
 {% endblock %}
 
 {% block head_scripts %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/sweetalert2/sweetalert2.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/tagify/tagify.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootbox/bootbox.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/show_message.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/groups_page.js') }}"></script>
 {% endblock %}
