@@ -1,0 +1,22 @@
+{% for item in groups %}
+<tr>
+    <td>
+        {{loop.index}}
+    </td>
+    <td>
+        {{item.name|title}}
+    </td>
+    <td>
+
+    </td>
+    <td class="project-actions text-right">
+        {% if item.name != 'admin' %}
+        <a id="del_group_{{item.name|md5}}" class="btn btn-danger btn-xs" href="#" data-id="{{item.id}}">
+            <i class="fas fa-trash">
+            </i>
+            Delete
+        </a>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}

@@ -56,10 +56,11 @@ class users(UserMixin, db.Model):
             pass
 
 
-class group(db.Model):
-    __tablename__ = "group"
+class groups(db.Model):
+    __tablename__ = "groups"
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column("name", db.String(256))
+    description = db.Column("description", db.String(512))
     members = db.relationship("groupmembers", backref="group", lazy="dynamic")
     claims = db.relationship("claims", backref="group", lazy="dynamic")
     created = db.Column("created", db.Integer, default=0)
@@ -72,9 +73,13 @@ class groupmembers(db.Model):
     groupid = db.Column(
         "groupid",
         db.Integer,
-        db.ForeignKey("group.id", ondelete="cascade", onupdate="cascade"),
+        db.ForeignKey("groups.id", ondelete="cascade", onupdate="cascade"),
     )
-    userid = db.Column("userid", db.Integer, db.ForeignKey("users.id"))
+    userid = db.Column(
+        "userid",
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="cascade", onupdate="cascade"),
+    )
 
 
 class registry(db.Model):
@@ -131,7 +136,7 @@ class claims(db.Model):
     groupid = db.Column(
         "groupid",
         db.Integer,
-        db.ForeignKey("group.id", ondelete="cascade", onupdate="cascade"),
+        db.ForeignKey("groups.id", ondelete="cascade", onupdate="cascade"),
     )
     userid = db.Column(
         "userid",

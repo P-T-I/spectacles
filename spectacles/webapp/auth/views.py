@@ -1,11 +1,12 @@
 import logging
+import time
 
 from flask import redirect, url_for, render_template
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import check_password_hash
 
 from spectacles.helpers.app_logger import AppLogger
-from spectacles.webapp.app.models import users
+from spectacles.webapp.app.models import users, groups, groupmembers
 from spectacles.webapp.config import Config
 from spectacles.webapp.run import login_manager, db
 from . import auth
@@ -68,12 +69,28 @@ def register():
             newuser.role = "admin"
             newuser.status = 99
 
+            # also create admin group
+            newgroup = groups()
+            newgroup.name = "admin"
+            newgroup.description = "Administrator group"
+            newgroup.created = int(time.time())
+            db.session.add(newgroup)
+            db.session.commit()
+
         newuser.hash_password(form.password.data)
 
         newuser.generate_avatar()
 
         db.session.add(newuser)
         db.session.commit()
+
+        if usercount is None or usercount == 0:
+            # add this admin to admin group
+            newgroupmember = groupmembers()
+            newgroupmember.groupid = newgroup.id
+            newgroupmember.userid = newuser.id
+            db.session.add(newgroupmember)
+            db.session.commit()
 
         login_user(newuser)
 

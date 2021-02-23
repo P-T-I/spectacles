@@ -10,15 +10,15 @@ function DOMRegex(regex) {
 
 function SetAllEventListeners(){
 
-    var elementsDELPLArray = DOMRegex(/^del_user_/);
+    var elementsDELPLArray = DOMRegex(/^del_group_/);
 
     elementsDELPLArray.forEach(function(elem) {
-        elem.addEventListener("click", DeleteUser);
+        elem.addEventListener("click", DeleteGroup);
     });
 
 }
 
-function DeleteUser(evt){
+function DeleteGroup(evt){
 
     var attrs = evt.target.attributes
 
@@ -27,7 +27,7 @@ function DeleteUser(evt){
 
     $.ajax({
              type: "POST",
-             url: "/users/delete",
+             url: "/groups/delete",
              data: JSON.stringify(json),
              contentType: "application/json; charset=utf-8",
              dataType: "json",
@@ -38,11 +38,11 @@ function DeleteUser(evt){
                  //
              },
              complete: function(data) {
-                   $("#user_data").html(data.responseText);
+                   $("#group_data").html(data.responseJSON["group_data"]);
 
                    SetAllEventListeners()
 
-                   showMessage("success", "User deleted!")
+                   showMessage(data.responseJSON["status"], data.responseJSON["msg"])
              }
          });
 }

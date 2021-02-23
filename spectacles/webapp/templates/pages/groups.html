@@ -8,7 +8,7 @@
 {% block head_scripts %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/sweetalert2/sweetalert2.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/show_message.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/users_page.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/groups_page.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -27,34 +27,18 @@
                     <form action="" method="post">
                         {{ form.hidden_tag() }}
                         <div class="input-group mb-3">
-                            {{ form.username(class_="form-control") }}
+                            {{ form.name(class_="form-control") }}
                             <div class="input-group-append">
                                 <div class="input-group-text">
-                                    <span class="fas fa-user"></span>
+                                    <span class="fas fa-users"></span>
                                 </div>
                             </div>
                         </div>
                         <div class="input-group mb-3">
-                            {{ form.email(class_="form-control") }}
+                            {{ form.description(class_="form-control") }}
                             <div class="input-group-append">
                                 <div class="input-group-text">
-                                    <span class="fas fa-envelope"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="input-group mb-3">
-                            {{ form.password(class_="form-control") }}
-                            <div class="input-group-append">
-                                <div class="input-group-text">
-                                    <span class="fas fa-lock"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="input-group mb-3">
-                            {{ form.confirm_password(class_="form-control") }}
-                            <div class="input-group-append">
-                                <div class="input-group-text">
-                                    <span class="fas fa-lock"></span>
+                                    <span class="far fa-comment"></span>
                                 </div>
                             </div>
                         </div>
@@ -97,7 +81,7 @@
             <div class="card card-outline card-secondary">
                 <div class="card-header">
                     <h5 class="m-0">Current users</h5>
-                    <a class="new_user" href="{{ url_for('admin.add_users') }}"><i class="fas fa-user-plus"></i></a>
+                    <a class="new_user" href="{{ url_for('admin.add_groups') }}"><i class="fas fa-plus-square"></i></a>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped users">
@@ -106,32 +90,18 @@
                             <th width="1%">
                                 #
                             </th>
-                            <th class="text-center" width="5%">
-                            </th>
                             <th width="15%">
-                                Username
+                                Group name
                             </th>
                             <th width="10%" class="text-center">
-                                Admin
-                            </th>
-                            <th width="10%" class="text-center">
-                                Groups
-                            </th>
-                            <th width="10%" class="text-center">
-                                Namespaces
-                            </th>
-                            <th width="10%" class="text-center">
-                                Registries
-                            </th>
-                            <th width="10%" class="text-center">
-                                Repos
+                                Members
                             </th>
                             <th width="10%" class="text-center">
                             </th>
                         </tr>
                         </thead>
-                        <tbody id="user_data">
-                        {% include "partials/user_list.html" %}
+                        <tbody id="group_data">
+                        {% include "partials/group_list.html" %}
                         </tbody>
                     </table>
                 </div>
