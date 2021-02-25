@@ -24,6 +24,10 @@ class Token(object):
         self.account = account
         self.client_id = client_id
         self.scope = scope
+
+        if self.scope is not None:
+            self.scope_type, self.scope_name, self.scope_actions = self.split_scope()
+
         self.offline_token = offline_token
         self.service = service
 
@@ -34,7 +38,7 @@ class Token(object):
     @staticmethod
     def __get_priv_key():
         with open(
-            "./registry_auth/certs/domain.key"
+            "./spec_dev_data/registry_auth/certs/domain.key"
         ) as f:  # TODO convert this path to a variable....
             file = f.read()
         priv_key = load_pem_private_key(
@@ -58,12 +62,45 @@ class Token(object):
 
         return kid
 
+    def split_scope(self):
+
+        scope_list = self.scope.split(":")
+
+        scope_type = scope_list[0]
+        scope_name = scope_list[1]
+        scope_actions = scope_list[2]
+
+        if "," in scope_actions:
+            scope_actions = ",".split(scope_actions)
+        else:
+            scope_actions = [scope_actions]
+
+        return scope_type, scope_name, scope_actions
+
     def get_claim(self):
+
+        if self.account == "Spectacles":
+            return {
+                "iss": "Auth service",  # TODO convert this path to a variable....
+                "sub": self.account if self.account is not None else self.client_id,
+                "aud": self.service,
+                "exp": int(time.time()) + 900,
+                "nbf": int(time.time()) - 30,
+                "iat": int(time.time()),
+                "jti": self.jwt_id,
+                "access": [
+                    {
+                        "type": self.scope_type,
+                        "name": self.scope_name,
+                        "actions": self.scope_actions,
+                    }
+                ],
+            }
 
         if self.scope is None:
             # this is just a authentication request
             return {
-                "iss": "Auth service",
+                "iss": "Auth service",  # TODO convert this path to a variable....
                 "sub": self.account if self.account is not None else self.client_id,
                 "aud": self.service,
                 "exp": int(time.time()) + 900,
@@ -75,7 +112,7 @@ class Token(object):
 
         else:
             return {
-                "iss": "Auth service",
+                "iss": "Auth service",  # TODO convert this path to a variable....
                 "sub": self.account if self.account is not None else self.client_id,
                 "aud": self.service,
                 "exp": int(time.time()) + 900,

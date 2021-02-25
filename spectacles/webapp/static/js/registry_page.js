@@ -33,18 +33,28 @@ function SetAllEventListeners(){
 
             var callerId = $(this).data("callerid");
 
-            json = {}
+            var form_data = ($(this).serializeArray().map(function(v){return [v.name, v.value];}))
 
             // determine appropriate action(s)
             if (callerId == "test"){
+                document.getElementById("registry_form").style.cursor = "wait";
+                document.getElementById("test").style.cursor = "wait";
                 $.ajax({
                         type: "POST",
                         url: "/registries/test_connection",
-                        data: JSON.stringify(json),
+                        data: JSON.stringify(form_data),
                         contentType: "application/json; charset=utf-8",
                         dataType: "json",
                         success: function(data) {
-                            //
+                            showMessage("success", "Connection to registry succeeded!")
+
+                            var service_name = document.getElementById('service_name')
+                            service_name.value = data["service"]
+
+                            var button = document.getElementById('save')
+                            button.disabled = false
+                            document.getElementById("registry_form").style.cursor = "auto";
+                            document.getElementById("test").style.cursor = "auto";
                         },
                         error: function(xhr, ajaxOptions, thrownError) {
                             if (xhr.status == 503) {
@@ -52,6 +62,8 @@ function SetAllEventListeners(){
                             } else {
                                 showMessage("error", thrownError)
                             }
+                            document.getElementById("registry_form").style.cursor = "auto";
+                            document.getElementById("test").style.cursor = "auto";
                         },
                         complete: function(data) {
                             //
@@ -61,6 +73,28 @@ function SetAllEventListeners(){
 
             if (callerId == "save"){
                 //console.log($(this))
+                $.ajax({
+                        type: "POST",
+                        url: "/registries/add",
+                        data: JSON.stringify(form_data),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function(data) {
+                            //
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            //
+                        },
+                        complete: function(data) {
+                            if(data.responseJSON.hasOwnProperty('user_data')){
+                                $("#registry_data").html(data.responseJSON["registry_data"]);
+                           }
+
+                           SetAllEventListeners()
+
+                           showMessage(data.responseJSON["status"], data.responseJSON["msg"])
+                        }
+                });
             }
 
         });

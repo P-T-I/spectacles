@@ -59,7 +59,7 @@ class users(UserMixin, db.Model):
 class groups(db.Model):
     __tablename__ = "groups"
     id = db.Column("id", db.Integer, primary_key=True)
-    name = db.Column("name", db.String(256))
+    name = db.Column("name", db.String(256), index=True, unique=True)
     description = db.Column("description", db.String(512))
     members = db.relationship("groupmembers", backref="group", lazy="dynamic")
     claims = db.relationship("claims", backref="group", lazy="dynamic")
@@ -85,7 +85,7 @@ class groupmembers(db.Model):
 class registry(db.Model):
     __tablename__ = "registry"
     id = db.Column("id", db.Integer, primary_key=True)
-    uri = db.Column("uri", db.String(128))
+    uri = db.Column("uri", db.String(128), index=True, unique=True)
     service_name = db.Column("service_name", db.String(256))
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
@@ -95,7 +95,7 @@ class registry(db.Model):
 class repository(db.Model):
     __tablename__ = "repository"
     id = db.Column("id", db.Integer, primary_key=True)
-    name = db.Column("name", db.String(512))
+    name = db.Column("name", db.String(512), index=True, unique=True)
     registryid = db.Column(
         "registryid",
         db.Integer,
@@ -114,7 +114,7 @@ class repository(db.Model):
 class tags(db.Model):
     __tablename__ = "tags"
     id = db.Column("id", db.Integer, primary_key=True)
-    version = db.Column("version", db.String(128), default="latest")
+    version = db.Column("version", db.String(128), default="latest", index=True, unique=True)
     repositoryid = db.Column(
         "repositoryid",
         db.Integer,

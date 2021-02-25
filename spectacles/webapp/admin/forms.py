@@ -27,7 +27,7 @@ class RegistryForm(FlaskForm):
         "uri", validators=[DataRequired()], render_kw={"placeholder": "Registry domain/ip:port"}
     )
     service_name = StringField(
-        "service_name", validators=[DataRequired()], render_kw={'disabled': 'disabled', "placeholder": "Service name..."}
+        "service_name", validators=[DataRequired()], render_kw={'readonly': True, "placeholder": "Service name..."}
     )
     ssl = BooleanField("ssl")
 

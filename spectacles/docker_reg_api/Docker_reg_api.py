@@ -1,6 +1,5 @@
 import ast
-import json
-from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlencode
 
 import requests
 
@@ -9,9 +8,14 @@ from spectacles.webapp.helpers.objects.token_class import Token
 
 
 class DockerRegistryApi(GenericApi):
-
     def __init__(
-            self, address, api_path="v2", proxies=None, protocol="https", user_agent="Spectacles",
+        self,
+        address,
+        api_path="v2",
+        proxies=None,
+        protocol="https",
+        user_agent="Spectacles",
+        docker_service_name=None
     ):
         self.address = address
         self.api_path = api_path
@@ -19,9 +23,22 @@ class DockerRegistryApi(GenericApi):
         self.protocol = protocol
         self.user_agent = user_agent
 
+        self.docker_service_name = docker_service_name
+
         super().__init__(
             self.address, self.api_path, self.proxies, self.protocol, self.user_agent,
         )
+
+    def fetch_token(self, scope, service):
+        token = Token(
+            account="Spectacles",
+            client_id="Spectacles",
+            scope=scope,
+            offline_token=True,
+            service=service,
+        )
+
+        return token
 
     def ping(self):
 
@@ -37,7 +54,10 @@ class DockerRegistryApi(GenericApi):
         }
 
         with self.get_session() as session:
-            r = session.get("{0}/{1}/{2}".format(self.baseurl, self.api_path, resource), **request_api_resource)
+            r = session.get(
+                "{0}/{1}/{2}".format(self.baseurl, self.api_path, resource),
+                **request_api_resource
+            )
 
             if "Www-Authenticate" in r.headers:
                 auth_header = r.headers["Www-Authenticate"]
@@ -48,26 +68,27 @@ class DockerRegistryApi(GenericApi):
 
                 ret_dict = {
                     "service": ast.literal_eval(dict_headers["service"][0]),
-                    "auth_token_uri": ast.literal_eval(dict_headers["realm"][0])
+                    "auth_token_uri": ast.literal_eval(dict_headers["realm"][0]),
                 }
 
-                data = {
-                    "username": "foo",
-                    "password": "bar",
-                    "service": ret_dict["service"]
-                }
+                token = self.fetch_token("registry:catalog:*", ret_dict["service"])
 
-                request_api_resource = {
-                    "data": json.dumps(data),
-                    "headers": self.myheaders,
-                    "verify": self.verify,
-                    "timeout": 60,
-                    "proxies": self.proxies,
-                }
+                self.set_header_field(
+                    "Authorization", "Bearer {}".format(token.build_token()["token"])
+                )
 
-                token = session.post(ret_dict["auth_token_uri"], **request_api_resource)
+                resource = "/_catalog"
 
-                return ret_dict
+                r = session.get(
+                    "{0}/{1}/{2}".format(
+                        self.baseurl, self.api_path, resource
+                    ),
+                    **request_api_resource
+                )
 
+                if r.status_code == 200:
+                    return ret_dict
+                else:
+                    return False
             else:
                 return False

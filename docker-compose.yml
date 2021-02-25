@@ -73,8 +73,8 @@ services:
       - REGISTRY_HTTP_TLS_CERTIFICATE=/mnt/local/certs/domain.crt
       - REGISTRY_HTTP_TLS_KEY=/mnt/local/certs/domain.key
     volumes:
-      - "./registry_auth/data:/mnt/registry/data"
-      - "./registry_auth/certs:/mnt/local/certs"
+      - "./spec_dev_data/registry_auth/data:/mnt/registry/data"
+      - "./spec_dev_data/registry_auth/certs:/mnt/local/certs"
     networks:
       - spec_network
 
