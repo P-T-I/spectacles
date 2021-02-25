@@ -8,8 +8,8 @@
     </td>
     <td>
         {% for each in item.members %}
-        <a id="userbtn_{{each.user.username}}_{{item.name|md5}}" data-groupmemberid="{{each.id}}" class="btn btn-info btn-xs">
-            {% if each.user.role != 'admin' %}<i class="far fa-times-circle pointer margin_right"></i>{% endif %}{{each.user.username.upper()}}
+        <a id="{% if each.user.role != 'admin' or item.name != 'admin' %}user_btn_{{each.user.username}}_{{item.name|md5}}{% else %}admin_btn_{{each.user.username}}_{{item.name|md5}}{% endif %}" data-groupmemberid="{{each.id}}" class="btn btn-info btn-xs">
+            {% if each.user.role != 'admin' or item.name != 'admin' %}<i class="far fa-times-circle pointer margin_right"></i>{% endif %}{{each.user.username.upper()}}
         </a>
         {% endfor %}
     </td>

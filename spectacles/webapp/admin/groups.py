@@ -1,3 +1,4 @@
+import ast
 import logging
 import time
 
@@ -92,9 +93,13 @@ def get_user_list():
 
     group_id = post_data["id"]
 
-    all_users = (
-        users.query.join(groupmembers).filter(groupmembers.groupid != group_id).all()
-    )
+    all_users = users.query.filter(
+        users.id.notin_(
+            db.session.query(groupmembers.userid)
+            .filter(groupmembers.groupid == int(group_id))
+            .all()
+        )
+    ).all()
 
     userdetails = [
         {
@@ -107,3 +112,67 @@ def get_user_list():
     ]
 
     return jsonify({"user_list": userdetails})
+
+
+@admin.route("/groups/set_user_list", methods=["POST"])
+@login_required
+@admin_required
+def set_user_list():
+    post_data = dict(request.json)
+
+    post_data["data"] = ast.literal_eval(post_data["data"])
+
+    if isinstance(post_data["data"], list):
+        for each in post_data["data"]:
+            db.session.add(
+                groupmembers(groupid=post_data["group_id"], userid=each["value"])
+            )
+
+        db.session.commit()
+
+        total_groups = groups.query.filter().all()
+
+        return {
+            "group_data": render_template(
+                "partials/group_list.html", header="Groups", groups=total_groups
+            ),
+            "status": msg_status.OK,
+            "msg": "Group members assigned!",
+        }
+
+    else:
+        return jsonify(
+            {
+                "status": msg_status.NOK,
+                "msg": "The provided data is not the correct type, expected list got {}".format(
+                    type(post_data["data"])
+                ),
+            }
+        )
+
+
+@admin.route("/groups/del_groupmember", methods=["POST"])
+@login_required
+@admin_required
+def del_groupmember():
+    post_data = dict(request.json)
+
+    try:
+        groupmembers.query.filter(
+            groupmembers.id == post_data["groupmemberid"]
+        ).delete()
+        db.session.commit()
+
+        total_groups = groups.query.filter().all()
+
+        return {
+            "group_data": render_template(
+                "partials/group_list.html", header="Groups", groups=total_groups
+            ),
+            "status": msg_status.OK,
+            "msg": "Group member deleted!",
+        }
+    except Exception as err:
+        return jsonify(
+            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
+        )
