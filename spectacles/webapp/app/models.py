@@ -86,6 +86,7 @@ class registry(db.Model):
     __tablename__ = "registry"
     id = db.Column("id", db.Integer, primary_key=True)
     uri = db.Column("uri", db.String(128))
+    service_name = db.Column("service_name", db.String(256))
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
     content = db.relationship("repository", backref="registry", lazy="dynamic")

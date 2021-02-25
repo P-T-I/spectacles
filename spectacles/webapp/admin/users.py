@@ -126,3 +126,28 @@ def set_admin_users():
         return jsonify(
             {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
         )
+
+
+@admin.route("/users/del_group", methods=["POST"])
+@login_required
+@admin_required
+def del_group():
+    post_data = dict(request.json)
+
+    try:
+        groupmembers.query.filter(
+            groupmembers.id == post_data["groupmemberid"]
+        ).delete()
+        db.session.commit()
+
+        total_users = users.query.filter().all()
+
+        return {
+            "user_data": render_template("partials/user_list.html", header="Users", users=total_users),
+            "status": msg_status.OK,
+            "msg": "Group membership deleted!",
+        }
+    except Exception as err:
+        return jsonify(
+            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
+        )

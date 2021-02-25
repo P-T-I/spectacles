@@ -228,8 +228,6 @@ function DeleteGroup(evt){
 
 function DeleteGroupMember(evt){
 
-
-
     json = {}
 
     try {
@@ -239,7 +237,6 @@ function DeleteGroupMember(evt){
         var attrs = evt.target.attributes
         json["groupmemberid"] = attrs["data-groupmemberid"].nodeValue;
     }
-
 
     $.ajax({
              type: "POST",

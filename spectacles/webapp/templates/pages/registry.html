@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block head_css %}
+<link href="{{ url_for('static', filename='css/sweetalert2/bootstrap-4.min.css') }}" rel="stylesheet" />
+{% endblock %}
+
+{% block head_scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/sweetalert2/sweetalert2.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/show_message.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/registry_page.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- /.col-md-6 -->
+        <div class="col-lg-12">
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <h5 class="m-0">Add registries</h5>
+                </div>
+                <div class="card-body">
+                    <form id="registry_form" action="" method="post">
+                        {{ form.hidden_tag() }}
+                        <div class="row">
+                            <div class="col-3">
+                                {{ form.uri(class_="form-control") }}
+                            </div>
+                            <div class="col-3">
+                                {{ form.service_name(class_="form-control") }}
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-2">
+                                {{ form.test(class_="btn btn-secondary btn-sm") }}
+                                {{ form.save(class_="btn btn-success btn-sm") }}
+                            </div>
+
+                            <div class="col-2">
+                            </div>
+
+                            <!-- /.col -->
+                        </div>
+                        <div class="row">
+                            <div class="col-3 registry_ssl_top_margin">
+                            <label for="ssl">TLS/SSL: </label>
+                            {{ form.ssl }}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card card-outline card-secondary">
+                <div class="card-header">
+                    <h5 class="m-0">Current registries</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped users">
+                        <thead>
+                        <tr>
+                            <th width="1%">
+                                #
+                            </th>
+                            <th width="10%">
+                                Service Name
+                            </th>
+                            <th width="10%" class="text-center">
+                                Uri
+                            </th>
+                            <th width="10%" class="text-center">
+                                content
+                            </th>
+                            <th width="10%" class="text-center">
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="user_data">
+                        {% include "partials/registry_list.html" %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+</div>
+
+{% endblock %}
+
+{% block body_scripts %}
+<script>
+    $(document).ready(function(){
+        SetAllEventListeners()
+    });
+</script>
+{% endblock %}

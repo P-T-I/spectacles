@@ -22,6 +22,12 @@ function SetAllEventListeners(){
         elem.addEventListener("change", SetAdmin);
     });
 
+    var elementsDELGROUPArray = DOMRegex(/^groupbtn_/);
+
+    elementsDELGROUPArray.forEach(function(elem) {
+        elem.addEventListener("click", DeleteFromGroup);
+    });
+
 }
 
 function SetAdmin(evt) {
@@ -82,4 +88,41 @@ function DeleteUser(evt){
                    showMessage(data.responseJSON["status"], data.responseJSON["msg"])
              }
          });
+}
+
+function DeleteFromGroup(evt){
+
+    json = {}
+
+    try {
+        var attrs = evt.target.parentElement.attributes
+        json["groupmemberid"] = attrs["data-groupmemberid"].nodeValue;
+    } catch {
+        var attrs = evt.target.attributes
+        json["groupmemberid"] = attrs["data-groupmemberid"].nodeValue;
+    }
+
+    $.ajax({
+             type: "POST",
+             url: "/users/del_group",
+             data: JSON.stringify(json),
+             contentType: "application/json; charset=utf-8",
+             dataType: "json",
+             success: function(data) {
+                 //
+             },
+             error: function(xhr, ajaxOptions, thrownError) {
+                 //
+             },
+             complete: function(data) {
+                   if(data.responseJSON.hasOwnProperty('user_data')){
+                        $("#user_data").html(data.responseJSON["user_data"]);
+                   }
+
+                   SetAllEventListeners()
+
+                   showMessage(data.responseJSON["status"], data.responseJSON["msg"])
+             }
+         });
+
 }

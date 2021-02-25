@@ -72,6 +72,7 @@ class Token(object):
                 "jti": self.jwt_id,
                 "access": [],
             }
+
         else:
             return {
                 "iss": "Auth service",

@@ -1,0 +1,25 @@
+{% for item in users %}
+<tr>
+    <td>
+        {{loop.index}}
+    </td>
+    <td>
+        {{item.service_name|title}}
+    </td>
+    <td class="text-center">
+    </td>
+    <td>
+    </td>
+    <td></td>
+    <td>{{item.content|length}}</td>
+    <td class="project-actions text-right">
+        {% if item.status == 0 %}
+        <a id="del_user_{{item.username|md5}}" class="btn btn-danger btn-xs" href="#" data-id="{{item.id}}">
+            <i class="fas fa-trash">
+            </i>
+            Delete
+        </a>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
