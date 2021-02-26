@@ -42,7 +42,7 @@ class DockerRegistryApi(GenericApi):
 
     def ping(self):
 
-        resource = "/"
+        resource = ""
 
         requests.packages.urllib3.disable_warnings()
 
@@ -77,7 +77,7 @@ class DockerRegistryApi(GenericApi):
                     "Authorization", "Bearer {}".format(token.build_token()["token"])
                 )
 
-                resource = "/_catalog"
+                resource = "_catalog"
 
                 r = session.get(
                     "{0}/{1}/{2}".format(

@@ -19,7 +19,7 @@ class users(UserMixin, db.Model):
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
     group_member = db.relationship("groupmembers", backref="user", lazy="dynamic")
-    claims = db.relationship("claims", backref="user", lazy="dynamic")
+    namespacemembers = db.relationship("namespacemembers", backref="user", lazy="dynamic")
 
     def hash_password(self, password):
         """
@@ -62,7 +62,7 @@ class groups(db.Model):
     name = db.Column("name", db.String(256), index=True, unique=True)
     description = db.Column("description", db.String(512))
     members = db.relationship("groupmembers", backref="group", lazy="dynamic")
-    claims = db.relationship("claims", backref="group", lazy="dynamic")
+    namespacegroups = db.relationship("namespacegroups", backref="group", lazy="dynamic")
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
 
@@ -101,11 +101,6 @@ class repository(db.Model):
         db.Integer,
         db.ForeignKey("registry.id", ondelete="cascade", onupdate="cascade"),
     )
-    ownerid = db.Column(
-        "ownerid",
-        db.Integer,
-        db.ForeignKey("users.id", ondelete="cascade", onupdate="cascade"),
-    )
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
     claims = db.relationship("claims", backref="repository", lazy="dynamic")
@@ -125,6 +120,48 @@ class tags(db.Model):
     updated = db.Column("updated", db.Integer, default=0)
 
 
+class namespaces(db.Model):
+    __tablename__ = "namespaces"
+    id = db.Column("id", db.Integer, primary_key=True)
+    name = db.Column("name", db.String(512), index=True, unique=True)
+
+    created = db.Column("created", db.Integer, default=0)
+    updated = db.Column("updated", db.Integer, default=0)
+    claims = db.relationship("claims", backref="namespace", lazy="dynamic")
+    members = db.relationship("namespacemembers", backref="namespace", lazy="dynamic")
+    groups = db.relationship("namespacegroups", backref="namespace", lazy="dynamic")
+
+
+class namespacemembers(db.Model):
+    __tablename__ = "namespacemembers"
+    id = db.Column("id", db.Integer, primary_key=True)
+    namespaceid = db.Column(
+        "namespaceid",
+        db.Integer,
+        db.ForeignKey("namespaces.id", ondelete="cascade", onupdate="cascade"),
+    )
+    userid = db.Column(
+        "userid",
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="cascade", onupdate="cascade"),
+    )
+
+
+class namespacegroups(db.Model):
+    __tablename__ = "namespacegroups"
+    id = db.Column("id", db.Integer, primary_key=True)
+    namespaceid = db.Column(
+        "namespaceid",
+        db.Integer,
+        db.ForeignKey("namespaces.id", ondelete="cascade", onupdate="cascade"),
+    )
+    groupid = db.Column(
+        "groupid",
+        db.Integer,
+        db.ForeignKey("groups.id", ondelete="cascade", onupdate="cascade"),
+    )
+
+
 class claims(db.Model):
     __tablename__ = "claims"
     id = db.Column("id", db.Integer, primary_key=True)
@@ -134,15 +171,10 @@ class claims(db.Model):
         db.Integer,
         db.ForeignKey("repository.id", ondelete="cascade", onupdate="cascade"),
     )
-    groupid = db.Column(
-        "groupid",
+    namespaceid = db.Column(
+        "namespaceid",
         db.Integer,
-        db.ForeignKey("groups.id", ondelete="cascade", onupdate="cascade"),
-    )
-    userid = db.Column(
-        "userid",
-        db.Integer,
-        db.ForeignKey("users.id", ondelete="cascade", onupdate="cascade"),
+        db.ForeignKey("namespaces.id", ondelete="cascade", onupdate="cascade"),
     )
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)

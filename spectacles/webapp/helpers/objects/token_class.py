@@ -12,11 +12,15 @@ from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key,
 )
 
+from spectacles.webapp.config import Config
 from spectacles.webapp.helpers.utils.times import timestampTOdatetimestring
 
 
 class Token(object):
     def __init__(self, account=None, client_id=None, scope=None, offline_token=None, service=None):
+
+        self.config = Config()
+
         self.jwt_id = uuid.uuid4().hex
         self.private_key = self.__get_priv_key()
         self.public_key = self.private_key.public_key()
@@ -31,15 +35,21 @@ class Token(object):
         self.offline_token = offline_token
         self.service = service
 
+        self.issuer = self.config.SPECTACLES_ISSUER_NAME
+
         self.header = {"typ": "JWT", "alg": "RS256", "kid": self.get_kid()}
+
+        if self.account == "Spectacles":
+            self.claims = self.get_reg_claim()
+        else:
+            self.claims = self.get_claim()
 
         self.token = self.build_token()
 
-    @staticmethod
-    def __get_priv_key():
+    def __get_priv_key(self):
         with open(
-            "./spec_dev_data/registry_auth/certs/domain.key"
-        ) as f:  # TODO convert this path to a variable....
+            self.config.SPECTACLES_PRIV_KEY_PATH
+        ) as f:
             file = f.read()
         priv_key = load_pem_private_key(
             file.encode(), password=None, backend=default_backend()
@@ -77,30 +87,31 @@ class Token(object):
 
         return scope_type, scope_name, scope_actions
 
-    def get_claim(self):
+    def get_reg_claim(self):
 
-        if self.account == "Spectacles":
-            return {
-                "iss": "Auth service",  # TODO convert this path to a variable....
-                "sub": self.account if self.account is not None else self.client_id,
-                "aud": self.service,
-                "exp": int(time.time()) + 900,
-                "nbf": int(time.time()) - 30,
-                "iat": int(time.time()),
-                "jti": self.jwt_id,
-                "access": [
-                    {
-                        "type": self.scope_type,
-                        "name": self.scope_name,
-                        "actions": self.scope_actions,
-                    }
-                ],
-            }
+        return {
+            "iss": self.issuer,
+            "sub": self.account if self.account is not None else self.client_id,
+            "aud": self.service,
+            "exp": int(time.time()) + 900,
+            "nbf": int(time.time()) - 30,
+            "iat": int(time.time()),
+            "jti": self.jwt_id,
+            "access": [
+                {
+                    "type": self.scope_type,
+                    "name": self.scope_name,
+                    "actions": self.scope_actions,
+                }
+            ],
+        }
+
+    def get_claim(self):
 
         if self.scope is None:
             # this is just a authentication request
             return {
-                "iss": "Auth service",  # TODO convert this path to a variable....
+                "iss": self.issuer,
                 "sub": self.account if self.account is not None else self.client_id,
                 "aud": self.service,
                 "exp": int(time.time()) + 900,
@@ -112,7 +123,7 @@ class Token(object):
 
         else:
             return {
-                "iss": "Auth service",  # TODO convert this path to a variable....
+                "iss": self.issuer,
                 "sub": self.account if self.account is not None else self.client_id,
                 "aud": self.service,
                 "exp": int(time.time()) + 900,
@@ -139,7 +150,7 @@ class Token(object):
         )
         b64_claims = (
             base64.urlsafe_b64encode(
-                json.dumps(self.get_claim()).replace(" ", "").encode()
+                json.dumps(self.claims).replace(" ", "").encode()
             )
             .decode("utf-8")
             .rstrip("=")
@@ -153,7 +164,7 @@ class Token(object):
 
         return {
             "token": jwt.encode(
-                self.get_claim(),
+                self.claims,
                 self.private_key,
                 algorithm="RS256",
                 headers=self.header,

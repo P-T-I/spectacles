@@ -86,9 +86,9 @@ function SetAllEventListeners(){
                             //
                         },
                         complete: function(data) {
-                            if(data.responseJSON.hasOwnProperty('user_data')){
+                            if(data.responseJSON.hasOwnProperty('registry_data')){
                                 $("#registry_data").html(data.responseJSON["registry_data"]);
-                           }
+                            }
 
                            SetAllEventListeners()
 
@@ -98,5 +98,43 @@ function SetAllEventListeners(){
             }
 
         });
+
+    var elementsDELREGArray = DOMRegex(/^del_reg_/);
+
+    elementsDELREGArray.forEach(function(elem) {
+        elem.addEventListener("click", DeleteRegistry);
+    });
+
+}
+
+function DeleteRegistry(evt){
+
+    var attrs = evt.target.attributes
+
+    json = {}
+    json["id"] = attrs["data-id"].nodeValue;
+
+    $.ajax({
+             type: "POST",
+             url: "/registries/delete",
+             data: JSON.stringify(json),
+             contentType: "application/json; charset=utf-8",
+             dataType: "json",
+             success: function(data) {
+                 //
+             },
+             error: function(xhr, ajaxOptions, thrownError) {
+                 //
+             },
+             complete: function(data) {
+                   if(data.responseJSON.hasOwnProperty('registry_data')){
+                        $("#registry_data").html(data.responseJSON["registry_data"]);
+                   }
+
+                   SetAllEventListeners()
+
+                   showMessage(data.responseJSON["status"], data.responseJSON["msg"])
+             }
+         });
 
 }

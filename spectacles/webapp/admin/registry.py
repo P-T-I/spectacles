@@ -73,11 +73,38 @@ def add_registries():
         total_registry = registry.query.filter().all()
 
         return {
-            "group_data": render_template(
+            "registry_data": render_template(
                 "partials/registry_list.html", registry=total_registry
             ),
             "status": msg_status.OK,
             "msg": "Registry added!",
+        }
+    except Exception as err:
+        return jsonify(
+            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
+        )
+
+
+@admin.route("/registries/delete", methods=["POST"])
+@login_required
+@admin_required
+def del_registries():
+    post_data = dict(request.json)
+
+    try:
+        registry.query.filter(
+            registry.id == post_data["id"]
+        ).delete()
+        db.session.commit()
+
+        total_registry = registry.query.filter().all()
+
+        return {
+            "registry_data": render_template(
+                "partials/registry_list.html", registry=total_registry
+            ),
+            "status": msg_status.OK,
+            "msg": "Registry deleted!",
         }
     except Exception as err:
         return jsonify(
