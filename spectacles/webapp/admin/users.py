@@ -4,7 +4,7 @@ import time
 from flask import render_template, url_for, redirect, request, jsonify
 from flask_login import login_required
 
-from spectacles.webapp.app.models import users, groupmembers, groups
+from spectacles.webapp.app.models import users, groupmembers, groups, namespaces, namespacemembers
 from spectacles.webapp.auth.forms import RegistrationForm
 from spectacles.webapp.run import db
 from . import admin
@@ -47,7 +47,23 @@ def add_users():
 
         newuser.generate_avatar()
 
+        # create personal namespace
+        pers_ns = namespaces()
+        pers_ns.name = newuser.username
+        pers_ns.description = "Default personal namespace"
+        pers_ns.created = int(time.time())
+
+        db.session.add(pers_ns)
+
         db.session.add(newuser)
+        db.session.commit()
+
+        # add user to personal namespace
+        pers_ns_member = namespacemembers()
+        pers_ns_member.userid = newuser.id
+        pers_ns_member.namespaceid = pers_ns.id
+
+        db.session.add(pers_ns_member)
         db.session.commit()
 
         return redirect(url_for("admin.get_users"))

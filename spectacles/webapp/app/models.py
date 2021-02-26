@@ -19,6 +19,7 @@ class users(UserMixin, db.Model):
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
     group_member = db.relationship("groupmembers", backref="user", lazy="dynamic")
+    namespaces = db.relationship("namespaces", backref="user", lazy="dynamic")
     namespacemembers = db.relationship("namespacemembers", backref="user", lazy="dynamic")
 
     def hash_password(self, password):
@@ -103,7 +104,7 @@ class repository(db.Model):
     )
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
-    claims = db.relationship("claims", backref="repository", lazy="dynamic")
+    namespace = db.relationship("namespaces", backref="repository", lazy="dynamic")
 
 
 class tags(db.Model):
@@ -124,7 +125,20 @@ class namespaces(db.Model):
     __tablename__ = "namespaces"
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column("name", db.String(512), index=True, unique=True)
-
+    description = db.Column("description", db.String(512))
+    owner = db.Column(
+        "owner",
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="cascade", onupdate="cascade"),
+    )
+    repositoryid = db.Column(
+        "repositoryid",
+        db.Integer,
+        db.ForeignKey("repository.id", ondelete="cascade", onupdate="cascade"),
+    )
+    P_claim = db.Column("P_claim", db.String(16), default="FULL")
+    G_claim = db.Column("G_claim", db.String(16), default="NONE")
+    O_claim = db.Column("O_claim", db.String(16), default="NONE")
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
     claims = db.relationship("claims", backref="namespace", lazy="dynamic")
@@ -165,12 +179,9 @@ class namespacegroups(db.Model):
 class claims(db.Model):
     __tablename__ = "claims"
     id = db.Column("id", db.Integer, primary_key=True)
-    claim = db.Column("claim", db.String(16), default="READ")
-    repositoryid = db.Column(
-        "repositoryid",
-        db.Integer,
-        db.ForeignKey("repository.id", ondelete="cascade", onupdate="cascade"),
-    )
+    P_claim = db.Column("P_claim", db.String(16), default="FULL")
+    G_claim = db.Column("G_claim", db.String(16), default="READ")
+    O_claim = db.Column("O_claim", db.String(16), default="NONE")
     namespaceid = db.Column(
         "namespaceid",
         db.Integer,

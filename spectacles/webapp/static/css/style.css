@@ -152,3 +152,7 @@ div.tagify__tag__avatar-wrap img{
 .registry_ssl_top_margin {
 	margin-top: 10px;
 }
+
+#set_rights {
+    float: left;
+}

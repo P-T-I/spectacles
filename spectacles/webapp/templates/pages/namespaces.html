@@ -6,8 +6,9 @@
 
 {% block head_scripts %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/sweetalert2/sweetalert2.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootbox/bootbox.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/show_message.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/registry_page.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/namespace_page.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -17,37 +18,30 @@
         <div class="col-lg-12">
             <div class="card card-outline card-secondary">
                 <div class="card-header">
-                    <h5 class="m-0">Add registries</h5>
+                    <h5 class="m-0">Add namespaces</h5>
                 </div>
                 <div class="card-body">
-                    <form id="registry_form" action="" method="post">
+                    <form id="namespace_form" action="" method="post">
                         {{ form.hidden_tag() }}
                         <div class="row">
                             <div class="col-3">
-                                {{ form.uri(class_="form-control") }}
+                                {{ form.name(class_="form-control") }}
                             </div>
                             <div class="col-3">
-                                {{ form.service_name(class_="form-control") }}
+                                {{ form.description(class_="form-control") }}
                             </div>
                             <!-- /.col -->
                             <div class="col-2">
-                                {{ form.test(class_="btn btn-secondary btn-sm") }}
                                 {{ form.save(class_="btn btn-success btn-sm") }}
                             </div>
                             <!-- /.col -->
-                        </div>
-                        <div class="row">
-                            <div class="col-3 registry_ssl_top_margin">
-                            <label for="ssl">TLS/SSL: </label>
-                            {{ form.ssl }}
-                            </div>
                         </div>
                     </form>
                 </div>
             </div>
             <div class="card card-outline card-secondary">
                 <div class="card-header">
-                    <h5 class="m-0">Current registries</h5>
+                    <h5 class="m-0">Current assigned namespaces</h5>
                 </div>
                 <div class="card-body">
                     <table class="table table-striped">
@@ -56,21 +50,26 @@
                             <th width="1%">
                                 #
                             </th>
-                            <th width="20%" class="text-center">
-                                Service Name
+                            <th width="10%">
+                                Namespace Name
                             </th>
-                            <th width="20%" class="text-center">
-                                Uri
+                            <th width="10%">
+                                Description
                             </th>
-                            <th width="10%" class="text-center">
+                            <th width="10%">
                                 Content
                             </th>
+                            {% if current_user.role == "admin" %}
+                            <th width="5%">
+                                Owner
+                            </th>
+                            {% endif %}
                             <th width="10%" class="text-center">
                             </th>
                         </tr>
                         </thead>
-                        <tbody id="registry_data">
-                        {% include "partials/registry_list.html" %}
+                        <tbody id="namespace_data">
+                        {% include "partials/namespace_list.html" %}
                         </tbody>
                     </table>
                 </div>

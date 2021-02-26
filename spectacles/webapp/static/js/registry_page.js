@@ -10,12 +10,6 @@ function DOMRegex(regex) {
 
 function SetAllEventListeners(){
 
-    var elementsDELPLArray = DOMRegex(/^del_group_/);
-
-    elementsDELPLArray.forEach(function(elem) {
-        elem.addEventListener("click", DeleteGroup);
-    });
-
     $("form").each(function ()
     {
         var that = $(this);

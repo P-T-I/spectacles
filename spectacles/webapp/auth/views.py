@@ -6,7 +6,7 @@ from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import check_password_hash
 
 from spectacles.helpers.app_logger import AppLogger
-from spectacles.webapp.app.models import users, groups, groupmembers
+from spectacles.webapp.app.models import users, groups, groupmembers, namespaces, namespacemembers
 from spectacles.webapp.config import Config
 from spectacles.webapp.run import login_manager, db
 from . import auth
@@ -81,7 +81,23 @@ def register():
 
         newuser.generate_avatar()
 
+        # create personal namespace
+        pers_ns = namespaces()
+        pers_ns.name = newuser.username
+        pers_ns.description = "Default personal namespace"
+        pers_ns.created = int(time.time())
+
+        db.session.add(pers_ns)
+
         db.session.add(newuser)
+        db.session.commit()
+
+        # add user to personal namespace
+        pers_ns_member = namespacemembers()
+        pers_ns_member.userid = newuser.id
+        pers_ns_member.namespaceid = pers_ns.id
+
+        db.session.add(pers_ns_member)
         db.session.commit()
 
         if usercount is None or usercount == 0:
