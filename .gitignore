@@ -140,3 +140,4 @@ data/
 *.crt
 *.key
 *.csr
+/test_avatar_data/
