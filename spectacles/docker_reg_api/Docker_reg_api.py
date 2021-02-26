@@ -1,5 +1,5 @@
 import ast
-from urllib.parse import parse_qs, urlencode
+from urllib.parse import parse_qs
 
 import requests
 
@@ -15,7 +15,7 @@ class DockerRegistryApi(GenericApi):
         proxies=None,
         protocol="https",
         user_agent="Spectacles",
-        docker_service_name=None
+        docker_service_name=None,
     ):
         self.address = address
         self.api_path = api_path
@@ -39,6 +39,14 @@ class DockerRegistryApi(GenericApi):
         )
 
         return token
+
+    def set_token_header(self, name):
+
+        token = self.fetch_token("repository:{}:pull".format(name), service=self.docker_service_name)
+
+        self.set_header_field(
+            "Authorization", "Bearer {}".format(token.build_token()["token"])
+        )
 
     def ping(self):
 
@@ -80,9 +88,7 @@ class DockerRegistryApi(GenericApi):
                 resource = "_catalog"
 
                 r = session.get(
-                    "{0}/{1}/{2}".format(
-                        self.baseurl, self.api_path, resource
-                    ),
+                    "{0}/{1}/{2}".format(self.baseurl, self.api_path, resource),
                     **request_api_resource
                 )
 
@@ -92,3 +98,31 @@ class DockerRegistryApi(GenericApi):
                     return False
             else:
                 return False
+
+    def catalog_registry(self):
+
+        token = self.fetch_token("registry:catalog:*", service=self.docker_service_name)
+
+        self.set_header_field(
+            "Authorization", "Bearer {}".format(token.build_token()["token"])
+        )
+
+        resource = "_catalog"
+
+        return self.call("GET", resource=resource)
+
+    def get_repository_list(self, name):
+
+        self.set_token_header(name=name)
+
+        resource = "{}/tags/list".format(name)
+
+        return self.call("GET", resource=resource)
+
+    def get_repository_manifest(self, name, tag):
+
+        self.set_token_header(name=name)
+
+        resource = "{}/manifests/{}".format(name, tag)
+
+        return self.call("GET", resource=resource)
