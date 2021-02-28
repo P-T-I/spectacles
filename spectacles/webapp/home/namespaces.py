@@ -1,3 +1,4 @@
+import ast
 import time
 
 from flask import render_template, request, jsonify
@@ -11,6 +12,7 @@ from ..app.models import (
     namespacegroups,
     groupmembers,
     claims,
+    users,
 )
 from ..helpers.constants.common import msg_status
 from ..run import db
@@ -198,6 +200,126 @@ def set_rights():
             ),
             "status": msg_status.OK,
             "msg": "Namespace rights set!",
+        }
+
+    except Exception as err:
+        return jsonify(
+            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
+        )
+
+
+@home.route("/namespaces/get_user_list", methods=["POST"])
+@login_required
+def get_user_list():
+    post_data = dict(request.json)
+
+    all_users = (
+        users.query.filter(
+            users.id.notin_(
+                db.session.query(namespacemembers.userid)
+                .filter(namespacemembers.namespaceid == int(post_data["id"]))
+                .all()
+            )
+        )
+        .filter(
+            users.id.notin_(
+                db.session.query(namespaces.owner)
+                .filter(namespaces.id == int(post_data["id"]))
+                .all()
+            )
+        )
+        .all()
+    )
+
+    userdetails = [
+        {
+            "value": x.id,
+            "name": x.username,
+            "avatar": "/avatars/{}".format(x.avatar_l),
+            "email": x.email,
+        }
+        for x in all_users
+    ]
+
+    return jsonify({"user_list": userdetails})
+
+
+@home.route("/namespaces/get_assigned_users", methods=["POST"])
+@login_required
+def get_assigned_users():
+    post_data = dict(request.json)
+
+    all_userids = (
+        db.session.query(namespacemembers.userid)
+        .filter(namespacemembers.namespaceid == int(post_data["id"]))
+        .all()
+    )
+
+    all_userids = [x[0] for x in all_userids]
+
+    all_users = (
+        users.query.filter(users.id.in_(all_userids))
+        .filter(
+            users.id.notin_(
+                db.session.query(namespaces.owner)
+                .filter(namespaces.id == int(post_data["id"]))
+                .all()
+            )
+        )
+        .all()
+    )
+
+    return jsonify([x.user_to_dict() for x in all_users])
+
+
+@home.route("/namespaces/set_user_list", methods=["POST"])
+@login_required
+def set_user_list():
+    post_data = dict(request.json)
+
+    if post_data["data"] != "":
+        post_data["data"] = ast.literal_eval(post_data["data"])
+
+        if isinstance(post_data["data"], list):
+            for each in post_data["data"]:
+                db.session.add(
+                    namespacemembers(
+                        namespaceid=post_data["namespace_id"], userid=each["value"]
+                    )
+                )
+
+            db.session.commit()
+
+            return {
+                "status": msg_status.OK,
+                "msg": "Users assigned!",
+            }
+
+        else:
+            return jsonify(
+                {
+                    "status": msg_status.NOK,
+                    "msg": "The provided data is not the correct type, expected list got {}".format(
+                        type(post_data["data"])
+                    ),
+                }
+            )
+    return "Nothing to save..."
+
+
+@home.route("/namespaces/del_user", methods=["POST"])
+@login_required
+def del_user():
+    post_data = dict(request.json)
+
+    try:
+        namespacemembers.query.filter(namespacemembers.userid == post_data["userid"]).delete()
+
+        db.session.commit()
+
+        return {
+            "status": msg_status.OK,
+            "msg": "User assignment deleted!",
         }
 
     except Exception as err:

@@ -156,3 +156,7 @@ div.tagify__tag__avatar-wrap img{
 #set_rights {
     float: left;
 }
+
+.margin_bottom {
+    margin-bottom: 10px;
+}

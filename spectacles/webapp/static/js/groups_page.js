@@ -70,10 +70,16 @@ var tagify = null
 
 function AddUserForm(evt){
 
-    var attrs = evt.target.parentElement.attributes
-
     json = {}
-    json["id"] = attrs["data-id"].nodeValue;
+
+    try {
+        var attrs = evt.target.parentElement.attributes
+        json["id"] = attrs["data-id"].nodeValue;
+    } catch {
+        var attrs = evt.target.attributes
+        json["id"] = attrs["data-id"].nodeValue;
+    }
+
     json["name"] = attrs["data-name"].nodeValue;
 
     var dialog = bootbox.dialog({
@@ -90,7 +96,6 @@ function AddUserForm(evt){
                 className: 'btn-success btn-sm',
                 callback: function(){
                     var inputElm = document.querySelector('input[name=tags]');
-                    console.log(inputElm.value);
 
                     send_data = {}
                     send_data["group_id"] = json["id"]
@@ -196,10 +201,15 @@ function AddUserForm(evt){
 
 function DeleteGroup(evt){
 
-    var attrs = evt.target.attributes
-
     json = {}
-    json["id"] = attrs["data-id"].nodeValue;
+
+    try {
+        var attrs = evt.target.parentElement.attributes
+        json["id"] = attrs["data-id"].nodeValue;
+    } catch {
+        var attrs = evt.target.attributes
+        json["id"] = attrs["data-id"].nodeValue;
+    }
 
     $.ajax({
              type: "POST",

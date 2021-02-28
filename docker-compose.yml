@@ -11,7 +11,7 @@ services:
     hostname: mysql
     restart: always
     env_file:
-      - .env_dev
+      - .env_docker
     ports:
       - 3306:3306
     security_opt:
@@ -29,7 +29,7 @@ services:
     ports:
       - 8088:80
     env_file:
-      - .env_dev
+      - .env_docker
     networks:
       - spec_network
 
@@ -41,7 +41,7 @@ services:
     hostname: flask
     restart: always
     env_file:
-      - .env_dev
+      - .env_docker
     depends_on:
       - mysql
     ports:

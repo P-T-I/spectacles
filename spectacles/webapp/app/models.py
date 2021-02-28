@@ -90,21 +90,46 @@ class registry(db.Model):
     service_name = db.Column("service_name", db.String(256))
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
-    content = db.relationship("repository", backref="registry", lazy="dynamic")
+    content = db.relationship("namespaces", backref="registry", lazy="dynamic")
+
+
+class namespaces(db.Model):
+    __tablename__ = "namespaces"
+    id = db.Column("id", db.Integer, primary_key=True)
+    name = db.Column("name", db.String(512), index=True, unique=True)
+    description = db.Column("description", db.String(512))
+    owner = db.Column(
+        "owner",
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="cascade", onupdate="cascade"),
+    )
+    registryid = db.Column(
+        "registryid",
+        db.Integer,
+        db.ForeignKey("registry.id", ondelete="cascade", onupdate="cascade"),
+    )
+    P_claim = db.Column("P_claim", db.String(16), default="FULL")
+    G_claim = db.Column("G_claim", db.String(16), default="NONE")
+    O_claim = db.Column("O_claim", db.String(16), default="NONE")
+    created = db.Column("created", db.Integer, default=0)
+    updated = db.Column("updated", db.Integer, default=0)
+    repositories = db.relationship("repository", backref="namespace", lazy="dynamic")
+    claims = db.relationship("claims", backref="namespace", lazy="dynamic")
+    members = db.relationship("namespacemembers", backref="namespace", lazy="dynamic")
+    groups = db.relationship("namespacegroups", backref="namespace", lazy="dynamic")
 
 
 class repository(db.Model):
     __tablename__ = "repository"
     id = db.Column("id", db.Integer, primary_key=True)
     name = db.Column("name", db.String(512), index=True, unique=True)
-    registryid = db.Column(
-        "registryid",
+    namespacesid = db.Column(
+        "namespacesid",
         db.Integer,
-        db.ForeignKey("registry.id", ondelete="cascade", onupdate="cascade"),
+        db.ForeignKey("namespaces.id", ondelete="cascade", onupdate="cascade"),
     )
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
-    namespace = db.relationship("namespaces", backref="repository", lazy="dynamic")
 
 
 class tags(db.Model):
@@ -119,31 +144,6 @@ class tags(db.Model):
     digest = db.Column("digest", db.String(512), default="0")
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
-
-
-class namespaces(db.Model):
-    __tablename__ = "namespaces"
-    id = db.Column("id", db.Integer, primary_key=True)
-    name = db.Column("name", db.String(512), index=True, unique=True)
-    description = db.Column("description", db.String(512))
-    owner = db.Column(
-        "owner",
-        db.Integer,
-        db.ForeignKey("users.id", ondelete="cascade", onupdate="cascade"),
-    )
-    repositoryid = db.Column(
-        "repositoryid",
-        db.Integer,
-        db.ForeignKey("repository.id", ondelete="cascade", onupdate="cascade"),
-    )
-    P_claim = db.Column("P_claim", db.String(16), default="FULL")
-    G_claim = db.Column("G_claim", db.String(16), default="NONE")
-    O_claim = db.Column("O_claim", db.String(16), default="NONE")
-    created = db.Column("created", db.Integer, default=0)
-    updated = db.Column("updated", db.Integer, default=0)
-    claims = db.relationship("claims", backref="namespace", lazy="dynamic")
-    members = db.relationship("namespacemembers", backref="namespace", lazy="dynamic")
-    groups = db.relationship("namespacegroups", backref="namespace", lazy="dynamic")
 
 
 class namespacemembers(db.Model):
@@ -179,9 +179,7 @@ class namespacegroups(db.Model):
 class claims(db.Model):
     __tablename__ = "claims"
     id = db.Column("id", db.Integer, primary_key=True)
-    P_claim = db.Column("P_claim", db.String(16), default="FULL")
-    G_claim = db.Column("G_claim", db.String(16), default="READ")
-    O_claim = db.Column("O_claim", db.String(16), default="NONE")
+    claim = db.Column("P_claim", db.String(16), default="NONE")
     namespaceid = db.Column(
         "namespaceid",
         db.Integer,
@@ -189,3 +187,35 @@ class claims(db.Model):
     )
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
+    members = db.relationship("claimsmembers", backref="claims", lazy="dynamic")
+    groups = db.relationship("claimsgroups", backref="claims", lazy="dynamic")
+
+
+class claimsmembers(db.Model):
+    __tablename__ = "claimsmembers"
+    id = db.Column("id", db.Integer, primary_key=True)
+    claimsid = db.Column(
+        "claimsid",
+        db.Integer,
+        db.ForeignKey("claims.id", ondelete="cascade", onupdate="cascade"),
+    )
+    userid = db.Column(
+        "userid",
+        db.Integer,
+        db.ForeignKey("users.id", ondelete="cascade", onupdate="cascade"),
+    )
+
+
+class claimsgroups(db.Model):
+    __tablename__ = "claimsgroups"
+    id = db.Column("id", db.Integer, primary_key=True)
+    claimsid = db.Column(
+        "claimsid",
+        db.Integer,
+        db.ForeignKey("claims.id", ondelete="cascade", onupdate="cascade"),
+    )
+    groupid = db.Column(
+        "groupid",
+        db.Integer,
+        db.ForeignKey("groups.id", ondelete="cascade", onupdate="cascade"),
+    )

@@ -32,10 +32,10 @@
             <a id="rw_world_{{item.name|md5}}" class="btn {{rights_dict[item.O_claim]}}" title="Generic global rights" data-id="{{item.id}}"><i class="fas fa-globe-americas"></i></a>
           </div>
           <div class="btn-group mr-2 btn-group-sm" role="group" aria-label="Second group">
-            <button type="button" class="btn btn-outline-secondary" title="Assign users and groups"><i class="fas fa-chess-rook"></i></button>
+            <a id="assign_usr_group_{{item.name|md5}}" class="btn btn-outline-secondary" title="Assign users and groups" data-id="{{item.id}}"><i class="fas fa-chess-rook"></i></a>
           </div>
           <div class="btn-group btn-group-sm" role="group" aria-label="Third group">
-            <button type="button" class="btn btn-outline-secondary" title="Set custom rights"><i class="fas fa-cog"></i></button>
+            <a class="btn btn-outline-secondary" title="Set custom rights"><i class="fas fa-cog"></i></a>
           </div>
         </div>
         <a id="del_ns_{{item.name|md5}}" class="btn btn-danger btn-xs" href="#" data-id="{{item.id}}">
