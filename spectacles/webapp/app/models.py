@@ -93,6 +93,9 @@ class registry(db.Model):
     updated = db.Column("updated", db.Integer, default=0)
     content = db.relationship("namespaces", backref="registry", lazy="dynamic")
 
+    def __repr__(self):
+        return "{}".format(self.uri)
+
 
 class namespaces(db.Model):
     __tablename__ = "namespaces"
@@ -123,7 +126,8 @@ class namespaces(db.Model):
 class repository(db.Model):
     __tablename__ = "repository"
     id = db.Column("id", db.Integer, primary_key=True)
-    name = db.Column("name", db.String(512), index=True, unique=True)
+    name = db.Column("name", db.String(512), index=True)
+    path = db.Column("path", db.String(512), index=True, unique=True)
     namespacesid = db.Column(
         "namespacesid",
         db.Integer,

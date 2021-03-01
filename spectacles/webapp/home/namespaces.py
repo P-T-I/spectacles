@@ -75,6 +75,7 @@ def add_namespaces():
         new_ns.name = post_data["name"]
         new_ns.description = post_data["description"]
         new_ns.owner = current_user.id
+        new_ns.registryid = int(post_data["registry"])
         new_ns.created = int(time.time())
 
         db.session.add(new_ns)

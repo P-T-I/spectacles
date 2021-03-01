@@ -132,8 +132,8 @@ class Token(object):
                 "jti": self.jwt_id,
                 "access": [
                     {
-                        "type": "repository",
-                        "name": "nginx",
+                        "type": self.scope_type,
+                        "name": self.scope_name,
                         "actions": [
                             "pull",
                             "push"

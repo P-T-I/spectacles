@@ -34,7 +34,6 @@ def index():
         return abort(401, "missing credentials in request...")
 
 
-
 def authenticate(auth_dict):
 
     # do something cunning with database...
@@ -42,7 +41,7 @@ def authenticate(auth_dict):
 
         check_user = users.query.filter(users.username == auth_dict["username"]).first()
 
-        if check_user and verify_password(auth_dict["password"], check_user.password):
+        if check_user and check_user.verify_password(auth_dict["password"]):
             return True
 
     return False
