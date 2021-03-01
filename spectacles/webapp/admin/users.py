@@ -4,7 +4,13 @@ import time
 from flask import render_template, url_for, redirect, request, jsonify
 from flask_login import login_required
 
-from spectacles.webapp.app.models import users, groupmembers, groups, namespaces, namespacemembers
+from spectacles.webapp.app.models import (
+    users,
+    groupmembers,
+    groups,
+    namespaces,
+    namespacemembers,
+)
 from spectacles.webapp.auth.forms import RegistrationForm
 from spectacles.webapp.run import db
 from . import admin
@@ -36,14 +42,12 @@ def add_users():
 
     if form.validate_on_submit():
 
-        # Create variables for easy access
-        newuser = users()
-
-        newuser.username = form.username.data
-        newuser.email = form.email.data
-        newuser.created = int(time.time())
-
-        newuser.hash_password(form.password.data)
+        newuser = users(
+            username=form.username.data,
+            password=form.password.data,
+            email=form.email.data,
+            created=int(time.time()),
+        )
 
         newuser.generate_avatar()
 
@@ -91,9 +95,13 @@ def del_users():
 
         total_users = users.query.filter().all()
 
-        return {"user_data": render_template("partials/user_list.html", header="Users", users=total_users),
-                "status": msg_status.OK,
-                "msg": "User {} deleted!".format(found_username)}
+        return {
+            "user_data": render_template(
+                "partials/user_list.html", header="Users", users=total_users
+            ),
+            "status": msg_status.OK,
+            "msg": "User {} deleted!".format(found_username),
+        }
     except Exception as err:
         return jsonify(
             {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
@@ -132,7 +140,9 @@ def set_admin_users():
 
         return jsonify(
             {
-                "user_data": render_template("partials/user_list.html", header="Users", users=total_users),
+                "user_data": render_template(
+                    "partials/user_list.html", header="Users", users=total_users
+                ),
                 "status": msg_status.OK,
                 "msg": "User {} set to role: {}".format(my_user.username, my_user.role),
             }
@@ -159,7 +169,9 @@ def del_group():
         total_users = users.query.filter().all()
 
         return {
-            "user_data": render_template("partials/user_list.html", header="Users", users=total_users),
+            "user_data": render_template(
+                "partials/user_list.html", header="Users", users=total_users
+            ),
             "status": msg_status.OK,
             "msg": "Group membership deleted!",
         }

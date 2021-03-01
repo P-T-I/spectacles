@@ -16,6 +16,6 @@ class NamespaceForm(FlaskForm):
     )
     description = TextAreaField(
         "description",
-        render_kw={"placeholder": "Description (optional)", "rows": 5, "cols": 1},
+        render_kw={"placeholder": "Description (optional)", "rows": 2, "cols": 1},
     )
     save = SubmitField("Save")

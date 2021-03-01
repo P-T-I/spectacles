@@ -31,10 +31,17 @@ function SetAllEventListeners(){
 }
 
 function SetAdmin(evt) {
-    var attrs = evt.target.attributes
 
     json = {}
-    json["id"] = attrs["data-id"].nodeValue;
+
+    try {
+        var attrs = evt.target.parentElement.attributes
+        json["id"] = attrs["data-id"].nodeValue;
+    } catch {
+        var attrs = evt.target.attributes
+        json["id"] = attrs["data-id"].nodeValue;
+    }
+
     json["is_admin"] = evt.target.checked;
 
     $.ajax({
@@ -63,10 +70,14 @@ function SetAdmin(evt) {
 
 function DeleteUser(evt){
 
-    var attrs = evt.target.attributes
-
     json = {}
-    json["id"] = attrs["data-id"].nodeValue;
+    try {
+        var attrs = evt.target.parentElement.attributes
+        json["id"] = attrs["data-id"].nodeValue;
+    } catch {
+        var attrs = evt.target.attributes
+        json["id"] = attrs["data-id"].nodeValue;
+    }
 
     $.ajax({
              type: "POST",

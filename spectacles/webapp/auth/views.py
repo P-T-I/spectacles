@@ -60,10 +60,12 @@ def register():
         usercount = users.query.filter().count()
 
         # Create variables for easy access
-        newuser = users()
-
-        newuser.username = form.username.data
-        newuser.email = form.email.data
+        newuser = users(
+            username=form.username.data,
+            password=form.password.data,
+            email=form.email.data,
+            created=int(time.time()),
+        )
 
         if usercount is None or usercount == 0:
             newuser.role = "admin"
@@ -76,8 +78,6 @@ def register():
             newgroup.created = int(time.time())
             db.session.add(newgroup)
             db.session.commit()
-
-        newuser.hash_password(form.password.data)
 
         newuser.generate_avatar()
 
@@ -127,7 +127,7 @@ def func_login():
         # Check if account exists
         account = users.query.filter_by(username=form.username.data).first()
 
-        if account and verify_password(form.password.data, account.password):
+        if account and account.verify_password(form.password.data):
             login_user(account)
 
             return redirect(url_for("home.index"))

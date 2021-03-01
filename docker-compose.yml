@@ -54,7 +54,27 @@ services:
     networks:
       - spec_network
     entrypoint:
-      - /app/scripts/entry_point.sh
+      - /app/scripts/web_entry_point.sh
+
+  background:
+    image: spec-background
+    build:
+      context: .
+      dockerfile: .docker/images/background/dockerfile-background
+    hostname: background
+    restart: always
+    env_file:
+      - .env_docker
+    depends_on:
+      - mysql
+    volumes:
+      - .:/app
+      - "./spec_dev_data/db:/app/data/db"
+      - "./spec_dev_data/log:/app/data/log"
+    networks:
+      - spec_network
+    entrypoint:
+      - /app/scripts/background_entry_point.sh
 
   registry:
     restart: on-failure

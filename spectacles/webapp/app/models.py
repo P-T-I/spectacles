@@ -1,6 +1,6 @@
 from flask_avatars import Identicon
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from spectacles.webapp.run import db
 
@@ -10,7 +10,7 @@ class users(UserMixin, db.Model):
     id = db.Column("id", db.Integer, primary_key=True)
     username = db.Column("username", db.String(48), unique=True)
     email = db.Column("email", db.String(48))
-    password = db.Column("password", db.String(512))
+    password_hash = db.Column("password", db.String(512))
     status = db.Column("status", db.Integer, default=0)
     role = db.Column("role", db.String(16), default="user")
     avatar_s = db.Column(db.String(64))
@@ -22,16 +22,16 @@ class users(UserMixin, db.Model):
     namespaces = db.relationship("namespaces", backref="user", lazy="dynamic")
     namespacemembers = db.relationship("namespacemembers", backref="user", lazy="dynamic")
 
-    def hash_password(self, password):
-        """
-        Method to hash the password
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
 
-        :param password: Password given
-        :type password: str
-        :return: Hashed password
-        :rtype: str
-        """
-        self.password = generate_password_hash(password, method="pbkdf2:sha512")
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password, method="pbkdf2:sha512")
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def user_to_dict(self):
 
@@ -87,6 +87,7 @@ class registry(db.Model):
     __tablename__ = "registry"
     id = db.Column("id", db.Integer, primary_key=True)
     uri = db.Column("uri", db.String(128), index=True, unique=True)
+    protocol = db.Column("protocol", db.String(16))
     service_name = db.Column("service_name", db.String(256))
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
@@ -130,6 +131,7 @@ class repository(db.Model):
     )
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
+    tags = db.relationship("tags", backref="repository", lazy="dynamic")
 
 
 class tags(db.Model):

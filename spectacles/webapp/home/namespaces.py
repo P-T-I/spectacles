@@ -37,12 +37,13 @@ def get_namespaces():
 def get_total_namespaces():
 
     if current_user.role == "admin":
-        total_namespaces = namespaces.query.filter().all()
+        total_namespaces = namespaces.query.filter().order_by(namespaces.name.asc()).all()
     else:
         total_namespaces_pers = (
             namespaces.query.join(namespacemembers)
             .filter(namespacemembers.userid == current_user.id)
             .filter(namespacemembers.namespaceid == namespaces.id)
+            .order_by(namespaces.name.asc())
             .all()
         )
 

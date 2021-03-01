@@ -1,12 +1,10 @@
 import argparse
 import os
 from subprocess import run, PIPE, STDOUT
-from dotenv import load_dotenv
 
 argparser = argparse.ArgumentParser(
     description="migrate/update the spectacles database schema"
 )
-
 
 argparser.add_argument("-i", action="store_true", help="Setup new migration directory")
 argparser.add_argument("-m", action="store_true", help="Migrate the database")

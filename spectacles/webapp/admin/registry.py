@@ -64,6 +64,10 @@ def add_registries():
         reg = registry()
 
         reg.uri = post_data["uri"]
+        if post_data["ssl"] == "y":
+            reg.protocol = "https"
+        else:
+            reg.protocol = "http"
         reg.service_name = post_data["service_name"]
         reg.created = int(time.time())
 

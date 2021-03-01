@@ -71,7 +71,7 @@ class GenericApi(object):
         else:
             return "{0}/{1}/{2}".format(self.baseurl, self.api_path, resource)
 
-    def __connect(self, method, resource, session, data=None, timeout=60):
+    def __connect(self, method, resource, session, data=None, timeout=60, ret_headers=False):
         """
         Send a request
 
@@ -126,7 +126,10 @@ class GenericApi(object):
             except JSONDecodeError:
                 json_response = r
 
-            return json_response
+            if ret_headers:
+                return dict(r.headers)
+            else:
+                return json_response
         except requests.exceptions.ConnectionError as err:
             return err
 
@@ -154,7 +157,7 @@ class GenericApi(object):
 
         return session
 
-    def call(self, method=None, resource=None, data=None):
+    def call(self, method=None, resource=None, data=None, **kwargs):
         """
         Method for requesting free format api resources
 
@@ -170,7 +173,7 @@ class GenericApi(object):
         try:
             with self.get_session() as session:
                 result = self.__connect(
-                    method=method, resource=resource, session=session, data=data
+                    method=method, resource=resource, session=session, data=data, **kwargs
                 )
                 return result
         except requests.ConnectionError:

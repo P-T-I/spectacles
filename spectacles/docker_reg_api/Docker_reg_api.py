@@ -40,9 +40,11 @@ class DockerRegistryApi(GenericApi):
 
         return token
 
-    def set_token_header(self, name):
+    def set_token_header(self, name, action="pull"):
 
-        token = self.fetch_token("repository:{}:pull".format(name), service=self.docker_service_name)
+        token = self.fetch_token(
+            "repository:{}:{}".format(name, action), service=self.docker_service_name
+        )
 
         self.set_header_field(
             "Authorization", "Bearer {}".format(token.build_token()["token"])
@@ -119,10 +121,25 @@ class DockerRegistryApi(GenericApi):
 
         return self.call("GET", resource=resource)
 
-    def get_repository_manifest(self, name, tag):
+    def get_repository_digest(self, name, tag):
+
+        self.set_header_field(
+            "Accept",
+            "application/vnd.docker.distribution.manifest.v2+json",
+        )
 
         self.set_token_header(name=name)
 
         resource = "{}/manifests/{}".format(name, tag)
 
-        return self.call("GET", resource=resource)
+        result = self.call("GET", resource=resource, ret_headers=True)
+
+        return result["Docker-Content-Digest"]
+
+    def delete_repository(self, name, digest):
+
+        self.set_token_header(name=name, action="delete")
+
+        resource = "{}/manifests/{}".format(name, digest)
+
+        return self.call("DELETE", resource=resource)
