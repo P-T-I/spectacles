@@ -388,6 +388,9 @@ function SetUserGroupRights(evt){
                                         <input name='tags' value='' placeholder='write usernames or select below'>
                                     </div>
                                     <div class="tab-pane" id="groups_tab">
+                                    <label>Assigned groups: </label>
+                                    <label>Select users: </label>
+                                    <input name='groups' value='' placeholder='write group names or select below'>
                                 </div>
                                 </div>
                             </div>

@@ -1,0 +1,54 @@
+{% if repo_det %}
+<div class="card card-outline card-secondary">
+    <div class="card-header repo_header">
+        {{repo_det[0].repository.path}}
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th width="1%">
+                    #
+                </th>
+                <th width="10%">
+                    Tag
+                </th>
+                <th width="10%">
+                    Digest
+                </th>
+                <th width="20%">
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for tag in repo_det %}
+            <tr>
+                <td>
+                    {{loop.index}}
+                </td>
+                <td>
+                    <span class="badge badge-pill badge-success">{{tag.version}}</span>
+                </td>
+                <td>
+                    <span class="badge badge-pill badge-secondary">{{tag.digest}}</span>
+                </td>
+                <td class="project-actions text-right">
+                    <div id="set_rights">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+                            <a class="btn btn-outline-secondary" title="Set custom rights for this repository"><i class="fas fa-cog"></i></a>
+                        </div>
+                    </div>
+
+                    <a id="del_repo_{{tag.version|md5}}" class="btn btn-danger btn-xs" href="#" data-id="{{tag.id}}" data-digest="{{tag.digest}}" data-name="{{tag.repository.path}}">
+                        <i class="fas fa-trash">
+                        </i>
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}

@@ -1,3 +1,13 @@
+a {
+	color: #275d97;
+	text-decoration: none;
+	background-color: transparent;
+}
+
+.bold_hover:hover {
+	font-weight: bold;
+}
+
 .content-wrapper {
     background-color: #031f30;
 }
@@ -168,4 +178,9 @@ div.tagify__tag__avatar-wrap img{
 
 .nav-pills .nav-link:not(.active):hover {
 	color: #275d97;
+}
+
+.repo_header {
+    font-weight: bold;
+    font-size: 20px;
 }

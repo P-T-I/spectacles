@@ -40,7 +40,7 @@ def get_registries():
 
         ns_count = namespaces.query.filter(namespaces.registryid == each.id).count()
 
-        count_dict[each.uri] = "{} repositories in {} namespaces".format(repo_count, ns_count)
+        count_dict[each.uri] = "{} namespaces containing {} repositories".format(ns_count, repo_count)
 
     return render_template(
         "pages/registry.html",

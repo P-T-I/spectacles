@@ -48,10 +48,12 @@
                                         {{loop.index}}
                                     </td>
                                     <td>
-                                        {{item.path}}
+                                        <a id="path_link_{{item.path|md5}}" class="bold_hover" href="#" data-id="{{item.id}}">
+                                            {{item.path}}
+                                        </a>
                                     </td>
                                     <td>
-                                        {% for tag in item.tags %}
+                                        {% for tag in item.tags|sort(attribute='version', reverse=True) %}
                                         <span class="badge badge-pill badge-success">{{tag.version}}</span>
                                         {% endfor %}
                                     </td>
@@ -63,6 +65,9 @@
                         {% endfor %}
                     </div>
                 </div>
+            </div>
+            <div id="repo_details">
+                {% include "partials/repo_details.html" %}
             </div>
         </div>
     </div>

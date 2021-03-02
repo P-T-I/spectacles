@@ -86,6 +86,9 @@ class BackgroundTasks(object):
                             if "tags" in repo_list:
                                 if repo_list["tags"] is not None and isinstance(repo_list["tags"], list):
                                     for tag in repo_list["tags"]:
+
+                                        self.logger.info("Processing tag: {} of repo: {}".format(tag, repo))
+
                                         digest = dr.get_repository_digest(
                                             name=repo, tag=tag
                                         )
@@ -97,8 +100,10 @@ class BackgroundTasks(object):
                                             .first()
                                         )
 
+                                        self.logger.info("{}".format(my_tag))
+
                                         # existing tag
-                                        if my_tag:
+                                        if my_tag is not None:
                                             if my_tag.digest == digest:
                                                 my_tag.updated = update_time
                                         # new tag
@@ -111,8 +116,8 @@ class BackgroundTasks(object):
                                                 updated=update_time,
                                             )
 
-                                    db.session.add(my_tag)
-                                    db.session.commit()
+                                        db.session.add(my_tag)
+                                        db.session.commit()
                                 elif repo_list["tags"] is None:
                                     # this repository is deleted; remove from the database
                                     repository.query.filter(repository.id == my_repo.id).delete()
@@ -127,11 +132,11 @@ class BackgroundTasks(object):
                                 )
                             )
 
-                    # deleting tags that are not updated; assuming that they do not longer exist on the registry
-                    tags.query.filter(tags.updated != update_time).delete()
-                    db.session.commit()
+                # deleting tags that are not updated; assuming that they do not longer exist on the registry
+                tags.query.filter(tags.updated != update_time).delete()
+                db.session.commit()
 
-                    # deleting repositories that are not updated; assuming that they do not longer exist on the
-                    # registry
-                    repository.query.filter(repository.updated != update_time).delete()
-                    db.session.commit()
+                # deleting repositories that are not updated; assuming that they do not longer exist on the
+                # registry
+                repository.query.filter(repository.updated != update_time).delete()
+                db.session.commit()
