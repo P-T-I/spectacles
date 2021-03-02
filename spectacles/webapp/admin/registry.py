@@ -1,10 +1,11 @@
 import logging
 import time
+from collections import defaultdict
 
 from flask import render_template, request, abort, jsonify
 from flask_login import login_required
 
-from spectacles.webapp.app.models import registry
+from spectacles.webapp.app.models import registry, namespaces, repository
 from . import admin
 from .forms import RegistryForm
 from ..auth.permissions import admin_required
@@ -27,7 +28,27 @@ def get_registries():
 
     total_registry = registry.query.filter().all()
 
-    return render_template("pages/registry.html", header="Registries", registry=total_registry, form=form)
+    count_dict = defaultdict(str)
+
+    for each in total_registry:
+
+        repo_count = repository.query.filter(
+            repository.namespacesid.in_(
+                db.session.query(namespaces.id).filter(namespaces.registryid == each.id).all()
+            )
+        ).count()
+
+        ns_count = namespaces.query.filter(namespaces.registryid == each.id).count()
+
+        count_dict[each.uri] = "{} repositories in {} namespaces".format(repo_count, ns_count)
+
+    return render_template(
+        "pages/registry.html",
+        header="Registries",
+        registry=total_registry,
+        count_dict=count_dict,
+        form=form,
+    )
 
 
 @admin.route("/registries/test_connection", methods=["POST"])
@@ -96,9 +117,7 @@ def del_registries():
     post_data = dict(request.json)
 
     try:
-        registry.query.filter(
-            registry.id == post_data["id"]
-        ).delete()
+        registry.query.filter(registry.id == post_data["id"]).delete()
         db.session.commit()
 
         total_registry = registry.query.filter().all()

@@ -45,7 +45,7 @@ services:
     depends_on:
       - mysql
     ports:
-      - 5000:5000
+      - 5050:5050
     volumes:
       - .:/app
       - "./spec_dev_data/avatars:/app/data/avatars"
@@ -78,15 +78,15 @@ services:
 
   registry:
     restart: on-failure
+    hostname: registry
     image: registry:2
     ports:
-      - 5010:5000
-      - 5001:5001
+      - 5000:5000
     environment:
       - REGISTRY_STORAGE_DELETE_ENABLED=true
       - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/data
       - REGISTRY_AUTH=token
-      - REGISTRY_AUTH_TOKEN_REALM=https://localhost:5000/token_auth
+      - REGISTRY_AUTH_TOKEN_REALM=https://localhost:5050/token_auth
       - REGISTRY_AUTH_TOKEN_SERVICE="Docker registry"
       - REGISTRY_AUTH_TOKEN_ISSUER="Auth service"
       - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/mnt/local/certs/domain.crt

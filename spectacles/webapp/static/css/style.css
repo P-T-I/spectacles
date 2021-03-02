@@ -160,3 +160,12 @@ div.tagify__tag__avatar-wrap img{
 .margin_bottom {
     margin-bottom: 10px;
 }
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+	color: #fff;
+	background-color: #275d97;
+}
+
+.nav-pills .nav-link:not(.active):hover {
+	color: #275d97;
+}

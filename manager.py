@@ -15,14 +15,14 @@ manager = Manager(app)
 
 @manager.command
 def runserver():
-    app.run(host="0.0.0.0", port=5000, ssl_context=("cert.pem", "key.pem"))
+    app.run(host="0.0.0.0", port=5050, ssl_context=("cert.pem", "key.pem"))
 
 
 @manager.command
 def runbackground():
     starttime = time.time()
 
-    bg = BackgroundTasks()
+    bg = BackgroundTasks(app=app)
 
     while True:
         bg.run()

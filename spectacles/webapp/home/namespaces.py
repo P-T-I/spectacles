@@ -11,7 +11,6 @@ from ..app.models import (
     namespacemembers,
     namespacegroups,
     groupmembers,
-    claims,
     users,
 )
 from ..helpers.constants.common import msg_status

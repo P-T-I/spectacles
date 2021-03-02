@@ -141,7 +141,7 @@ class repository(db.Model):
 class tags(db.Model):
     __tablename__ = "tags"
     id = db.Column("id", db.Integer, primary_key=True)
-    version = db.Column("version", db.String(128), default="latest", index=True, unique=True)
+    version = db.Column("version", db.String(128), default="latest", index=True)
     repositoryid = db.Column(
         "repositoryid",
         db.Integer,
