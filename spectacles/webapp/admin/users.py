@@ -104,34 +104,43 @@ def set_admin_users():
     try:
         my_user = users.query.filter_by(id=post_data["id"]).first()
 
-        if post_data["is_admin"]:
-            my_user.role = "admin"
+        if my_user.status != 99:
+            if post_data["is_admin"]:
+                my_user.role = "admin"
 
-            myadmin = groups.query.filter_by(name="admin").first()
+                myadmin = groups.query.filter_by(name="admin").first()
 
-            gm = groupmembers()
-            gm.groupid = myadmin.id
-            gm.userid = my_user.id
-            db.session.add(gm)
+                gm = groupmembers()
+                gm.groupid = myadmin.id
+                gm.userid = my_user.id
+                db.session.add(gm)
 
+            else:
+                my_user.role = "user"
+
+            db.session.add(my_user)
+            db.session.commit()
+
+            total_users = users.query.filter().all()
+
+            return jsonify(
+                {
+                    "user_data": render_template(
+                        "partials/user_list.html", header="Users", users=total_users
+                    ),
+                    "status": msg_status.OK,
+                    "msg": "User {} set to role: {}".format(
+                        my_user.username, my_user.role
+                    ),
+                }
+            )
         else:
-            my_user.role = "user"
-
-        db.session.add(my_user)
-        db.session.commit()
-
-        total_users = users.query.filter().all()
-
-        return jsonify(
-            {
-                "user_data": render_template(
-                    "partials/user_list.html", header="Users", users=total_users
-                ),
-                "status": msg_status.OK,
-                "msg": "User {} set to role: {}".format(my_user.username, my_user.role),
-            }
-        )
-
+            return jsonify(
+                {
+                    "status": msg_status.NOK,
+                    "msg": "This user is the first entered admin user and cannot be removed as admin!",
+                }
+            )
     except Exception as err:
         return jsonify(
             {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
