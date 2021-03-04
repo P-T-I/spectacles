@@ -18,7 +18,7 @@ class users(UserMixin, db.Model):
     avatar_l = db.Column(db.String(64))
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
-    group_member = db.relationship("groupmembers", backref="user", lazy="dynamic")
+    group_member = db.relationship("groupmembers", backref="user", lazy="joined")
     namespaces = db.relationship("namespaces", backref="user", lazy="dynamic")
     namespacemembers = db.relationship("namespacemembers", backref="user", lazy="dynamic")
 
@@ -119,8 +119,8 @@ class namespaces(db.Model):
     updated = db.Column("updated", db.Integer, default=0)
     repositories = db.relationship("repository", backref="namespace", lazy="dynamic")
     claims = db.relationship("claims", backref="namespace", lazy="dynamic")
-    members = db.relationship("namespacemembers", backref="namespace", lazy="dynamic")
-    groups = db.relationship("namespacegroups", backref="namespace", lazy="dynamic")
+    members = db.relationship("namespacemembers", backref="namespace", lazy="joined")
+    groups = db.relationship("namespacegroups", backref="namespace", lazy="joined")
 
 
 class repository(db.Model):

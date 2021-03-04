@@ -20,7 +20,7 @@ def index():
 
     get_data = dict(request.args)
 
-    logger.info(get_data)
+    logger.info("Requested resource: {}".format(get_data))
 
     if hasattr(r, "authorization") and r.authorization is not None:
         authentication = r.authorization
@@ -36,7 +36,6 @@ def index():
 
 def authenticate(auth_dict):
 
-    # do something cunning with database...
     if "username" in auth_dict.keys() and "password" in auth_dict.keys():
 
         check_user = users.query.filter(users.username == auth_dict["username"]).first()

@@ -1,7 +1,7 @@
 import ast
 import time
 
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, url_for
 from flask_login import login_required, current_user
 
 from . import home
@@ -12,6 +12,7 @@ from ..app.models import (
     namespacegroups,
     groupmembers,
     users,
+    groups,
 )
 from ..helpers.constants.common import msg_status
 from ..run import db
@@ -36,7 +37,9 @@ def get_namespaces():
 def get_total_namespaces():
 
     if current_user.role == "admin":
-        total_namespaces = namespaces.query.filter().order_by(namespaces.name.asc()).all()
+        total_namespaces = (
+            namespaces.query.filter().order_by(namespaces.name.asc()).all()
+        )
     else:
         total_namespaces_pers = (
             namespaces.query.join(namespacemembers)
@@ -245,9 +248,38 @@ def get_user_list():
     return jsonify({"user_list": userdetails})
 
 
-@home.route("/namespaces/get_assigned_users", methods=["POST"])
+@home.route("/namespaces/get_group_list", methods=["POST"])
 @login_required
-def get_assigned_users():
+def get_group_list():
+    post_data = dict(request.json)
+
+    all_groups = (
+        groups.query.filter(
+            groups.id.notin_(
+                db.session.query(namespacegroups.groupid)
+                .filter(namespacegroups.namespaceid == int(post_data["id"]))
+                .all()
+            )
+        )
+        .filter(groups.name != "admin")
+        .all()
+    )
+
+    groupdetails = [
+        {
+            "value": x.id,
+            "name": x.name,
+            "avatar": url_for("static", filename="images/group_avatar.png"),
+        }
+        for x in all_groups
+    ]
+
+    return jsonify({"group_list": groupdetails})
+
+
+@home.route("/namespaces/get_assigned_users_groups", methods=["POST"])
+@login_required
+def get_assigned_users_groups():
     post_data = dict(request.json)
 
     all_userids = (
@@ -270,7 +302,11 @@ def get_assigned_users():
         .all()
     )
 
-    return jsonify([x.user_to_dict() for x in all_users])
+    ret_data = {
+        "users": [x.user_to_dict() for x in all_users]
+    }
+
+    return ret_data
 
 
 @home.route("/namespaces/set_user_list", methods=["POST"])
@@ -314,7 +350,9 @@ def del_user():
     post_data = dict(request.json)
 
     try:
-        namespacemembers.query.filter(namespacemembers.userid == post_data["userid"]).delete()
+        namespacemembers.query.filter(
+            namespacemembers.userid == post_data["userid"]
+        ).delete()
 
         db.session.commit()
 

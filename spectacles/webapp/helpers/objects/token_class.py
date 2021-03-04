@@ -12,12 +12,18 @@ from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key,
 )
 
+from spectacles.webapp.app.models import repository, users, namespacemembers, groups, groupmembers, namespacegroups, \
+    namespaces
 from spectacles.webapp.config import Config
+from spectacles.webapp.helpers.constants.rights import repo_rights
 from spectacles.webapp.helpers.utils.times import timestampTOdatetimestring
+from spectacles.webapp.run import db
 
 
 class Token(object):
-    def __init__(self, account=None, client_id=None, scope=None, offline_token=None, service=None):
+    def __init__(
+        self, account=None, client_id=None, scope=None, offline_token=None, service=None
+    ):
 
         self.config = Config()
 
@@ -30,7 +36,7 @@ class Token(object):
         self.scope = scope
 
         if self.scope is not None:
-            self.scope_type, self.scope_name, self.scope_actions = self.split_scope()
+            self.scope_type, self.scope_name, self.scope_namespace, self.scope_actions = self.split_scope()
 
         self.offline_token = offline_token
         self.service = service
@@ -47,9 +53,7 @@ class Token(object):
         self.token = self.build_token()
 
     def __get_priv_key(self):
-        with open(
-            self.config.SPECTACLES_PRIV_KEY_PATH
-        ) as f:
+        with open(self.config.SPECTACLES_PRIV_KEY_PATH) as f:
             file = f.read()
         priv_key = load_pem_private_key(
             file.encode(), password=None, backend=default_backend()
@@ -85,7 +89,13 @@ class Token(object):
         else:
             scope_actions = [scope_actions]
 
-        return scope_type, scope_name, scope_actions
+        if "/" in scope_name:
+            splits = scope_name.split("/")
+            scope_namespace = splits[0]
+        else:
+            scope_namespace = "/"
+
+        return scope_type, scope_name, scope_namespace, scope_actions
 
     def get_reg_claim(self):
 
@@ -130,17 +140,63 @@ class Token(object):
                 "nbf": int(time.time()) - 30,
                 "iat": int(time.time()),
                 "jti": self.jwt_id,
-                "access": [
-                    {
-                        "type": self.scope_type,
-                        "name": self.scope_name,
-                        "actions": [
-                            "pull",
-                            "push"
-                        ]
-                    }
-                ],
+                "access": [self.fetch_user_authorizations()],
             }
+
+    def fetch_user_authorizations(self):
+        action_dict = {
+            "type": self.scope_type,
+            "name": self.scope_name,
+            "actions": [],
+        }
+
+        # get the user
+        user = users.query.filter(users.username == self.account).first()
+
+        req_ns = namespaces.query.filter(namespaces.name == self.scope_namespace).first()
+
+        # check if user is admin
+        if user.status == 99 or user.role == "admin":
+            # admins have full rights by default
+            action_dict["actions"] = getattr(repo_rights, "FULL")
+            return action_dict
+
+        # check if namespace has group members
+        if len(req_ns.members) != 0:
+            # check if user is part of namespace
+            usr_ns = [x.userid for x in req_ns.members if x.userid == user.id]
+
+            if len(usr_ns) != 0:
+                # check if user is namespace owner
+                if req_ns.owner == user.id:
+                    # owners have full rights by default
+                    action_dict["actions"] = getattr(repo_rights, "FULL")
+                    return action_dict
+                else:
+                    # user privileges outweigh group privileges, so fetch namespace rights
+                    action_dict["actions"] = getattr(repo_rights, req_ns.P_claim)
+                    return action_dict
+
+        # check if namespace has group members
+        if len(req_ns.groups) != 0:
+            # check if user has memberships to groups
+            if len(user.group_members) != 0:
+                # fetch all user groups id's
+                grp_ids = [x.groupid for x in user.group_member]
+                # fetch namespace group ids
+                ns_grp_ids = [x.groupid for x in req_ns.groups]
+                # check for an overlap between the two
+                if len(set(grp_ids).intersection(set(ns_grp_ids))) != 0:
+                    action_dict["actions"] = getattr(repo_rights, req_ns.G_claim)
+                    return action_dict
+
+        # check for namespace 'other' rights if some other then 'NONE'
+        if req_ns.O_claim != "NONE":
+            action_dict["actions"] = getattr(repo_rights, req_ns.O_claim)
+            return action_dict
+
+        # if we make it this far; the user has no rights; return empty action list
+        return action_dict
 
     def get_payload(self):
         b64_header = (
@@ -149,9 +205,7 @@ class Token(object):
             .rstrip("=")
         )
         b64_claims = (
-            base64.urlsafe_b64encode(
-                json.dumps(self.claims).replace(" ", "").encode()
-            )
+            base64.urlsafe_b64encode(json.dumps(self.claims).replace(" ", "").encode())
             .decode("utf-8")
             .rstrip("=")
         )
@@ -164,10 +218,7 @@ class Token(object):
 
         return {
             "token": jwt.encode(
-                self.claims,
-                self.private_key,
-                algorithm="RS256",
-                headers=self.header,
+                self.claims, self.private_key, algorithm="RS256", headers=self.header,
             ),
             "expires_in": 900,
             "issued_at": timestampTOdatetimestring(int(time.time())),

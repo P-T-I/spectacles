@@ -104,8 +104,8 @@ class BackgroundTasks(object):
 
                                         # existing tag
                                         if my_tag is not None:
-                                            if my_tag.digest == digest:
-                                                my_tag.updated = update_time
+                                            my_tag.digest = digest
+                                            my_tag.updated = update_time
                                         # new tag
                                         else:
                                             my_tag = tags(
