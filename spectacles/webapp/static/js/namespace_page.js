@@ -59,6 +59,12 @@ function SetAllEventListeners(){
         elem.addEventListener("click", SetUserGroupRights);
     });
 
+    var elementsASSIGNCUSTOMArray = DOMRegex(/^assign_custom_/);
+
+    elementsASSIGNCUSTOMArray.forEach(function(elem) {
+        elem.addEventListener("click", SetCustomRights);
+    });
+
 }
 
 function DeleteNamespace(evt){
@@ -384,23 +390,25 @@ function SetUserGroupRights(evt){
         },
         complete: function(data) {
 
-              var user_div = '<div class="margin_bottom">'
+            var user_div = '<div class="margin_bottom">'
 
-              for (i=0; i < data.responseJSON["users"].length; i++) {
+            for (i=0; i < data.responseJSON["users"].length; i++) {
                        user_div = user_div + getUserDiv(data.responseJSON["users"][i]['username'].toUpperCase(), data.responseJSON["users"][i]['id'])
-                  }
+            }
 
-              user_div = user_div + '</div>'
+            user_div = user_div + '</div>'
 
-              var group_div = '<div class="margin_bottom">'
+            var group_div = '<div class="margin_bottom">'
 
+            for (i=0; i < data.responseJSON["groups"].length; i++) {
+                       group_div = group_div + getGroupDiv(data.responseJSON["groups"][i]['name'].toUpperCase(), data.responseJSON["groups"][i]['id'])
+            }
 
+            group_div = group_div + '</div>'
 
-              group_div = group_div + '</div>'
-
-              var dialog = bootbox.dialog({
-                    title: 'Namespace rights:',
-                    message: `<div class="card">
+            var dialog = bootbox.dialog({
+                title: 'Namespace rights:',
+                message: `<div class="card">
                             <div class="card-header p-2">
                                 <ul class="nav nav-pills">
                                     <li class="nav-item"><a class="nav-link active" href="#users_tab" data-toggle="tab">Users</a></li>
@@ -420,86 +428,79 @@ function SetUserGroupRights(evt){
                                     ` + group_div + `
                                     <label>Select users: </label>
                                     <input name='groups' value='' placeholder='write group names or select below'>
-                                </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>`,
-                    size: 'large',
-                    buttons: {
-                        cancel: {
-                            label: "Cancel",
-                            className: 'btn-secondary btn-sm',
-                        },
-                        ok: {
-                            label: "Save",
-                            className: 'btn-success btn-sm',
-                            callback: function(){
-                                var inputElm = document.querySelector('input[name=tags]');
+                size: 'large',
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: 'btn-secondary btn-sm',
+                    },
+                    ok: {
+                        label: "Save",
+                        className: 'btn-success btn-sm',
+                        callback: function(){
+                            var inputElmUser = document.querySelector('input[name=users]');
+                            var inputElmGroup = document.querySelector('input[name=groups]');
 
-                                send_data = {}
-                                send_data["namespace_id"] = json["id"]
-                                send_data["data"] = inputElm.value;
+                            send_data = {}
+                            send_data["namespace_id"] = json["id"]
+                            send_data["user_data"] = inputElmUser.value;
+                            send_data["group_data"] = inputElmGroup.value;
 
-                                $.ajax({
-                                     type: "POST",
-                                     url: "/namespaces/set_user_list",
-                                     data: JSON.stringify(send_data),
-                                     contentType: "application/json; charset=utf-8",
-                                     dataType: "json",
-                                     success: function(data) {
-                                         //
-                                     },
-                                     error: function(xhr, ajaxOptions, thrownError) {
-                                         //
-                                     },
-                                     complete: function(data) {
-                                            try {
-                                                showMessage(data.responseJSON["status"], data.responseJSON["msg"])
-                                            } catch {
+                            $.ajax({
+                                type: "POST",
+                                url: "/namespaces/set_user_group_list",
+                                data: JSON.stringify(send_data),
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function(data) {
+                                    //
+                                },
+                                error: function(xhr, ajaxOptions, thrownError) {
+                                    //
+                                },
+                                complete: function(data) {
+                                    try {
+                                        showMessage(data.responseJSON["status"], data.responseJSON["msg"])
+                                    } catch {
 
-                                            }
-                                        }
-                                });
+                                    }
+                                }
+                            });
 
-                            }
                         }
                     }
-              });
-
-            var elementsDELUSERArray = DOMRegex(/^user_btn_/);
-
-            elementsDELUSERArray.forEach(function(elem) {
-                elem.addEventListener("click", DeleteUserFromNamespace);
+                }
             });
-        }
-    });
 
-
-    $.ajax({
-             type: "POST",
-             url: "/namespaces/get_user_list",
-             data: JSON.stringify(json),
-             contentType: "application/json; charset=utf-8",
-             dataType: "json",
-             success: function(data) {
+            $.ajax({
+                type: "POST",
+                url: "/namespaces/get_user_list",
+                data: JSON.stringify(json),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
                  //
-             },
-             error: function(xhr, ajaxOptions, thrownError) {
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
                  //
-             },
-             complete: function(data) {
+                },
+                complete: function(data) {
 
                    var inputElm = document.querySelector('input[name=users]');
 
                    var tagify = new Tagify(inputElm, {
                         tagTextProp: 'name', // very important since a custom template is used with this property as text. allows typing a "value" or a "name" to match input with whitelist
                         enforceWhitelist: true,
-                        skipInvalid: true, // do not remporarily add invalid tags
+                        skipInvalid: true, // do not temporarily add invalid tags
                         dropdown: {
                             closeOnSelect: false,
                             enabled: 0,
                             classname: 'users-list',
-                            searchKeys: ['name', 'email']  // very important to set by which keys to search for suggesttions when typing
+                            searchKeys: ['name', 'email']  // very important to set by which keys to search for suggestions when typing
                         },
                         templates: {
                             tag: tagTemplate,
@@ -508,12 +509,12 @@ function SetUserGroupRights(evt){
                         whitelist: data.responseJSON["user_list"]
                     })
 
-                    tagify.on('dropdown:show dropdown:updated', onDropdownShow)
-                    tagify.on('dropdown:select', onSelectSuggestion)
+                   tagify.on('dropdown:show dropdown:updated', onDropdownShow)
+                   tagify.on('dropdown:select', onSelectSuggestion)
 
-                    var addAllSuggestionsElm;
+                   var addAllSuggestionsElm;
 
-                    function onDropdownShow(e){
+                   function onDropdownShow(e){
                         var dropdownContentElm = e.detail.tagify.DOM.dropdown.content;
 
                         if( tagify.suggestedListItems.length > 1 ){
@@ -522,15 +523,15 @@ function SetUserGroupRights(evt){
                             // insert "addAllSuggestionsElm" as the first element in the suggestions list
                             dropdownContentElm.insertBefore(addAllSuggestionsElm, dropdownContentElm.firstChild)
                         }
-                    }
+                   }
 
-                    function onSelectSuggestion(e){
+                   function onSelectSuggestion(e){
                         if( e.detail.elm == addAllSuggestionsElm )
                             tagify.dropdown.selectAll.call(tagify);
-                    }
+                   }
 
                     // create a "add all" custom suggestion element every time the dropdown changes
-                    function getAddAllSuggestionsElm(){
+                   function getAddAllSuggestionsElm(){
                         // suggestions items should be based on "dropdownItem" template
                         return tagify.parseTemplate('dropdownItem', [{
                                 class: "addAll",
@@ -540,35 +541,35 @@ function SetUserGroupRights(evt){
                                 }, 0) + " Members"
                             }]
                           )
-                    }
-             }
-    });
+                   }
+                }
+            });
 
-    $.ajax({
-             type: "POST",
-             url: "/namespaces/get_group_list",
-             data: JSON.stringify(json),
-             contentType: "application/json; charset=utf-8",
-             dataType: "json",
-             success: function(data) {
+            $.ajax({
+                type: "POST",
+                url: "/namespaces/get_group_list",
+                data: JSON.stringify(json),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
                  //
-             },
-             error: function(xhr, ajaxOptions, thrownError) {
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
                  //
-             },
-             complete: function(data) {
+                },
+                complete: function(data) {
 
                    var inputElm = document.querySelector('input[name=groups]');
 
                    var tagify = new Tagify(inputElm, {
                         tagTextProp: 'name', // very important since a custom template is used with this property as text. allows typing a "value" or a "name" to match input with whitelist
                         enforceWhitelist: true,
-                        skipInvalid: true, // do not remporarily add invalid tags
+                        skipInvalid: true, // do not temporarily add invalid tags
                         dropdown: {
                             closeOnSelect: false,
                             enabled: 0,
                             classname: 'users-list',
-                            searchKeys: ['name']  // very important to set by which keys to search for suggesttions when typing
+                            searchKeys: ['name']  // very important to set by which keys to search for suggestions when typing
                         },
                         templates: {
                             tag: tagTemplate,
@@ -610,7 +611,21 @@ function SetUserGroupRights(evt){
                             }]
                           )
                     }
-             }
+                }
+            });
+
+            var elementsDELUSERArray = DOMRegex(/^user_btn_/);
+
+            elementsDELUSERArray.forEach(function(elem) {
+                elem.addEventListener("click", DeleteUserFromNamespace);
+            });
+
+            var elementsDELGROUPArray = DOMRegex(/^group_btn_/);
+
+            elementsDELGROUPArray.forEach(function(elem) {
+                elem.addEventListener("click", DeleteGroupFromNamespace);
+            });
+        }
     });
 
 }
@@ -634,6 +649,477 @@ function DeleteUserFromNamespace(evt){
     $.ajax({
         type: "POST",
         url: "/namespaces/del_user",
+        data: JSON.stringify(json),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+            //
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            //
+        },
+        complete: function(data) {
+               showMessage(data.responseJSON["status"], data.responseJSON["msg"])
+           }
+    });
+
+}
+
+function DeleteGroupFromNamespace(evt){
+
+    json = {}
+
+    try {
+        var attrs = evt.target.parentElement.attributes
+        json["namespaceid"] = attrs["data-namespaceid"].nodeValue;
+        evt.target.parentElement.className = "d-none";
+    } catch {
+        var attrs = evt.target.attributes
+        json["namespaceid"] = attrs["data-namespaceid"].nodeValue;
+        evt.target.className = "d-none";
+    }
+
+    json["groupid"] = attrs["data-groupid"].nodeValue;
+
+    $.ajax({
+        type: "POST",
+        url: "/namespaces/del_group",
+        data: JSON.stringify(json),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+            //
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            //
+        },
+        complete: function(data) {
+               showMessage(data.responseJSON["status"], data.responseJSON["msg"])
+           }
+    });
+
+}
+
+function SetCustomRights(evt){
+
+    json = {}
+
+    try {
+        var attrs = evt.target.parentElement.attributes
+        json["id"] = attrs["data-id"].nodeValue;
+    } catch {
+        var attrs = evt.target.attributes
+        json["id"] = attrs["data-id"].nodeValue;
+    }
+
+    function getUserDiv(username, type, userid, claimid){
+
+        return '<a id="user_btn_' + type + username + '" data-userid="' + userid + '" data-claimid="' + claimid + '" class="btn btn-info btn-sm margin_right"><i class="far fa-times-circle pointer margin_right"></i>' + username + '</a>'
+
+    }
+
+    function getGroupDiv(name, type, groupid, claimid){
+
+        return '<a id="group_btn_' + type + name + '" data-groupid="' + groupid + '" data-claimid="' + claimid + '" class="btn btn-info btn-sm margin_right"><i class="far fa-times-circle pointer margin_right"></i>' + name + '</a>'
+
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "/namespaces/get_custom_assigned_users_groups",
+        data: JSON.stringify(json),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+            //
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            //
+        },
+        complete: function(data) {
+
+            var read_user_div = '<div class="margin_bottom">'
+
+            for (i=0; i < data.responseJSON["read_users"].length; i++) {
+                       read_user_div = read_user_div + getUserDiv(data.responseJSON["read_users"][i]['username'].toUpperCase(), "read", data.responseJSON["read_users"][i]['id'], data.responseJSON["read_claim"])
+            }
+
+            read_user_div = read_user_div + '</div>'
+
+            var read_group_div = '<div class="margin_bottom">'
+
+            for (i=0; i < data.responseJSON["read_groups"].length; i++) {
+                       read_group_div = read_group_div + getGroupDiv(data.responseJSON["read_groups"][i]['name'].toUpperCase(), "read", data.responseJSON["read_groups"][i]['id'], data.responseJSON["read_claim"])
+            }
+
+            read_group_div = read_group_div + '</div>'
+
+            var write_user_div = '<div class="margin_bottom">'
+
+            for (i=0; i < data.responseJSON["write_users"].length; i++) {
+                       write_user_div = write_user_div + getUserDiv(data.responseJSON["write_users"][i]['username'].toUpperCase(), "write", data.responseJSON["write_users"][i]['id'], data.responseJSON["write_claim"])
+            }
+
+            write_user_div = write_user_div + '</div>'
+
+            var write_group_div = '<div class="margin_bottom">'
+
+            for (i=0; i < data.responseJSON["write_groups"].length; i++) {
+                       write_group_div = write_group_div + getGroupDiv(data.responseJSON["write_groups"][i]['name'].toUpperCase(), "write", data.responseJSON["write_groups"][i]['id'], data.responseJSON["write_claim"])
+            }
+
+            write_group_div = write_group_div + '</div>'
+
+            var full_user_div = '<div class="margin_bottom">'
+
+            for (i=0; i < data.responseJSON["full_users"].length; i++) {
+                       full_user_div = full_user_div + getUserDiv(data.responseJSON["full_users"][i]['username'].toUpperCase(), "full", data.responseJSON["full_users"][i]['id'], data.responseJSON["full_claim"])
+            }
+
+            full_user_div = full_user_div + '</div>'
+
+            var full_group_div = '<div class="margin_bottom">'
+
+            for (i=0; i < data.responseJSON["full_groups"].length; i++) {
+                       full_group_div = full_group_div + getGroupDiv(data.responseJSON["full_groups"][i]['name'].toUpperCase(), "full", data.responseJSON["full_groups"][i]['id'], data.responseJSON["full_claim"])
+            }
+
+            full_group_div = full_group_div + '</div>'
+
+            var dialog = bootbox.dialog({
+                title: 'Namespace custom rights:',
+                message: `<div class="card">
+                            <div class="card-header p-2">
+                                <ul class="nav nav-pills">
+                                    <li class="nav-item"><a class="nav-link active" href="#read_tab" data-toggle="tab">Read</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#write_tab" data-toggle="tab">Write</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#full_tab" data-toggle="tab">Full</a></li>
+                                </ul>
+                            </div>
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <div class="active tab-pane" id="read_tab">
+                                        <label>Assigned users: </label>
+                                        ` + read_user_div + `
+                                        <label>Select users: </label>
+                                        <input name='read_user_list' value='' placeholder='write usernames or select below'>
+                                        <label class="margin_top">Assigned groups: </label>
+                                        ` + read_group_div + `
+                                        <label>Select users: </label>
+                                        <input name='read_group_list' value='' placeholder='write group names or select below'>
+                                    </div>
+                                    <div class="tab-pane" id="write_tab">
+                                        <label>Assigned users: </label>
+                                        ` + write_user_div + `
+                                        <label>Select users: </label>
+                                        <input name='write_user_list' value='' placeholder='write usernames or select below'>
+                                        <label class="margin_top">Assigned groups: </label>
+                                        ` + write_group_div + `
+                                        <label>Select users: </label>
+                                        <input name='write_group_list' value='' placeholder='write group names or select below'>
+                                    </div>
+                                    <div class="tab-pane" id="full_tab">
+                                        <label>Assigned users: </label>
+                                        ` + full_user_div + `
+                                        <label>Select users: </label>
+                                        <input name='full_user_list' value='' placeholder='write usernames or select below'>
+                                        <label class="margin_top">Assigned groups: </label>
+                                        ` + full_group_div + `
+                                        <label>Select users: </label>
+                                        <input name='full_group_list' value='' placeholder='write group names or select below'>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`,
+                size: 'large',
+                buttons: {
+                    cancel: {
+                        label: "Cancel",
+                        className: 'btn-secondary btn-sm',
+                    },
+                    ok: {
+                        label: "Save",
+                        className: 'btn-success btn-sm',
+                        callback: function(){
+                            var inputElmRUser = document.querySelector('input[name=read_user_list]');
+                            var inputElmRGroup = document.querySelector('input[name=read_group_list]');
+
+                            var inputElmWRUser = document.querySelector('input[name=write_user_list]');
+                            var inputElmWRGroup = document.querySelector('input[name=write_group_list]');
+
+                            var inputElmFUser = document.querySelector('input[name=full_user_list]');
+                            var inputElmFGroup = document.querySelector('input[name=full_group_list]');
+
+                            send_data = {}
+                            send_data["namespace_id"] = json["id"]
+
+                            send_data["read_user_data"] = inputElmRUser.value;
+                            send_data["read_group_data"] = inputElmRGroup.value;
+                            send_data["read_claim"] = data.responseJSON["read_claim"]
+
+                            send_data["write_user_data"] = inputElmWRUser.value;
+                            send_data["write_group_data"] = inputElmWRGroup.value;
+                            send_data["write_claim"] = data.responseJSON["write_claim"]
+
+                            send_data["full_user_data"] = inputElmFUser.value;
+                            send_data["full_group_data"] = inputElmFGroup.value;
+                            send_data["full_claim"] = data.responseJSON["full_claim"]
+
+                            $.ajax({
+                                type: "POST",
+                                url: "/namespaces/set_custom_user_group_list",
+                                data: JSON.stringify(send_data),
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function(data) {
+                                    //
+                                },
+                                error: function(xhr, ajaxOptions, thrownError) {
+                                    //
+                                },
+                                complete: function(data) {
+                                    try {
+                                        showMessage(data.responseJSON["status"], data.responseJSON["msg"])
+                                    } catch {
+
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/namespaces/get_custom_user_list",
+                data: JSON.stringify(json),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+                 //
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                 //
+                },
+                complete: function(data) {
+
+                    for (var key in data.responseJSON) {
+                        TagifyUsers(key);
+                    }
+
+                    function TagifyUsers(custom_right){
+
+                       var query_string =  'input[name='+custom_right+']';
+
+                       var inputElm = document.querySelector(query_string);
+
+                       var tagify = new Tagify(inputElm, {
+                            tagTextProp: 'name', // very important since a custom template is used with this property as text. allows typing a "value" or a "name" to match input with whitelist
+                            enforceWhitelist: true,
+                            skipInvalid: true, // do not temporarily add invalid tags
+                            dropdown: {
+                                closeOnSelect: false,
+                                enabled: 0,
+                                classname: 'users-list',
+                                searchKeys: ['name', 'email']  // very important to set by which keys to search for suggestions when typing
+                            },
+                            templates: {
+                                tag: tagTemplate,
+                                dropdownItem: suggestionItemTemplate
+                            },
+                            whitelist: data.responseJSON[custom_right]
+                        })
+
+                       tagify.on('dropdown:show dropdown:updated', onDropdownShow)
+                       tagify.on('dropdown:select', onSelectSuggestion)
+
+                       var addAllSuggestionsElm;
+
+                        function onDropdownShow(e){
+                            var dropdownContentElm = e.detail.tagify.DOM.dropdown.content;
+
+                            if( tagify.suggestedListItems.length > 1 ){
+                                addAllSuggestionsElm = getAddAllSuggestionsElm();
+
+                                // insert "addAllSuggestionsElm" as the first element in the suggestions list
+                                dropdownContentElm.insertBefore(addAllSuggestionsElm, dropdownContentElm.firstChild)
+                            }
+                       }
+
+                        function onSelectSuggestion(e){
+                            if( e.detail.elm == addAllSuggestionsElm )
+                                tagify.dropdown.selectAll.call(tagify);
+                       }
+
+                        // create a "add all" custom suggestion element every time the dropdown changes
+                        function getAddAllSuggestionsElm(){
+                            // suggestions items should be based on "dropdownItem" template
+                            return tagify.parseTemplate('dropdownItem', [{
+                                    class: "addAll",
+                                    name: "Add all",
+                                    email: tagify.settings.whitelist.reduce(function(remainingSuggestions, item){
+                                        return tagify.isTagDuplicate(item.value) ? remainingSuggestions : remainingSuggestions + 1
+                                    }, 0) + " Members"
+                                }]
+                              )
+                       }
+
+                   }
+
+
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/namespaces/get_custom_group_list",
+                data: JSON.stringify(json),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+                 //
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                 //
+                },
+                complete: function(data) {
+
+                    for (var key in data.responseJSON) {
+                        TagifyGroups(key);
+                    }
+                    function TagifyGroups(custom_right) {
+
+                       var query_string =  'input[name='+custom_right+']';
+
+                       var inputElm = document.querySelector(query_string);
+
+                       var tagify = new Tagify(inputElm, {
+                            tagTextProp: 'name', // very important since a custom template is used with this property as text. allows typing a "value" or a "name" to match input with whitelist
+                            enforceWhitelist: true,
+                            skipInvalid: true, // do not temporarily add invalid tags
+                            dropdown: {
+                                closeOnSelect: false,
+                                enabled: 0,
+                                classname: 'users-list',
+                                searchKeys: ['name']  // very important to set by which keys to search for suggestions when typing
+                            },
+                            templates: {
+                                tag: tagTemplate,
+                                dropdownItem: suggestionGroupTemplate
+                            },
+                            whitelist: data.responseJSON[custom_right]
+                        })
+
+                        tagify.on('dropdown:show dropdown:updated', onDropdownShow)
+                        tagify.on('dropdown:select', onSelectSuggestion)
+
+                        var addAllSuggestionsElm;
+
+                        function onDropdownShow(e){
+                            var dropdownContentElm = e.detail.tagify.DOM.dropdown.content;
+
+                            if( tagify.suggestedListItems.length > 1 ){
+                                addAllSuggestionsElm = getAddAllSuggestionsElm();
+
+                                // insert "addAllSuggestionsElm" as the first element in the suggestions list
+                                dropdownContentElm.insertBefore(addAllSuggestionsElm, dropdownContentElm.firstChild)
+                            }
+                        }
+
+                        function onSelectSuggestion(e){
+                            if( e.detail.elm == addAllSuggestionsElm )
+                                tagify.dropdown.selectAll.call(tagify);
+                        }
+
+                        // create a "add all" custom suggestion element every time the dropdown changes
+                        function getAddAllSuggestionsElm(){
+                            // suggestions items should be based on "dropdownItem" template
+                            return tagify.parseTemplate('dropdownItem', [{
+                                    class: "addAll",
+                                    name: "Add all",
+                                    email: tagify.settings.whitelist.reduce(function(remainingSuggestions, item){
+                                        return tagify.isTagDuplicate(item.value) ? remainingSuggestions : remainingSuggestions + 1
+                                    }, 0) + " Members"
+                                }]
+                              )
+                        }
+                    }
+                }
+            });
+
+            var elementsDELUSERArray = DOMRegex(/^user_btn_/);
+
+            elementsDELUSERArray.forEach(function(elem) {
+                elem.addEventListener("click", DeleteUserFromClaim);
+            });
+
+            var elementsDELGROUPArray = DOMRegex(/^group_btn_/);
+
+            elementsDELGROUPArray.forEach(function(elem) {
+                elem.addEventListener("click", DeleteGroupFromClaim);
+            });
+
+        }
+    });
+
+}
+
+function DeleteUserFromClaim(evt){
+
+    json = {}
+
+    try {
+        var attrs = evt.target.parentElement.attributes
+        json["claimid"] = attrs["data-claimid"].nodeValue;
+        evt.target.parentElement.className = "d-none";
+    } catch {
+        var attrs = evt.target.attributes
+        json["claimid"] = attrs["data-claimid"].nodeValue;
+        evt.target.className = "d-none";
+    }
+
+    json["userid"] = attrs["data-userid"].nodeValue;
+
+    $.ajax({
+        type: "POST",
+        url: "/namespaces/del_claim_user",
+        data: JSON.stringify(json),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+            //
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            //
+        },
+        complete: function(data) {
+               showMessage(data.responseJSON["status"], data.responseJSON["msg"])
+           }
+    });
+
+}
+
+function DeleteGroupFromClaim(evt) {
+
+    json = {}
+
+    try {
+        var attrs = evt.target.parentElement.attributes
+        json["claimid"] = attrs["data-claimid"].nodeValue;
+        evt.target.parentElement.className = "d-none";
+    } catch {
+        var attrs = evt.target.attributes
+        json["claimid"] = attrs["data-claimid"].nodeValue;
+        evt.target.className = "d-none";
+    }
+
+    json["groupid"] = attrs["data-groupid"].nodeValue;
+
+    $.ajax({
+        type: "POST",
+        url: "/namespaces/del_claim_group",
         data: JSON.stringify(json),
         contentType: "application/json; charset=utf-8",
         dataType: "json",

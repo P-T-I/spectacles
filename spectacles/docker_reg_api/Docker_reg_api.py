@@ -124,8 +124,7 @@ class DockerRegistryApi(GenericApi):
     def get_repository_digest(self, name, tag):
 
         self.set_header_field(
-            "Accept",
-            "application/vnd.docker.distribution.manifest.v2+json",
+            "Accept", "application/vnd.docker.distribution.manifest.v2+json",
         )
 
         self.set_token_header(name=name)

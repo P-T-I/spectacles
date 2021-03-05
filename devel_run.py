@@ -11,7 +11,7 @@ app = create_app(version=__version__)
 
 try:
 
-    app.run(host="0.0.0.0", port=5050, ssl_context=('cert.pem', 'key.pem'))
+    app.run(host="0.0.0.0", port=5050, ssl_context=("cert.pem", "key.pem"))
 
 except Exception:
 

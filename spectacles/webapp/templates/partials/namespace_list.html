@@ -35,7 +35,7 @@
             <a id="assign_usr_group_{{item.name|md5}}" class="btn btn-outline-secondary" title="Assign users and groups to this namespace" data-id="{{item.id}}"><i class="fas fa-chess-rook"></i></a>
           </div>
           <div class="btn-group btn-group-sm" role="group" aria-label="Third group">
-            <a class="btn btn-outline-secondary" title="Set custom rights for this namespace"><i class="fas fa-cog"></i></a>
+            <a id="assign_custom_{{item.name|md5}}" class="btn btn-outline-secondary" title="Set custom rights for this namespace" data-id="{{item.id}}"><i class="fas fa-cog"></i></a>
           </div>
         </div>
         <a id="del_ns_{{item.name|md5}}" class="btn btn-danger btn-xs" href="#" data-id="{{item.id}}">

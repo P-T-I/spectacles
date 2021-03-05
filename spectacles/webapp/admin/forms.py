@@ -1,5 +1,12 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField, ValidationError, TextAreaField, SelectField, BooleanField
+from wtforms import (
+    SubmitField,
+    StringField,
+    ValidationError,
+    TextAreaField,
+    SelectField,
+    BooleanField,
+)
 from wtforms.validators import DataRequired
 
 from spectacles.webapp.app.models import groups
@@ -24,12 +31,16 @@ class GroupForm(FlaskForm):
 
 class RegistryForm(FlaskForm):
     uri = StringField(
-        "uri", validators=[DataRequired()], render_kw={"placeholder": "Registry domain/ip:port"}
+        "uri",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "Registry domain/ip:port"},
     )
     service_name = StringField(
-        "service_name", validators=[DataRequired()], render_kw={'readonly': True, "placeholder": "Service name..."}
+        "service_name",
+        validators=[DataRequired()],
+        render_kw={"readonly": True, "placeholder": "Service name..."},
     )
     ssl = BooleanField("ssl")
 
     test = SubmitField("Test")
-    save = SubmitField("Save", render_kw={'disabled': 'disabled'})
+    save = SubmitField("Save", render_kw={"disabled": "disabled"})

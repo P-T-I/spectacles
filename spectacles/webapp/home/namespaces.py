@@ -13,6 +13,9 @@ from ..app.models import (
     groupmembers,
     users,
     groups,
+    claims,
+    claimsmembers,
+    claimsgroups,
 )
 from ..helpers.constants.common import msg_status
 from ..run import db
@@ -232,6 +235,7 @@ def get_user_list():
                 .all()
             )
         )
+        .filter(users.role != "admin")
         .all()
     )
 
@@ -288,7 +292,7 @@ def get_assigned_users_groups():
         .all()
     )
 
-    all_userids = [x[0] for x in all_userids]
+    all_userids = [x.userid for x in all_userids]
 
     all_users = (
         users.query.filter(users.id.in_(all_userids))
@@ -302,46 +306,65 @@ def get_assigned_users_groups():
         .all()
     )
 
+    all_groupids = (
+        db.session.query(namespacegroups.groupid)
+        .filter(namespacegroups.namespaceid == int(post_data["id"]))
+        .all()
+    )
+
+    all_groupids = [x.groupid for x in all_groupids]
+
+    all_groups = groups.query.filter(groups.id.in_(all_groupids)).all()
+
     ret_data = {
-        "users": [x.user_to_dict() for x in all_users]
+        "users": [x.user_to_dict() for x in all_users],
+        "groups": [x.group_dict() for x in all_groups],
     }
 
     return ret_data
 
 
-@home.route("/namespaces/set_user_list", methods=["POST"])
+@home.route("/namespaces/set_user_group_list", methods=["POST"])
 @login_required
 def set_user_list():
     post_data = dict(request.json)
 
-    if post_data["data"] != "":
-        post_data["data"] = ast.literal_eval(post_data["data"])
+    try:
+        if post_data["user_data"] != "":
+            post_data["user_data"] = ast.literal_eval(post_data["user_data"])
 
-        if isinstance(post_data["data"], list):
-            for each in post_data["data"]:
-                db.session.add(
-                    namespacemembers(
-                        namespaceid=post_data["namespace_id"], userid=each["value"]
+            if isinstance(post_data["user_data"], list):
+                for each in post_data["user_data"]:
+                    db.session.add(
+                        namespacemembers(
+                            namespaceid=post_data["namespace_id"], userid=each["value"]
+                        )
                     )
-                )
 
-            db.session.commit()
+                db.session.commit()
 
-            return {
-                "status": msg_status.OK,
-                "msg": "Users assigned!",
-            }
+        if post_data["group_data"] != "":
+            post_data["group_data"] = ast.literal_eval(post_data["group_data"])
 
-        else:
-            return jsonify(
-                {
-                    "status": msg_status.NOK,
-                    "msg": "The provided data is not the correct type, expected list got {}".format(
-                        type(post_data["data"])
-                    ),
-                }
-            )
-    return "Nothing to save..."
+            if isinstance(post_data["group_data"], list):
+                for each in post_data["group_data"]:
+                    db.session.add(
+                        namespacegroups(
+                            namespaceid=post_data["namespace_id"], groupid=each["value"]
+                        )
+                    )
+
+                db.session.commit()
+
+        return {
+            "status": msg_status.OK,
+            "msg": "Rights assigned!",
+        }
+
+    except Exception as err:
+        return jsonify(
+            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
+        )
 
 
 @home.route("/namespaces/del_user", methods=["POST"])
@@ -352,6 +375,343 @@ def del_user():
     try:
         namespacemembers.query.filter(
             namespacemembers.userid == post_data["userid"]
+        ).filter(namespacemembers.namespaceid == post_data["namespaceid"]).delete()
+
+        db.session.commit()
+
+        return {
+            "status": msg_status.OK,
+            "msg": "User assignment deleted!",
+        }
+
+    except Exception as err:
+        return jsonify(
+            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
+        )
+
+
+@home.route("/namespaces/del_group", methods=["POST"])
+@login_required
+def del_ns_group():
+    post_data = dict(request.json)
+
+    try:
+        namespacegroups.query.filter(
+            namespacegroups.groupid == post_data["groupid"]
+        ).filter(namespacegroups.namespaceid == post_data["namespaceid"]).delete()
+
+        db.session.commit()
+
+        return {
+            "status": msg_status.OK,
+            "msg": "Group assignment deleted!",
+        }
+
+    except Exception as err:
+        return jsonify(
+            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
+        )
+
+
+@home.route("/namespaces/get_custom_assigned_users_groups", methods=["POST"])
+@login_required
+def get_custom_assigned_users_groups():
+    post_data = dict(request.json)
+
+    ns_claims = claims.query.filter(claims.namespaceid == int(post_data["id"])).all()
+
+    if len(ns_claims) == 0:
+        all_claims = ["READ", "WRITE", "FULL"]
+        for each in all_claims:
+            db.session.add(
+                claims(
+                    claim=each,
+                    namespaceid=int(post_data["id"]),
+                    created=int(time.time()),
+                )
+            )
+            db.session.commit()
+
+        return {
+            "read_users": [],
+            "write_users": [],
+            "ful_users": [],
+            "read_groups": [],
+            "write_groups": [],
+            "full_groups": [],
+        }
+
+    else:
+
+        ret_dict = {}
+
+        for claim in ns_claims:
+            if claim.claim == "READ":
+                ret_dict["read_users"] = [x.user.user_to_dict() for x in claim.members]
+                ret_dict["read_groups"] = [x.group.group_dict() for x in claim.groups]
+                ret_dict["read_claim"] = claim.id
+            if claim.claim == "WRITE":
+                ret_dict["write_users"] = [x.user.user_to_dict() for x in claim.members]
+                ret_dict["write_groups"] = [x.group.group_dict() for x in claim.groups]
+                ret_dict["write_claim"] = claim.id
+            if claim.claim == "FULL":
+                ret_dict["full_users"] = [x.user.user_to_dict() for x in claim.members]
+                ret_dict["full_groups"] = [x.group.group_dict() for x in claim.groups]
+                ret_dict["full_claim"] = claim.id
+
+        return ret_dict
+
+
+@home.route("/namespaces/get_custom_user_list", methods=["POST"])
+@login_required
+def get_custom_user_list():
+    post_data = dict(request.json)
+
+    ns_claims = claims.query.filter(claims.namespaceid == int(post_data["id"])).all()
+
+    ret_dict = {}
+
+    user_list = []
+    for each in ns_claims:
+        for x in each.members:
+            user_list.append(x.userid)
+
+    for claim in ns_claims:
+        if claim.claim == "READ":
+            ns_members = [x.userid for x in claim.members]
+            all_users = (
+                users.query.filter(users.id.notin_(ns_members))
+                .filter(
+                    users.id.notin_(
+                        db.session.query(namespaces.owner)
+                        .filter(namespaces.id == int(post_data["id"]))
+                        .all()
+                    )
+                )
+                .filter(users.id.notin_(user_list))
+                .filter(users.role != "admin")
+                .all()
+            )
+
+            ret_dict["read_user_list"] = [
+                {
+                    "value": x.id,
+                    "name": x.username,
+                    "avatar": "/avatars/{}".format(x.avatar_l),
+                    "email": x.email,
+                }
+                for x in all_users
+            ]
+        if claim.claim == "WRITE":
+            ns_members = [x.userid for x in claim.members]
+            all_users = (
+                users.query.filter(users.id.notin_(ns_members))
+                .filter(
+                    users.id.notin_(
+                        db.session.query(namespaces.owner)
+                        .filter(namespaces.id == int(post_data["id"]))
+                        .all()
+                    )
+                )
+                .filter(users.id.notin_(user_list))
+                .filter(users.role != "admin")
+                .all()
+            )
+
+            ret_dict["write_user_list"] = [
+                {
+                    "value": x.id,
+                    "name": x.username,
+                    "avatar": "/avatars/{}".format(x.avatar_l),
+                    "email": x.email,
+                }
+                for x in all_users
+            ]
+        if claim.claim == "FULL":
+            ns_members = [x.userid for x in claim.members]
+            all_users = (
+                users.query.filter(users.id.notin_(ns_members))
+                .filter(
+                    users.id.notin_(
+                        db.session.query(namespaces.owner)
+                        .filter(namespaces.id == int(post_data["id"]))
+                        .all()
+                    )
+                )
+                .filter(users.id.notin_(user_list))
+                .filter(users.role != "admin")
+                .all()
+            )
+
+            ret_dict["full_user_list"] = [
+                {
+                    "value": x.id,
+                    "name": x.username,
+                    "avatar": "/avatars/{}".format(x.avatar_l),
+                    "email": x.email,
+                }
+                for x in all_users
+            ]
+    return ret_dict
+
+
+@home.route("/namespaces/get_custom_group_list", methods=["POST"])
+@login_required
+def get_custom_group_list():
+    post_data = dict(request.json)
+
+    ns_claims = claims.query.filter(claims.namespaceid == int(post_data["id"])).all()
+
+    ret_dict = {}
+
+    for claim in ns_claims:
+        if claim.claim == "READ":
+            ns_members = [x.groupid for x in claim.groups]
+            all_groups = (
+                groups.query.filter(groups.id.notin_(ns_members))
+                .filter(groups.name != "admin")
+                .all()
+            )
+
+            ret_dict["read_group_list"] = [
+                {
+                    "value": x.id,
+                    "name": x.name,
+                    "avatar": url_for("static", filename="images/group_avatar.png"),
+                }
+                for x in all_groups
+            ]
+        if claim.claim == "WRITE":
+            ns_members = [x.groupid for x in claim.groups]
+            all_groups = (
+                groups.query.filter(groups.id.notin_(ns_members))
+                .filter(groups.name != "admin")
+                .all()
+            )
+
+            ret_dict["write_group_list"] = [
+                {
+                    "value": x.id,
+                    "name": x.name,
+                    "avatar": url_for("static", filename="images/group_avatar.png"),
+                }
+                for x in all_groups
+            ]
+        if claim.claim == "FULL":
+            ns_members = [x.groupid for x in claim.groups]
+            all_groups = (
+                groups.query.filter(groups.id.notin_(ns_members))
+                .filter(groups.name != "admin")
+                .all()
+            )
+
+            ret_dict["full_group_list"] = [
+                {
+                    "value": x.id,
+                    "name": x.name,
+                    "avatar": url_for("static", filename="images/group_avatar.png"),
+                }
+                for x in all_groups
+            ]
+
+    return ret_dict
+
+
+@home.route("/namespaces/set_custom_user_group_list", methods=["POST"])
+@login_required
+def set_custom_user_group_list():
+    post_data = dict(request.json)
+
+    def add_claim_members(data_list, claim_id):
+        if isinstance(data_list, list):
+            for each in data_list:
+                db.session.add(
+                    claimsmembers(claimsid=int(claim_id), userid=each["value"])
+                )
+
+            db.session.commit()
+
+    def add_claim_groups(data_list, claim_id):
+        if isinstance(data_list, list):
+            for each in data_list:
+                db.session.add(
+                    claimsgroups(claimsid=int(claim_id), groupid=each["value"])
+                )
+
+            db.session.commit()
+
+    try:
+        if post_data["read_user_data"] != "":
+            post_data["read_user_data"] = ast.literal_eval(post_data["read_user_data"])
+            add_claim_members(post_data["read_user_data"], post_data["read_claim"])
+        if post_data["read_group_data"] != "":
+            post_data["read_group_data"] = ast.literal_eval(
+                post_data["read_group_data"]
+            )
+            add_claim_groups(post_data["read_group_data"], post_data["read_claim"])
+
+        if post_data["write_user_data"] != "":
+            post_data["write_user_data"] = ast.literal_eval(
+                post_data["write_user_data"]
+            )
+            add_claim_members(post_data["write_user_data"], post_data["write_claim"])
+        if post_data["write_group_data"] != "":
+            post_data["write_group_data"] = ast.literal_eval(
+                post_data["write_group_data"]
+            )
+            add_claim_groups(post_data["write_group_data"], post_data["write_claim"])
+
+        if post_data["full_user_data"] != "":
+            post_data["full_user_data"] = ast.literal_eval(post_data["full_user_data"])
+            add_claim_members(post_data["full_user_data"], post_data["full_claim"])
+        if post_data["full_group_data"] != "":
+            post_data["full_group_data"] = ast.literal_eval(
+                post_data["full_group_data"]
+            )
+            add_claim_groups(post_data["full_group_data"], post_data["full_claim"])
+
+        return {
+            "status": msg_status.OK,
+            "msg": "Rights assigned!",
+        }
+
+    except Exception as err:
+        return jsonify(
+            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
+        )
+
+
+@home.route("/namespaces/del_claim_user", methods=["POST"])
+@login_required
+def del_claim_user():
+    post_data = dict(request.json)
+
+    try:
+        claimsmembers.query.filter(claimsmembers.userid == post_data["userid"]).filter(
+            claimsmembers.claimsid == post_data["claimid"]
+        ).delete()
+
+        db.session.commit()
+
+        return {
+            "status": msg_status.OK,
+            "msg": "Group assignment deleted!",
+        }
+
+    except Exception as err:
+        return jsonify(
+            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
+        )
+
+
+@home.route("/namespaces/del_claim_group", methods=["POST"])
+@login_required
+def del_claim_group():
+    post_data = dict(request.json)
+
+    try:
+        claimsgroups.query.filter(claimsgroups.groupid == post_data["groupid"]).filter(
+            claimsgroups.claimsid == post_data["claimid"]
         ).delete()
 
         db.session.commit()

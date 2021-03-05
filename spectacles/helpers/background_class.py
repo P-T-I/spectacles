@@ -84,10 +84,16 @@ class BackgroundTasks(object):
                             repo_list = dr.get_repository_list(name=repo)
 
                             if "tags" in repo_list:
-                                if repo_list["tags"] is not None and isinstance(repo_list["tags"], list):
+                                if repo_list["tags"] is not None and isinstance(
+                                    repo_list["tags"], list
+                                ):
                                     for tag in repo_list["tags"]:
 
-                                        self.logger.info("Processing tag: {} of repo: {}".format(tag, repo))
+                                        self.logger.info(
+                                            "Processing tag: {} of repo: {}".format(
+                                                tag, repo
+                                            )
+                                        )
 
                                         digest = dr.get_repository_digest(
                                             name=repo, tag=tag
@@ -120,7 +126,9 @@ class BackgroundTasks(object):
                                         db.session.commit()
                                 elif repo_list["tags"] is None:
                                     # this repository is deleted; remove from the database
-                                    repository.query.filter(repository.id == my_repo.id).delete()
+                                    repository.query.filter(
+                                        repository.id == my_repo.id
+                                    ).delete()
                                     db.session.commit()
 
                         # non-existing namespace

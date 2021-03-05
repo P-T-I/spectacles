@@ -20,11 +20,14 @@ class users(UserMixin, db.Model):
     updated = db.Column("updated", db.Integer, default=0)
     group_member = db.relationship("groupmembers", backref="user", lazy="joined")
     namespaces = db.relationship("namespaces", backref="user", lazy="dynamic")
-    namespacemembers = db.relationship("namespacemembers", backref="user", lazy="dynamic")
+    namespacemembers = db.relationship(
+        "namespacemembers", backref="user", lazy="dynamic"
+    )
+    claimmembers = db.relationship("claimsmembers", backref="user", lazy="joined")
 
     @property
     def password(self):
-        raise AttributeError('password is not a readable attribute')
+        raise AttributeError("password is not a readable attribute")
 
     @password.setter
     def password(self, password):
@@ -63,9 +66,18 @@ class groups(db.Model):
     name = db.Column("name", db.String(256), index=True, unique=True)
     description = db.Column("description", db.String(512))
     members = db.relationship("groupmembers", backref="group", lazy="dynamic")
-    namespacegroups = db.relationship("namespacegroups", backref="group", lazy="dynamic")
+    namespacegroups = db.relationship(
+        "namespacegroups", backref="group", lazy="dynamic"
+    )
+    claimgroups = db.relationship("claimsgroups", backref="group", lazy="joined")
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
+
+    def group_dict(self):
+
+        ret_dict = {"id": self.id, "name": self.name}
+
+        return ret_dict
 
 
 class groupmembers(db.Model):
@@ -185,7 +197,7 @@ class namespacegroups(db.Model):
 class claims(db.Model):
     __tablename__ = "claims"
     id = db.Column("id", db.Integer, primary_key=True)
-    claim = db.Column("P_claim", db.String(16), default="NONE")
+    claim = db.Column("claim", db.String(16), default="NONE")
     namespaceid = db.Column(
         "namespaceid",
         db.Integer,
@@ -193,8 +205,8 @@ class claims(db.Model):
     )
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
-    members = db.relationship("claimsmembers", backref="claims", lazy="dynamic")
-    groups = db.relationship("claimsgroups", backref="claims", lazy="dynamic")
+    members = db.relationship("claimsmembers", backref="claims", lazy="joined")
+    groups = db.relationship("claimsgroups", backref="claims", lazy="joined")
 
 
 class claimsmembers(db.Model):

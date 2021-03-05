@@ -71,7 +71,9 @@ class GenericApi(object):
         else:
             return "{0}/{1}/{2}".format(self.baseurl, self.api_path, resource)
 
-    def __connect(self, method, resource, session, data=None, timeout=60, ret_headers=False):
+    def __connect(
+        self, method, resource, session, data=None, timeout=60, ret_headers=False
+    ):
         """
         Send a request
 
@@ -173,7 +175,11 @@ class GenericApi(object):
         try:
             with self.get_session() as session:
                 result = self.__connect(
-                    method=method, resource=resource, session=session, data=data, **kwargs
+                    method=method,
+                    resource=resource,
+                    session=session,
+                    data=data,
+                    **kwargs
                 )
                 return result
         except requests.ConnectionError:

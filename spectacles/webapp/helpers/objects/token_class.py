@@ -12,8 +12,15 @@ from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key,
 )
 
-from spectacles.webapp.app.models import repository, users, namespacemembers, groups, groupmembers, namespacegroups, \
-    namespaces
+from spectacles.webapp.app.models import (
+    repository,
+    users,
+    namespacemembers,
+    groups,
+    groupmembers,
+    namespacegroups,
+    namespaces, claims,
+)
 from spectacles.webapp.config import Config
 from spectacles.webapp.helpers.constants.rights import repo_rights
 from spectacles.webapp.helpers.utils.times import timestampTOdatetimestring
@@ -36,7 +43,12 @@ class Token(object):
         self.scope = scope
 
         if self.scope is not None:
-            self.scope_type, self.scope_name, self.scope_namespace, self.scope_actions = self.split_scope()
+            (
+                self.scope_type,
+                self.scope_name,
+                self.scope_namespace,
+                self.scope_actions,
+            ) = self.split_scope()
 
         self.offline_token = offline_token
         self.service = service
@@ -85,7 +97,7 @@ class Token(object):
         scope_actions = scope_list[2]
 
         if "," in scope_actions:
-            scope_actions = ",".split(scope_actions)
+            scope_actions = scope_actions.split(",")
         else:
             scope_actions = [scope_actions]
 
@@ -143,6 +155,13 @@ class Token(object):
                 "access": [self.fetch_user_authorizations()],
             }
 
+    def __check_write_only(self, claim):
+        the_rights = getattr(repo_rights, claim)
+        if set(the_rights).issubset(set(self.scope_actions)):
+            return getattr(repo_rights, "FULL")
+        else:
+            return getattr(repo_rights, claim)
+
     def fetch_user_authorizations(self):
         action_dict = {
             "type": self.scope_type,
@@ -153,13 +172,27 @@ class Token(object):
         # get the user
         user = users.query.filter(users.username == self.account).first()
 
-        req_ns = namespaces.query.filter(namespaces.name == self.scope_namespace).first()
+        req_ns = namespaces.query.filter(
+            namespaces.name == self.scope_namespace
+        ).first()
 
         # check if user is admin
         if user.status == 99 or user.role == "admin":
             # admins have full rights by default
             action_dict["actions"] = getattr(repo_rights, "FULL")
             return action_dict
+
+        # first check for specific user claims
+        user_claims = [
+            x.claims for x in user.claimmembers if x.claims.namespaceid == req_ns.id
+        ]
+        if len(user_claims):
+            if req_ns.P_claim == "WRITE":
+                action_dict["actions"] = self.__check_write_only(user_claims[0].claim)
+                return action_dict
+            else:
+                action_dict["actions"] = getattr(repo_rights, user_claims[0].claim)
+                return action_dict
 
         # check if namespace has group members
         if len(req_ns.members) != 0:
@@ -173,27 +206,47 @@ class Token(object):
                     action_dict["actions"] = getattr(repo_rights, "FULL")
                     return action_dict
                 else:
-                    # user privileges outweigh group privileges, so fetch namespace rights
-                    action_dict["actions"] = getattr(repo_rights, req_ns.P_claim)
-                    return action_dict
+                    if req_ns.P_claim == "WRITE":
+                        action_dict["actions"] = self.__check_write_only(req_ns.P_claim)
+                        return action_dict
+                    else:
+                        # user privileges outweigh group privileges, so fetch namespace rights
+                        action_dict["actions"] = getattr(repo_rights, req_ns.P_claim)
+                        return action_dict
+
+        # check for specific group claims
+        # if len(user.group_member) != 0:
+        #     # fetch all user groups
+        #     grps = [x.groupid for x in user.group_member]
+        #
+        #     grp_claims = claims.query.filter(claims.namespaceid == req_ns.id).all()
+
 
         # check if namespace has group members
         if len(req_ns.groups) != 0:
             # check if user has memberships to groups
-            if len(user.group_members) != 0:
+            if len(user.group_member) != 0:
                 # fetch all user groups id's
                 grp_ids = [x.groupid for x in user.group_member]
                 # fetch namespace group ids
                 ns_grp_ids = [x.groupid for x in req_ns.groups]
                 # check for an overlap between the two
                 if len(set(grp_ids).intersection(set(ns_grp_ids))) != 0:
-                    action_dict["actions"] = getattr(repo_rights, req_ns.G_claim)
-                    return action_dict
+                    if req_ns.G_claim == "WRITE":
+                        action_dict["actions"] = self.__check_write_only(req_ns.G_claim)
+                        return action_dict
+                    else:
+                        action_dict["actions"] = getattr(repo_rights, req_ns.G_claim)
+                        return action_dict
 
         # check for namespace 'other' rights if some other then 'NONE'
         if req_ns.O_claim != "NONE":
-            action_dict["actions"] = getattr(repo_rights, req_ns.O_claim)
-            return action_dict
+            if req_ns.O_claim == "WRITE":
+                action_dict["actions"] = self.__check_write_only(req_ns.O_claim)
+                return action_dict
+            else:
+                action_dict["actions"] = getattr(repo_rights, req_ns.O_claim)
+                return action_dict
 
         # if we make it this far; the user has no rights; return empty action list
         return action_dict

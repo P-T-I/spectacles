@@ -34,13 +34,17 @@ def get_registries():
 
         repo_count = repository.query.filter(
             repository.namespacesid.in_(
-                db.session.query(namespaces.id).filter(namespaces.registryid == each.id).all()
+                db.session.query(namespaces.id)
+                .filter(namespaces.registryid == each.id)
+                .all()
             )
         ).count()
 
         ns_count = namespaces.query.filter(namespaces.registryid == each.id).count()
 
-        count_dict[each.uri] = "{} namespaces containing {} repositories".format(ns_count, repo_count)
+        count_dict[each.uri] = "{} namespaces containing {} repositories".format(
+            ns_count, repo_count
+        )
 
     return render_template(
         "pages/registry.html",

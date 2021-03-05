@@ -171,6 +171,10 @@ div.tagify__tag__avatar-wrap img{
     margin-bottom: 10px;
 }
 
+.margin_top {
+    margin-top: 10px;
+}
+
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
 	color: #fff;
 	background-color: #275d97;

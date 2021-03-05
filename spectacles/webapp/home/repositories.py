@@ -41,7 +41,11 @@ def get_repositories():
 def get_repodetails():
     post_data = dict(request.json)
 
-    all_tags = tags.query.filter(tags.repositoryid == post_data["id"]).order_by(tags.version.desc()).all()
+    all_tags = (
+        tags.query.filter(tags.repositoryid == post_data["id"])
+        .order_by(tags.version.desc())
+        .all()
+    )
 
     return render_template("partials/repo_details.html", repo_det=all_tags)
 
@@ -71,10 +75,16 @@ def del_repo():
 
         db.session.commit()
 
-        all_tags = tags.query.filter(tags.repositoryid == post_data["id"]).order_by(tags.version.desc()).all()
+        all_tags = (
+            tags.query.filter(tags.repositoryid == post_data["id"])
+            .order_by(tags.version.desc())
+            .all()
+        )
 
         return {
-            "repo_details": render_template("partials/repo_details.html", repo_det=all_tags),
+            "repo_details": render_template(
+                "partials/repo_details.html", repo_det=all_tags
+            ),
             "status": msg_status.OK,
             "msg": "Repository {}:{} deleted!".format(post_data["name"], selected_tag),
         }
