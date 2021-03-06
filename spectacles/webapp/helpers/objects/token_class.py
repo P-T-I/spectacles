@@ -13,15 +13,9 @@ from cryptography.hazmat.primitives.serialization import (
 )
 
 from spectacles.webapp.app.models import (
-    repository,
     users,
-    namespacemembers,
-    groups,
-    groupmembers,
-    namespacegroups,
     namespaces,
     claims,
-    claimsmembers,
     claimsgroups,
 )
 from spectacles.webapp.config import Config
@@ -232,7 +226,9 @@ class Token(object):
 
             if len(grp_claims) != 0:
                 if grp_claims[0].claim == "WRITE":
-                    action_dict["actions"] = self.__check_write_only(grp_claims[0].claim)
+                    action_dict["actions"] = self.__check_write_only(
+                        grp_claims[0].claim
+                    )
                     return action_dict
                 else:
                     action_dict["actions"] = getattr(repo_rights, grp_claims[0].claim)

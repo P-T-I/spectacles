@@ -56,7 +56,7 @@ def get_total_namespaces():
             namespaces.query.join(namespacegroups)
             .filter(
                 namespacegroups.groupid.in_(
-                    db.session.query(groupmembers.userid)
+                    db.session.query(groupmembers.groupid)
                     .filter(groupmembers.userid == current_user.id)
                     .all()
                 )
@@ -65,7 +65,33 @@ def get_total_namespaces():
             .all()
         )
 
-        total_namespaces = total_namespaces_pers + total_namespaces_group
+        total_claims_personal = (
+            namespaces.query.join(claims)
+            .filter(
+                claims.id.in_(
+                    db.session.query(claimsmembers.claimsid)
+                    .filter(claimsmembers.userid == current_user.id)
+                    .all()
+                )
+            )
+            .all()
+        )
+
+        grps = [x.groupid for x in current_user.group_member]
+
+        total_claims_group = (
+            namespaces.query.join(claims)
+            .filter(
+                claims.id.in_(
+                    db.session.query(claimsgroups.claimsid)
+                    .filter(claimsgroups.groupid.in_(grps))
+                    .all()
+                )
+            )
+            .all()
+        )
+
+        total_namespaces = total_namespaces_pers + total_namespaces_group + total_claims_personal + total_claims_group
 
     return total_namespaces
 

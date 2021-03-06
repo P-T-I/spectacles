@@ -130,7 +130,7 @@ class namespaces(db.Model):
     created = db.Column("created", db.Integer, default=0)
     updated = db.Column("updated", db.Integer, default=0)
     repositories = db.relationship("repository", backref="namespace", lazy="dynamic")
-    claims = db.relationship("claims", backref="namespace", lazy="dynamic")
+    claims = db.relationship("claims", backref="namespace", lazy="joined")
     members = db.relationship("namespacemembers", backref="namespace", lazy="joined")
     groups = db.relationship("namespacegroups", backref="namespace", lazy="joined")
 

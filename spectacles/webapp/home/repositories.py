@@ -1,9 +1,10 @@
 from collections import defaultdict
 
 from flask import render_template, request, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from . import home
+from .namespaces import get_total_namespaces
 from ..app.models import registry, repository, namespaces, tags
 from ..helpers.constants.common import msg_status
 from ..run import db
@@ -19,18 +20,33 @@ def get_repositories():
     all_registries = db.session.query(registry.uri, registry.id).all()
 
     for register in all_registries:
-        ret_dict[register.uri] = (
-            repository.query.filter(
-                repository.namespacesid.in_(
-                    db.session.query(namespaces.id)
-                    .filter(namespaces.registryid == register.id)
-                    .all()
+        if current_user.role == "admin":
+            ret_dict[register.uri] = (
+                repository.query.filter(
+                    repository.namespacesid.in_(
+                        db.session.query(namespaces.id)
+                        .filter(namespaces.registryid == register.id)
+                        .all()
+                    )
                 )
+                .order_by(repository.path)
+                .all()
             )
-            .order_by(repository.path)
-            .all()
-        )
-
+        else:
+            ret_dict[register.uri] = (
+                repository.query.filter(
+                    repository.namespacesid.in_(
+                        db.session.query(namespaces.id)
+                        .filter(namespaces.registryid == register.id)
+                        .all()
+                    )
+                )
+                .filter(repository.namespacesid.in_(
+                    [x.id for x in get_total_namespaces()]
+                ))
+                .order_by(repository.path)
+                .all()
+            )
     return render_template(
         "pages/repositories.html", header="Repositories", ret_dict=ret_dict
     )
