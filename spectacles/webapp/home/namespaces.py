@@ -564,11 +564,17 @@ def get_custom_group_list():
 
     ret_dict = {}
 
+    group_list = []
+    for each in ns_claims:
+        for x in each.groups:
+            group_list.append(x.groupid)
+
     for claim in ns_claims:
         if claim.claim == "READ":
             ns_members = [x.groupid for x in claim.groups]
             all_groups = (
                 groups.query.filter(groups.id.notin_(ns_members))
+                .filter(groups.id.notin_(group_list))
                 .filter(groups.name != "admin")
                 .all()
             )
@@ -585,6 +591,7 @@ def get_custom_group_list():
             ns_members = [x.groupid for x in claim.groups]
             all_groups = (
                 groups.query.filter(groups.id.notin_(ns_members))
+                .filter(groups.id.notin_(group_list))
                 .filter(groups.name != "admin")
                 .all()
             )
@@ -601,6 +608,7 @@ def get_custom_group_list():
             ns_members = [x.groupid for x in claim.groups]
             all_groups = (
                 groups.query.filter(groups.id.notin_(ns_members))
+                .filter(groups.id.notin_(group_list))
                 .filter(groups.name != "admin")
                 .all()
             )

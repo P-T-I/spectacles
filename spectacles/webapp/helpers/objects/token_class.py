@@ -19,7 +19,10 @@ from spectacles.webapp.app.models import (
     groups,
     groupmembers,
     namespacegroups,
-    namespaces, claims,
+    namespaces,
+    claims,
+    claimsmembers,
+    claimsgroups,
 )
 from spectacles.webapp.config import Config
 from spectacles.webapp.helpers.constants.rights import repo_rights
@@ -187,7 +190,7 @@ class Token(object):
             x.claims for x in user.claimmembers if x.claims.namespaceid == req_ns.id
         ]
         if len(user_claims):
-            if req_ns.P_claim == "WRITE":
+            if user_claims[0].claim == "WRITE":
                 action_dict["actions"] = self.__check_write_only(user_claims[0].claim)
                 return action_dict
             else:
@@ -215,12 +218,25 @@ class Token(object):
                         return action_dict
 
         # check for specific group claims
-        # if len(user.group_member) != 0:
-        #     # fetch all user groups
-        #     grps = [x.groupid for x in user.group_member]
-        #
-        #     grp_claims = claims.query.filter(claims.namespaceid == req_ns.id).all()
+        if len(user.group_member) != 0:
+            # fetch all user groups
+            grps = [x.groupid for x in user.group_member]
 
+            grp_claims = claims.query.filter(
+                claims.id.in_(
+                    db.session.query(claimsgroups.claimsid)
+                    .filter(claimsgroups.groupid.in_(grps))
+                    .all()
+                )
+            ).all()
+
+            if len(grp_claims) != 0:
+                if grp_claims[0].claim == "WRITE":
+                    action_dict["actions"] = self.__check_write_only(grp_claims[0].claim)
+                    return action_dict
+                else:
+                    action_dict["actions"] = getattr(repo_rights, grp_claims[0].claim)
+                    return action_dict
 
         # check if namespace has group members
         if len(req_ns.groups) != 0:
