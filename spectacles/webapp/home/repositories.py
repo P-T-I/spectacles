@@ -15,6 +15,14 @@ from ...docker_reg_api.Docker_reg_api import DockerRegistryApi
 @login_required
 def get_repositories():
 
+    ret_dict = fetch_repos()
+
+    return render_template(
+        "pages/repositories.html", header="Repositories", ret_dict=ret_dict
+    )
+
+
+def fetch_repos():
     ret_dict = defaultdict(lambda: defaultdict(list))
 
     all_registries = db.session.query(registry.uri, registry.id).all()
@@ -25,31 +33,30 @@ def get_repositories():
                 repository.query.filter(
                     repository.namespacesid.in_(
                         db.session.query(namespaces.id)
-                        .filter(namespaces.registryid == register.id)
-                        .all()
+                            .filter(namespaces.registryid == register.id)
+                            .all()
                     )
                 )
-                .order_by(repository.path)
-                .all()
+                    .order_by(repository.path)
+                    .all()
             )
         else:
             ret_dict[register.uri] = (
                 repository.query.filter(
                     repository.namespacesid.in_(
                         db.session.query(namespaces.id)
-                        .filter(namespaces.registryid == register.id)
-                        .all()
+                            .filter(namespaces.registryid == register.id)
+                            .all()
                     )
                 )
-                .filter(repository.namespacesid.in_(
+                    .filter(repository.namespacesid.in_(
                     [x.id for x in get_total_namespaces()]
                 ))
-                .order_by(repository.path)
-                .all()
+                    .order_by(repository.path)
+                    .all()
             )
-    return render_template(
-        "pages/repositories.html", header="Repositories", ret_dict=ret_dict
-    )
+
+    return ret_dict
 
 
 @home.route("/repositories/get_repodetails", methods=["POST"])
