@@ -3,20 +3,23 @@ import time
 from collections import defaultdict
 
 from flask import render_template, request, abort, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from spectacles.webapp.app.models import registry, namespaces, repository
 from . import admin
 from .forms import RegistryForm
 from ..auth.permissions import admin_required
-from ..helpers.constants.common import msg_status
+from ..helpers.constants.common import msg_status, action_types
 from ..run import db
 from ...docker_reg_api.Docker_reg_api import DockerRegistryApi
+from ...helpers.activity_tracker import ActivityTracker
 from ...helpers.app_logger import AppLogger
 
 logging.setLoggerClass(AppLogger)
 
 logger = logging.getLogger(__name__)
+
+activity_track = ActivityTracker(action_type=action_types.USER)
 
 
 @admin.route("/registries")
@@ -98,6 +101,11 @@ def add_registries():
 
         db.session.add(reg)
         db.session.commit()
+        activity_track.success(
+            "User {} added registry on uri: {}".format(
+                current_user.username, post_data["uri"]
+            )
+        )
 
         total_registry = registry.query.filter().all()
 
@@ -123,6 +131,11 @@ def del_registries():
     try:
         registry.query.filter(registry.id == post_data["id"]).delete()
         db.session.commit()
+        activity_track.danger(
+            "User {} deleted registry with ID: {}".format(
+                current_user.username, post_data["id"]
+            )
+        )
 
         total_registry = registry.query.filter().all()
 

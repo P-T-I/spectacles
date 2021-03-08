@@ -7,7 +7,7 @@ from spectacles.helpers.app_logger import AppLogger
 from . import home
 from .namespaces import get_total_namespaces
 from .repositories import fetch_repos
-from ..app.models import users, groups, registry
+from ..app.models import users, groups, registry, activity
 
 logging.setLoggerClass(AppLogger)
 
@@ -31,6 +31,8 @@ def index():
     group_count = groups.query.count()
 
     reg_count = registry.query.count()
+
+    activities = activity.query.order_by(activity.log_time.desc()).all()
 
     return render_template("pages/home.html", header="Dashboard", **locals())
 

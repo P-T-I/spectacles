@@ -1,9 +1,19 @@
 import logging
 import time
+import datetime
 
 from spectacles.docker_reg_api.Docker_reg_api import DockerRegistryApi
+from spectacles.helpers.activity_tracker import ActivityTracker
 from spectacles.helpers.app_logger import AppLogger
-from spectacles.webapp.app.models import registry, namespaces, repository, tags
+from spectacles.webapp.app.models import (
+    registry,
+    namespaces,
+    repository,
+    tags,
+    activity,
+)
+from spectacles.webapp.helpers.constants.common import action_types
+from spectacles.webapp.helpers.utils.times import datetimeTOtimestamp
 from spectacles.webapp.run import db
 
 logging.setLoggerClass(AppLogger)
@@ -11,9 +21,11 @@ logging.setLoggerClass(AppLogger)
 
 class BackgroundTasks(object):
     def __init__(self, app):
-        self.task_list = ["UpdateRegistryRepos"]
+        self.task_list = ["UpdateRegistryRepos", "CleanUpActivities"]
 
         self.app = app
+
+        self.activity = ActivityTracker(action_type=action_types.BG_PULL)
 
         self.logger = logging.getLogger(__name__)
 
@@ -25,8 +37,32 @@ class BackgroundTasks(object):
 
         self.logger.info("Finished scheduled tasks run")
 
+    def CleanUpActivities(self):
+        self.logger.info("Running CleanUpActivities")
+
+        self.activity.info("Cleaning up activities...")
+
+        # create timedelta object
+        twelve_hour_timedelta = datetime.timedelta(hours=6)
+
+        now = datetime.datetime.now()
+
+        query_ts = datetimeTOtimestamp(now - twelve_hour_timedelta)
+
+        with self.app.app_context():
+            res = (
+                db.session.query(activity)
+                .filter(activity.log_time <= query_ts)
+                .delete()
+            )
+            db.session.commit()
+            if res != 0:
+                self.activity.info("Deleted from past activities: {}".format(res))
+
     def UpdateRegistryRepos(self):
         self.logger.info("Running UpdateRegistryRepos")
+
+        self.activity.info("Checking for registry changes...")
 
         with self.app.app_context():
 
@@ -69,6 +105,7 @@ class BackgroundTasks(object):
                             )
                             if my_repo:
                                 my_repo.updated = update_time
+                                NEW = False
                             else:
                                 my_repo = repository(
                                     name=name,
@@ -77,9 +114,7 @@ class BackgroundTasks(object):
                                     created=int(time.time()),
                                     updated=update_time,
                                 )
-
-                            db.session.add(my_repo)
-                            db.session.commit()
+                                NEW = True
 
                             repo_list = dr.get_repository_list(name=repo)
 
@@ -87,6 +122,15 @@ class BackgroundTasks(object):
                                 if repo_list["tags"] is not None and isinstance(
                                     repo_list["tags"], list
                                 ):
+                                    if NEW:
+                                        self.activity.success(
+                                            "New repository discovered: {}".format(
+                                                my_repo.name
+                                            )
+                                        )
+                                    db.session.add(my_repo)
+                                    db.session.commit()
+
                                     for tag in repo_list["tags"]:
 
                                         self.logger.info(
@@ -106,8 +150,6 @@ class BackgroundTasks(object):
                                             .first()
                                         )
 
-                                        self.logger.info("{}".format(my_tag))
-
                                         # existing tag
                                         if my_tag is not None:
                                             my_tag.digest = digest
@@ -121,30 +163,49 @@ class BackgroundTasks(object):
                                                 created=int(time.time()),
                                                 updated=update_time,
                                             )
+                                            self.activity.success(
+                                                "New tag {} discovered for repository: {}".format(
+                                                    my_tag.version, my_repo.name
+                                                )
+                                            )
 
                                         db.session.add(my_tag)
                                         db.session.commit()
+
                                 elif repo_list["tags"] is None:
                                     # this repository is deleted; remove from the database
-                                    repository.query.filter(
+                                    del_repo = repository.query.filter(
                                         repository.id == my_repo.id
                                     ).delete()
                                     db.session.commit()
+                                    if del_repo != 0:
+                                        self.activity.danger(
+                                            "Deleted repository: {}".format(
+                                                my_repo.name
+                                            )
+                                        )
 
                         # non-existing namespace
                         else:
-                            self.logger.warning(
-                                "Encountered a namespace on the registry that is not a part of spectacles namespace "
-                                "database: {}. If you would like to access this namespace you will have to add it!".format(
-                                    namespace
-                                )
+                            log_string = (
+                                "Encountered a namespace on the registry that is not a part of spectacles "
+                                "namespace database: {}. If you would like to access this namespace you "
+                                "will have to add it!".format(namespace)
                             )
+                            self.logger.warning(log_string)
+                            self.activity.warning(log_string)
 
                 # deleting tags that are not updated; assuming that they do not longer exist on the registry
-                tags.query.filter(tags.updated != update_time).delete()
+                del_tags = tags.query.filter(tags.updated != update_time).delete()
                 db.session.commit()
+                if del_tags != 0:
+                    self.activity.info("Deleted {} old tags".format(del_tags))
 
                 # deleting repositories that are not updated; assuming that they do not longer exist on the
                 # registry
-                repository.query.filter(repository.updated != update_time).delete()
+                del_rep = repository.query.filter(
+                    repository.updated != update_time
+                ).delete()
                 db.session.commit()
+                if del_rep != 0:
+                    self.activity.info("Deleted {} old tags".format(del_tags))

@@ -86,7 +86,7 @@ def timestampTOdatetimestring(timestamp):
     :param timestamp: unix timestamp
     :type timestamp: int
     :return: date time object
-    :rtype: datetime.datetime (format: '%d-%m-%Y %H:%M:%S')
+    :rtype: datetime.datetime (format: '%d-%m-%YT%H:%M:%SZ')
     """
     value = datetime.utcfromtimestamp(timestamp)
 

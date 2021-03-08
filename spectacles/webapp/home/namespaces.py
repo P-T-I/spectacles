@@ -17,8 +17,11 @@ from ..app.models import (
     claimsmembers,
     claimsgroups,
 )
-from ..helpers.constants.common import msg_status
+from ..helpers.constants.common import msg_status, action_types
 from ..run import db
+from ...helpers.activity_tracker import ActivityTracker
+
+activity_track = ActivityTracker(action_type=action_types.USER)
 
 
 @home.route("/namespaces")
@@ -91,7 +94,12 @@ def get_total_namespaces():
             .all()
         )
 
-        total_namespaces = total_namespaces_pers + total_namespaces_group + total_claims_personal + total_claims_group
+        total_namespaces = (
+            total_namespaces_pers
+            + total_namespaces_group
+            + total_claims_personal
+            + total_claims_group
+        )
 
     return total_namespaces
 
@@ -118,6 +126,9 @@ def add_namespaces():
 
         db.session.add(new_ns_member)
         db.session.commit()
+        activity_track.success(
+            "User {} added namespace: {}".format(current_user.username, new_ns.name)
+        )
 
         total_namespaces = get_total_namespaces()
 
@@ -147,6 +158,11 @@ def del_group():
             namespaces.owner == current_user.id
         ).delete()
         db.session.commit()
+        activity_track.danger(
+            "User {} deleted namespace with ID: {}".format(
+                current_user.username, post_data["id"]
+            )
+        )
 
         total_namespaces = get_total_namespaces()
 

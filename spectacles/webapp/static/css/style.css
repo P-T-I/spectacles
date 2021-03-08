@@ -47,9 +47,13 @@ a {
     margin: auto;
 }
 
-.users img.table-avatar,
-.activities img.table-avatar {
+.users img.table-avatar {
     border-radius:50%;
+    display:inline;
+    width:1.7rem
+}
+
+.activities img.table-avatar {
     display:inline;
     width:1.7rem
 }

@@ -6,9 +6,12 @@ from flask_login import login_required, current_user
 from . import home
 from .namespaces import get_total_namespaces
 from ..app.models import registry, repository, namespaces, tags
-from ..helpers.constants.common import msg_status
+from ..helpers.constants.common import msg_status, action_types
 from ..run import db
 from ...docker_reg_api.Docker_reg_api import DockerRegistryApi
+from ...helpers.activity_tracker import ActivityTracker
+
+activity_track = ActivityTracker(action_type=action_types.USER)
 
 
 @home.route("/repositories")
@@ -33,27 +36,27 @@ def fetch_repos():
                 repository.query.filter(
                     repository.namespacesid.in_(
                         db.session.query(namespaces.id)
-                            .filter(namespaces.registryid == register.id)
-                            .all()
+                        .filter(namespaces.registryid == register.id)
+                        .all()
                     )
                 )
-                    .order_by(repository.path)
-                    .all()
+                .order_by(repository.path)
+                .all()
             )
         else:
             ret_dict[register.uri] = (
                 repository.query.filter(
                     repository.namespacesid.in_(
                         db.session.query(namespaces.id)
-                            .filter(namespaces.registryid == register.id)
-                            .all()
+                        .filter(namespaces.registryid == register.id)
+                        .all()
                     )
                 )
-                    .filter(repository.namespacesid.in_(
-                    [x.id for x in get_total_namespaces()]
-                ))
-                    .order_by(repository.path)
-                    .all()
+                .filter(
+                    repository.namespacesid.in_([x.id for x in get_total_namespaces()])
+                )
+                .order_by(repository.path)
+                .all()
             )
 
     return ret_dict
@@ -97,6 +100,9 @@ def del_repo():
         tags.query.filter(tags.id == post_data["id"]).delete()
 
         db.session.commit()
+        activity_track.danger(
+            "User {} deleted repo: {}".format(current_user.username, post_data["name"])
+        )
 
         all_tags = (
             tags.query.filter(tags.repositoryid == post_data["id"])

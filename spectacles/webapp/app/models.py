@@ -237,3 +237,12 @@ class claimsgroups(db.Model):
         db.Integer,
         db.ForeignKey("groups.id", ondelete="cascade", onupdate="cascade"),
     )
+
+
+class activity(db.Model):
+    __tablename__ = "activity"
+    id = db.Column("id", db.Integer, primary_key=True)
+    level = db.Column("level", db.Integer, index=True)
+    action = db.Column("action", db.Integer)
+    msg = db.Column("msg", db.String(512))
+    log_time = db.Column("log_time", db.Integer)

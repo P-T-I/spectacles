@@ -15,6 +15,7 @@ from sqlalchemy.engine import Engine
 
 from spectacles.helpers.app_logger import AppLogger
 from spectacles.webapp.config import Config
+from spectacles.webapp.helpers.utils.times import timestampTOdatetimestring
 
 logging.setLoggerClass(AppLogger)
 
@@ -104,6 +105,13 @@ def create_app(version):
             return app.config["version"]
 
         return dict(get_version=get_version)
+
+    @app.context_processor
+    def TSToDatetime():
+        def TSToDatetime(ts):
+            return timestampTOdatetimestring(ts)
+
+        return dict(TSToDatetime=TSToDatetime)
 
     @app.errorhandler(403)
     def forbidden(error):

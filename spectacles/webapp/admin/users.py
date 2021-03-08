@@ -2,25 +2,26 @@ import logging
 import time
 
 from flask import render_template, url_for, redirect, request, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from spectacles.webapp.app.models import (
     users,
     groupmembers,
     groups,
-    namespaces,
-    namespacemembers,
 )
 from spectacles.webapp.auth.forms import RegistrationForm
 from spectacles.webapp.run import db
 from . import admin
 from ..auth.permissions import admin_required
-from ..helpers.constants.common import msg_status
+from ..helpers.constants.common import msg_status, action_types
+from ...helpers.activity_tracker import ActivityTracker
 from ...helpers.app_logger import AppLogger
 
 logging.setLoggerClass(AppLogger)
 
 logger = logging.getLogger(__name__)
+
+activity_track = ActivityTracker(action_type=action_types.USER)
 
 
 @admin.route("/users")
@@ -53,6 +54,9 @@ def add_users():
 
         db.session.add(newuser)
         db.session.commit()
+        activity_track.success(
+            "User {} added: {}".format(current_user.username, newuser.username)
+        )
 
         return redirect(url_for("admin.get_users"))
 
@@ -76,6 +80,9 @@ def del_users():
         if my_user.status != 99:
             users.query.filter_by(id=post_data["id"]).delete()
             db.session.commit()
+            activity_track.danger(
+                "User {} deleted: {}".format(current_user.username, found_username)
+            )
 
         total_users = users.query.filter().all()
 

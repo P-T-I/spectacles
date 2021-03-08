@@ -3,19 +3,22 @@ import logging
 import time
 
 from flask import render_template, url_for, redirect, request, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from spectacles.webapp.app.models import groups, users, groupmembers
 from spectacles.webapp.run import db
 from . import admin
 from .forms import GroupForm
 from ..auth.permissions import admin_required
-from ..helpers.constants.common import msg_status
+from ..helpers.constants.common import msg_status, action_types
+from ...helpers.activity_tracker import ActivityTracker
 from ...helpers.app_logger import AppLogger
 
 logging.setLoggerClass(AppLogger)
 
 logger = logging.getLogger(__name__)
+
+activity_track = ActivityTracker(action_type=action_types.GROUP)
 
 
 @admin.route("/groups")
@@ -46,6 +49,9 @@ def add_groups():
 
         db.session.add(newgroup)
         db.session.commit()
+        activity_track.success(
+            "User {} added group: {}".format(current_user.username, newgroup.name)
+        )
 
         return redirect(url_for("admin.get_groups"))
 
@@ -69,6 +75,9 @@ def del_groups():
         if my_group.name != "admin":
             groups.query.filter_by(id=post_data["id"]).delete()
             db.session.commit()
+            activity_track.danger(
+                "User {} deleted group: {}".format(current_user.username, found_name)
+            )
 
         total_groups = groups.query.filter().all()
 
