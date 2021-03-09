@@ -40,6 +40,8 @@ def create_app(version):
     app.config["version"] = " v{}".format(version)
 
     app.config["SECRET_KEY"] = str(random.getrandbits(256))
+    # set max upload to 1 MB
+    app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
 
     app.config.from_object(config)
 
@@ -55,6 +57,7 @@ def create_app(version):
 
     login_manager.init_app(app)
     login_manager.login_message = "You must be logged in to access this page!!!"
+    login_manager.login_message_category = "danger"
     login_manager.login_view = "auth.func_login"
     login_manager.session_protection = "strong"
 

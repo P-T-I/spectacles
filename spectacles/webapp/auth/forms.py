@@ -111,3 +111,17 @@ class RegistrationForm(FlaskForm):
 
     submit = SubmitField("Register")
     save = SubmitField("Save")
+
+
+class ChangePasswordForm(FlaskForm):
+    password = PasswordField(
+        "password",
+        validators=[validate_password, password_check],
+        render_kw={"placeholder": "New password"},
+    )
+    confirm_password = PasswordField(
+        "Confirm password",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "confirm password"},
+    )
+    submit = SubmitField("Change")

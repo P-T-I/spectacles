@@ -6,3 +6,4 @@ from . import views  # noqa: F401
 from . import cps  # noqa: F401
 from . import namespaces  # noqa: F401
 from . import repositories  # noqa: F401
+from . import user_home  # noqa: F401

@@ -10,8 +10,6 @@ from spectacles.webapp.app.models import (
     users,
     groups,
     groupmembers,
-    namespaces,
-    namespacemembers,
 )
 from spectacles.webapp.config import Config
 from spectacles.webapp.run import login_manager, db

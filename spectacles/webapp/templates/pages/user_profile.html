@@ -1,0 +1,98 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "base.html" %}
+
+{% block head_css %}
+<link href="{{ url_for('static', filename='css/sweetalert2/bootstrap-4.min.css') }}" rel="stylesheet" />
+<link href="{{ url_for('static', filename='css/jquery/jquery.Jcrop.min.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block head_scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/sweetalert2/sweetalert2.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootbox/bootbox.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/show_message.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery/jquery.Jcrop.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/user_home_page.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+
+            <!-- Profile Image -->
+            <div class="card card-primary card-outline">
+                <div class="card-body box-profile">
+                    <div class="text-center">
+                        <a id="change_profile_image">
+                            <img class="profile-user-img img-fluid img-circle pointer"
+                                 src="/avatars/{{current_user.avatar_l}}"
+                                 alt="User profile picture">
+                        </a>
+                    </div>
+
+                    <h3 class="profile-username text-center">{{current_user.username|upper}}</h3>
+
+                    <p class="text-muted text-center">{{current_user.role|title}}</p>
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header p-2">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item"><a class="nav-link active" href="#changepw" data-toggle="tab">Change password</a></li>
+                    </ul>
+                </div><!-- /.card-header -->
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="changepw">
+                            <form action="/user/settings/changepw" method="post" class="form-horizontal">
+                                {{ password_form.hidden_tag() }}
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">New password</label>
+                                    <div class="col-sm-10">
+                                        {{ password_form.password(class_="form-control") }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Confirm password</label>
+                                    <div class="col-sm-10">
+                                        {{ password_form.confirm_password(class_="form-control") }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="offset-sm-11 col-sm-1">
+                                        {{ password_form.submit(class_="btn btn-success") }}
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- /.tab-content -->
+                </div><!-- /.card-body -->
+            </div>
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</div>
+{% endblock %}
+{% block body_scripts %}
+<script>
+$(document).ready(function(){
+
+    SetAllEventListeners()
+
+    setTimeout(function() {
+        $('.alert').fadeOut('fast');
+    }, 10000);
+
+});
+</script>
+{% endblock %}
