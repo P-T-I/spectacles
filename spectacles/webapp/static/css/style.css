@@ -238,3 +238,8 @@ div.tagify__tag__avatar-wrap img{
 	transform: translate(50%,-50%);
 	right: 10%;
 }
+
+.alert-error {
+    color: red;
+    font-weight: bold;
+}

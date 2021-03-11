@@ -4,7 +4,6 @@ from wtforms import (
     StringField,
     ValidationError,
     TextAreaField,
-    SelectField,
     BooleanField,
 )
 from wtforms.validators import DataRequired

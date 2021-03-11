@@ -76,6 +76,24 @@
                     </div>
                     <!-- /.tab-content -->
                 </div><!-- /.card-body -->
+                {% if password_form.errors %}
+                <div class="alert alert-error">
+                    {% for field, errors in password_form.errors.items() %}
+                    {% for each in errors %}
+                    {% for error in each %}
+                    <div class="alert_cat">
+                        {{error}}
+                    </div>
+                    <ul>
+                        {% for item in each[error] %}
+                        <li> {{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endfor %}
+                    {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
         </div>
         <!-- /.col -->

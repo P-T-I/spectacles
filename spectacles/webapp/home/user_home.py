@@ -94,11 +94,18 @@ def change_password():
 
     if form.validate_on_submit():
 
-        cur_user.hash_password(form.password.data)
+        cur_user.password = form.password.data
 
         db.session.add(cur_user)
         db.session.commit()
 
+        flash(
+            "Password successfully changed, please login with your new password", "success"
+        )
         return redirect(url_for("auth.logout"))
 
-    return redirect(url_for("home.user_home"))
+    return render_template(
+        "/pages/user_profile.html",
+        header="User profile {}".format(current_user.username.upper()),
+        password_form=form,
+    )

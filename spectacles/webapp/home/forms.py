@@ -4,7 +4,6 @@ from wtforms import (
     ValidationError,
     TextAreaField,
     SubmitField,
-    SelectField,
 )
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
