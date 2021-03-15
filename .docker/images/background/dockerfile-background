@@ -11,3 +11,5 @@ RUN sed -i -e 's/\r$//' ./install.sh
 RUN ./install.sh
 
 RUN rm ./install.sh
+
+CMD ["python", "manager.py", "runbackground"]

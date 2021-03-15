@@ -53,8 +53,6 @@ services:
       - "./spec_dev_data/log:/app/data/log"
     networks:
       - spec_network
-    entrypoint:
-      - /app/scripts/web_entry_point.sh
 
   background:
     image: spec-background
@@ -73,8 +71,6 @@ services:
       - "./spec_dev_data/log:/app/data/log"
     networks:
       - spec_network
-    entrypoint:
-      - /app/scripts/background_entry_point.sh
 
   registry:
     restart: on-failure

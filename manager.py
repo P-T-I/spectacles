@@ -1,3 +1,7 @@
+from gevent import monkey
+
+monkey.patch_all()
+
 import time
 
 from flask_script import Manager
@@ -5,6 +9,7 @@ from flask_script import Manager
 from set_version import VERSION
 from spectacles.helpers.background_class import BackgroundTasks
 from spectacles.webapp.run import create_app
+from gevent.pywsgi import WSGIServer
 
 __version__ = VERSION
 
@@ -15,7 +20,8 @@ manager = Manager(app)
 
 @manager.command
 def runserver():
-    app.run(host="0.0.0.0", port=5050, ssl_context=("cert.pem", "key.pem"))
+    http_server = WSGIServer(('', 5050), app, certfile="cert.pem", keyfile="key.pem", log=app.logger)
+    http_server.serve_forever()
 
 
 @manager.command

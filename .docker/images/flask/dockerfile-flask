@@ -12,4 +12,6 @@ RUN ./install.sh
 
 RUN rm ./install.sh
 
-EXPOSE 5000
+CMD ["python", "manager.py", "runserver"]
+
+EXPOSE 5050
