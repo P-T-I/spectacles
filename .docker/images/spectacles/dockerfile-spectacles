@@ -1,0 +1,35 @@
+FROM python:3.8
+
+# Set an environment variable with the directory
+# where we'll be running the app
+ENV APP /app
+
+# Create the directory and instruct Docker to operate
+# from there from now on
+RUN mkdir $APP
+WORKDIR $APP
+
+# Copy the current directory contents into the container at /app
+ADD . $APP
+
+RUN mkdir $APP/data
+RUN mkdir $APP/data/db
+RUN mkdir $APP/data/log
+RUN mkdir $APP/data/certs
+RUN mkdir $APP/data/avatars
+
+RUN pip install -r requirements.txt
+
+COPY ./.docker/files/flask/install.sh .
+
+RUN sed -i -e 's/\r$//' ./install.sh
+
+RUN ./install.sh
+
+RUN rm ./install.sh
+
+ENTRYPOINT ["python"]
+
+CMD ["manager.py", "runserver"]
+
+EXPOSE 5050

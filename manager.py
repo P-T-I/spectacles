@@ -2,6 +2,10 @@ from gevent import monkey
 
 monkey.patch_all()
 
+import logging
+from spectacles.helpers.app_logger import AppLogger
+
+
 import time
 
 from flask_script import Manager
@@ -17,10 +21,20 @@ app = create_app(version=__version__)
 
 manager = Manager(app)
 
+logging.setLoggerClass(AppLogger)
+
+logger = logging.getLogger("spectacles")
+
 
 @manager.command
 def runserver():
-    http_server = WSGIServer(('', 5050), app, certfile="cert.pem", keyfile="key.pem", log=app.logger)
+    http_server = WSGIServer(
+        ("", 5050),
+        app,
+        certfile=app.config["SPECTACLES_WEB_TLS_CERT_PATH"],
+        keyfile=app.config["SPECTACLES_WEB_TLS_KEY_PATH"],
+        log=logger,
+    )
     http_server.serve_forever()
 
 

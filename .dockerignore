@@ -145,5 +145,9 @@ cython_debug/
 /.git/
 logs
 spec_dev_data
-spectacles.db
 /migrations/
+test_avatar_data
+devel_run.py
+docker-compose.yml
+*.pem
+.env_*
