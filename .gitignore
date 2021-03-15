@@ -128,7 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .idea
-config.py
 .env_*
 logs
 spec_dev_data
