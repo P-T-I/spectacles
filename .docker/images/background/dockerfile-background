@@ -12,4 +12,6 @@ RUN ./install.sh
 
 RUN rm ./install.sh
 
-CMD ["python", "manager.py", "runbackground"]
+ENTRYPOINT ["python"]
+
+CMD ["manager.py", "runbackground"]

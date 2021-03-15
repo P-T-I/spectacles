@@ -12,6 +12,8 @@ RUN ./install.sh
 
 RUN rm ./install.sh
 
-CMD ["python", "manager.py", "runserver"]
+ENTRYPOINT ["python"]
+
+CMD ["manager.py", "runserver"]
 
 EXPOSE 5050
