@@ -25,7 +25,7 @@ In order to fully make use of the functionalities of spectacles; an external mys
 
 This is because a local sqllite database will (for the moment) limit spectacles ability to fetch updates from the
 registry via a (second spectacles instance) background process and fully persist spectacles state.
-See `Configuring spectacles <README.rst#Configuring spectacles>`_ for more details.
+See `Configuring spectacles`_ for more details.
 
 Configuring spectacles
 ----------------------
