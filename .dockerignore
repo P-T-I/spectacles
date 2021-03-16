@@ -148,6 +148,6 @@ spec_dev_data
 /migrations/
 test_avatar_data
 devel_run.py
-docker-compose.yml
+docker-compose*.yml
 *.pem
 .env_*

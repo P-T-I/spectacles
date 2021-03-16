@@ -139,3 +139,4 @@ data/
 *.key
 *.csr
 /test_avatar_data/
+/docker-compose_local.yml
