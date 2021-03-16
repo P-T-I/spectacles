@@ -44,7 +44,7 @@ class Config(object):
         "OIDC_INTROSPECTION_AUTH_METHOD", "client_secret_post"
     )
 
-    MYSQL_DEBUG_LOGGING = getenv_bool("MYSQL_DEBUG_LOGGING", "False")
+    SQL_DEBUG_LOGGING = getenv_bool("SQL_DEBUG_LOGGING", "False")
 
     PROPAGATE_EXCEPTIONS = getenv_bool("PROPAGATE_EXCEPTIONS", "True")
 

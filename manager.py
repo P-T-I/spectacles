@@ -1,4 +1,4 @@
-# this module primary focus is for use inside the operational docker container of spectacles.
+# this module primary focus is for use inside the docker container of spectacles.
 from pathlib import Path
 
 from gevent import monkey

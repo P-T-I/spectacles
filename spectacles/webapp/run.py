@@ -92,7 +92,7 @@ def create_app(version):
 
     app.register_blueprint(error_blueprint)
 
-    if config.MYSQL_DEBUG_LOGGING:
+    if config.SQL_DEBUG_LOGGING:
 
         @event.listens_for(Engine, "before_cursor_execute")
         def before_cursor_execute(
