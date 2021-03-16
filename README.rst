@@ -30,8 +30,17 @@ See `Configuring spectacles`_ for more details.
 Configuring spectacles
 ----------------------
 
-Gui for docker hub registry
+As mentioned in the previous paragraph spectacles needs 2 containers in order to be fully functional; 1 for the webserver
+and 1 for a background process. The webserver container is the default with which the image is build and handles all
+gui related actions and inputs. The background container is responsible for periodically contacting the registry and
+updating the repository tag entries in the database. In order to activate the background process the command for the
+spectacles image need to be overwritten with ``["manager.py", "runbackground"]``. As shown in the docker-compose_EXAMPLE.yml
+file.
 
+Environment variables
+=====================
+
+- ``DB_HOST``
 
 Configuring registry
 --------------------

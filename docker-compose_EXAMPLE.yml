@@ -1,0 +1,73 @@
+version: '3.5'
+
+services:
+
+  mysql:
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    hostname: mysql
+    restart: always
+    env_file:
+      - .env
+    security_opt:
+      - seccomp:unconfined
+    volumes:
+      - "./spectacles/mysql/data:/var/lib/mysql"
+    networks:
+      - spec_network
+
+  spectacles:
+    image: ptik/spectacles
+    hostname: spectacles
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+    ports:
+      - 5050:5050
+    volumes:
+      - "./spectacles/data:/app/data"
+      - "./spectacles/certs:/app/certs"
+    networks:
+      - spec_network
+
+  spectacles-bg:
+    image: ptik/spectacles
+    hostname: background
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+    volumes:
+      - "./spectacles/data:/app/data"
+      - "./spectacles/certs:/app/certs"
+    command: ["manager.py", "runbackground"]
+    networks:
+      - spec_network
+
+  registry:
+    restart: on-failure
+    hostname: registry
+    image: registry:2
+    ports:
+      - 5000:5000
+    environment:
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
+      - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/mnt/registry/data
+      - REGISTRY_AUTH=token
+      - REGISTRY_AUTH_TOKEN_REALM=https://localhost:5050/token_auth
+      - REGISTRY_AUTH_TOKEN_SERVICE="Docker registry"
+      - REGISTRY_AUTH_TOKEN_ISSUER="Auth service"
+      - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/mnt/local/certs/domain.crt
+      - REGISTRY_HTTP_TLS_CERTIFICATE=/mnt/local/certs/domain.crt
+      - REGISTRY_HTTP_TLS_KEY=/mnt/local/certs/domain.key
+    volumes:
+      - "./spectacles/registry_auth/data:/mnt/registry/data"
+      - "./spectacles/registry_auth/certs:/mnt/local/certs"
+    networks:
+      - spec_network
+
+networks:
+  spec_network:
