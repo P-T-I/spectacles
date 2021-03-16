@@ -40,7 +40,10 @@ file.
 Environment variables
 =====================
 
-- ``DB_HOST``
+- ``DB_HOST`` (default: *mysql*): IP-address or FQDN of the MYSQL database;
+- ``DB_BACKEND`` (default: *mysql*): Select which backend you would like to use for spectacles. Choices are 'mysql' or
+  'other';
+- ``SQLALCHEMY_DATABASE_URI`` (default: *sqlite:////app/data/db/spectacles.db*):
 
 Configuring registry
 --------------------
