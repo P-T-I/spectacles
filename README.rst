@@ -1,5 +1,17 @@
 .. image:: images/spectacles_text.png
 
+.. Everything after the include marker below is inserted into the sphinx html docs. Everything above this comment is
+   only visible in the github README.rst
+   ##INCLUDE_MARKER##
+
+.. image:: https://img.shields.io/github/release/P-T-I/spectacles.svg
+   :target: https://GitHub.com/P-T-I/spectacles/releases/
+
+.. image:: https://img.shields.io/badge/License-GPLv3-blue.svg
+   :target: https://www.gnu.org/licenses/gpl-3.0
+
+.. image:: https://badgen.net/badge/Github/repo/green?icon=github
+   :target: https://GitHub.com/P-T-I/spectacles
 
 spectacles
 ----------
