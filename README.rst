@@ -1,4 +1,9 @@
-# spectacles
+.. image:: images/spectacles_text.png
+
+
+spectacles
+----------
+
 Gui for docker hub registry
 
 
