@@ -29,8 +29,8 @@ class Config(object):
 
     SPECTACLES_BACKGROUND_UPDATE = os.getenv("SPECTACLES_BACKGROUND_UPDATE", 30)
 
-    SPECTACLES_WEB_TLS_KEY_PATH = os.getenv("SPECTACLES_WEB_TLS_KEY_PATH", "/app/data/certs/key.pem")
-    SPECTACLES_WEB_TLS_CERT_PATH = os.getenv("SPECTACLES_WEB_TLS_CERT_PATH", "/app/data/certs/cert.pem")
+    SPECTACLES_WEB_TLS_KEY_PATH = os.getenv("SPECTACLES_WEB_TLS_KEY_PATH", "/app/certs/key.pem")
+    SPECTACLES_WEB_TLS_CERT_PATH = os.getenv("SPECTACLES_WEB_TLS_CERT_PATH", "/app/certs/cert.pem")
 
     OPENID_LOGIN = getenv_bool("OPENID_LOGIN", "False")
 

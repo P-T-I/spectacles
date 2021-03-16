@@ -1,7 +1,9 @@
 import logging
+import os
 import random
 import time
 from hashlib import sha1
+from pathlib import Path
 
 from flask import Flask, render_template
 from flask_avatars import Avatars
@@ -40,16 +42,25 @@ def create_app(version):
     app.config["version"] = " v{}".format(version)
 
     app.config["SECRET_KEY"] = str(random.getrandbits(256))
+
     # set max upload to 1 MB
-    app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
+    app.config["MAX_CONTENT_LENGTH"] = 1 * 1024 * 1024
 
     app.config.from_object(config)
 
     fa.init_app(app)
     bootstrap.init_app(app)
 
+    if not os.path.exists("/app/data/db/spectacles.db"):
+        os.makedirs("/app/data/db")
+        Path('/app/data/db/spectacles.db').touch()
+
     db.init_app(app)
     migrate.init_app(app, db)
+
+    if not os.path.exists(app.config["AVATARS_SAVE_PATH"]):
+        os.makedirs(app.config["AVATARS_SAVE_PATH"])
+
     avatars.init_app(app)
 
     if config.OPENID_LOGIN:
