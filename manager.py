@@ -36,10 +36,30 @@ def runserver():
 
     # Check if this is a first run of the container
     if not os.path.exists("/app/data/db/INIT_COMPLETED"):
-        init_database = "python db_migrate.py -i -m -u"
+        init_database = "python db_migrate.py -i"
+        migrate_database = "python db_migrate.py -m"
+        update_database = "python db_migrate.py -u"
 
         run(
             init_database,  # nosec
+            stdout=PIPE,
+            stderr=STDOUT,
+            universal_newlines=True,
+            shell=True,
+            cwd=current_dir,
+        )
+
+        run(
+            migrate_database,  # nosec
+            stdout=PIPE,
+            stderr=STDOUT,
+            universal_newlines=True,
+            shell=True,
+            cwd=current_dir,
+        )
+
+        run(
+            update_database,  # nosec
             stdout=PIPE,
             stderr=STDOUT,
             universal_newlines=True,

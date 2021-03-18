@@ -34,7 +34,7 @@ def _version_from_git_describe():
         raise ValueError("not in git repo")
 
     process = subprocess.Popen(  # nosec
-        ["git", "describe", "--always"],
+        ["git", "describe", "--tags"],
         cwd=_PKG_DIR,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -84,7 +84,7 @@ def _version():
                 return "unknown.version"
     finally:
         try:
-            copy(version_file, os.path.join(_PKG_DIR, "apt", "webapp", "VERSION"))
+            copy(version_file, os.path.join(_PKG_DIR, "spectacles", "webapp", "VERSION"))
         except FileNotFoundError:
             pass
 
