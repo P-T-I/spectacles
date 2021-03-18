@@ -22,13 +22,19 @@ class Config(object):
 
     AVATARS_SAVE_PATH = os.getenv("AVATARS_SAVE_PATH", "/app/data/avatars/")
 
-    SPECTACLES_PRIV_KEY_PATH = os.getenv("SPECTACLES_PRIV_KEY_PATH", "/app/data/certs/domain.key")
+    SPECTACLES_PRIV_KEY_PATH = os.getenv(
+        "SPECTACLES_PRIV_KEY_PATH", "/app/data/certs/domain.key"
+    )
     SPECTACLES_ISSUER_NAME = os.getenv("SPECTACLES_ISSUER_NAME", "Auth service")
 
     SPECTACLES_BACKGROUND_UPDATE = os.getenv("SPECTACLES_BACKGROUND_UPDATE", 30)
 
-    SPECTACLES_WEB_TLS_KEY_PATH = os.getenv("SPECTACLES_WEB_TLS_KEY_PATH", "/app/certs/key.pem")
-    SPECTACLES_WEB_TLS_CERT_PATH = os.getenv("SPECTACLES_WEB_TLS_CERT_PATH", "/app/certs/cert.pem")
+    SPECTACLES_WEB_TLS_KEY_PATH = os.getenv(
+        "SPECTACLES_WEB_TLS_KEY_PATH", "/app/certs/key.pem"
+    )
+    SPECTACLES_WEB_TLS_CERT_PATH = os.getenv(
+        "SPECTACLES_WEB_TLS_CERT_PATH", "/app/certs/cert.pem"
+    )
 
     OPENID_LOGIN = getenv_bool("OPENID_LOGIN", "False")
 

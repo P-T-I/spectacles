@@ -42,12 +42,12 @@ def create_app(version):
     app.config["version"] = " v{}".format(version)
 
     app.config["SECRET_KEY"] = str(random.getrandbits(256))
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-    app.config['SESSION_COOKIE_NAME'] = "spectacles.session"
-    app.config['SESSION_COOKIE_SECURE'] = True
-    app.config['SESSION_COOKIE_HTTPONLY'] = True
-    app.config['SESSION_COOKIE_SAMESITE'] = "Lax"
+    app.config["SESSION_COOKIE_NAME"] = "spectacles.session"
+    app.config["SESSION_COOKIE_SECURE"] = True
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
     # set max upload to 1 MB
     app.config["MAX_CONTENT_LENGTH"] = 1 * 1024 * 1024
@@ -59,7 +59,7 @@ def create_app(version):
 
     if not os.path.exists("/app/data/db/spectacles.db"):
         os.makedirs("/app/data/db")
-        Path('/app/data/db/spectacles.db').touch()
+        Path("/app/data/db/spectacles.db").touch()
 
     db.init_app(app)
     migrate.init_app(app, db)

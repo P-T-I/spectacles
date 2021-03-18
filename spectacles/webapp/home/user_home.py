@@ -51,7 +51,8 @@ def upload_avatar():
         return render_template("pages/crop_pic.html", header="Crop profile picture",)
     else:
         flash(
-            "Please don't upload anything other then PNG images smaller then 1MB in size.", "danger"
+            "Please don't upload anything other then PNG images smaller then 1MB in size.",
+            "danger",
         )
         return redirect(url_for("home.user_home"))
 
@@ -100,7 +101,8 @@ def change_password():
         db.session.commit()
 
         flash(
-            "Password successfully changed, please login with your new password", "success"
+            "Password successfully changed, please login with your new password",
+            "success",
         )
         return redirect(url_for("auth.logout"))
 

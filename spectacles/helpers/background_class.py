@@ -57,7 +57,9 @@ class BackgroundTasks(object):
             )
             db.session.commit()
             if res != 0:
-                self.activity.info("Deleted from past activities: {} entries".format(res))
+                self.activity.info(
+                    "Deleted from past activities: {} entries".format(res)
+                )
 
     def UpdateRegistryRepos(self):
         self.logger.info("Running UpdateRegistryRepos")
