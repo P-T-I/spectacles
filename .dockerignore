@@ -151,3 +151,4 @@ devel_run.py
 docker-compose*.yml
 *.pem
 .env_*
+testing

@@ -29,12 +29,24 @@ def get_registries():
 
     form = RegistryForm()
 
+    total_registry, count_dict = get_count_dict()
+
+    return render_template(
+        "pages/registry.html",
+        header="Registries",
+        registry=total_registry,
+        count_dict=count_dict,
+        form=form,
+    )
+
+
+def get_count_dict():
+
     total_registry = registry.query.filter().all()
 
     count_dict = defaultdict(str)
 
     for each in total_registry:
-
         repo_count = repository.query.filter(
             repository.namespacesid.in_(
                 db.session.query(namespaces.id)
@@ -49,13 +61,7 @@ def get_registries():
             ns_count, repo_count
         )
 
-    return render_template(
-        "pages/registry.html",
-        header="Registries",
-        registry=total_registry,
-        count_dict=count_dict,
-        form=form,
-    )
+    return total_registry, count_dict
 
 
 @admin.route("/registries/test_connection", methods=["POST"])
@@ -107,11 +113,13 @@ def add_registries():
             )
         )
 
-        total_registry = registry.query.filter().all()
+        total_registry, count_dict = get_count_dict()
 
         return {
             "registry_data": render_template(
-                "partials/registry_list.html", registry=total_registry
+                "partials/registry_list.html",
+                registry=total_registry,
+                count_dict=count_dict,
             ),
             "status": msg_status.OK,
             "msg": "Registry added!",

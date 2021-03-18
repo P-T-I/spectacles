@@ -139,7 +139,7 @@ Start all containers:
 Once the containers are up and running; navigate to http(s)://localhost:5050 and register your first user. (The first
 registered user will automatically be made an administrative user.)
 
-Once logged-in navigate to the registry page and add your first registry.
+Once logged-in navigate to the 'Registries' page and add your first registry.
 
 Once successful add a namespace to the registry you've just configured by navigating to the namespaces page and create
 the namespace 'test'.

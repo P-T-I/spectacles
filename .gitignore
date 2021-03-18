@@ -140,3 +140,4 @@ data/
 *.csr
 /test_avatar_data/
 /docker-compose_local.yml
+/testing/

@@ -19,6 +19,7 @@ services:
   spectacles:
     image: ptik/spectacles
     hostname: spectacles
+    user: spectacles
     restart: always
     env_file:
       - .env
@@ -35,10 +36,12 @@ services:
   spectacles-bg:
     image: ptik/spectacles
     hostname: background
+    user: spectacles
     restart: always
     env_file:
       - .env
     depends_on:
+      - spectacles
       - mysql
     volumes:
       - "./spectacles/data:/app/data"
