@@ -57,9 +57,10 @@ def create_app(version):
     fa.init_app(app)
     bootstrap.init_app(app)
 
-    if not os.path.exists("/app/data/db/spectacles.db"):
-        os.makedirs("/app/data/db")
-        Path("/app/data/db/spectacles.db").touch()
+    if not app.config["DEBUG"]:
+        if not os.path.exists("/app/data/db/spectacles.db"):
+            os.makedirs("/app/data/db")
+            Path("/app/data/db/spectacles.db").touch()
 
     db.init_app(app)
     migrate.init_app(app, db)

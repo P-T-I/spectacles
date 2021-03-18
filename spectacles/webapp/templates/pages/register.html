@@ -58,7 +58,7 @@
 
                 <a href="{{ url_for('auth.func_login') }}" class="text-center">Login</a>
                 {% if form.errors %}
-                    <div class="alert alert-error">
+                    <div class="msg alert-error">
                         {% for field, errors in form.errors.items() %}
                             {% for each in errors %}
                                 {% for error in each %}

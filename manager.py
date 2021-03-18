@@ -1,6 +1,4 @@
 # this module primary focus is for use inside the docker container of spectacles.
-from pathlib import Path
-
 from gevent import monkey
 
 monkey.patch_all()
@@ -9,6 +7,7 @@ import logging
 import os
 import time
 from subprocess import run, PIPE, STDOUT
+from pathlib import Path
 
 from flask_script import Manager
 from gevent.pywsgi import WSGIServer
