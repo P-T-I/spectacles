@@ -130,7 +130,7 @@ tweaked to your specifications all steps below assume that you've renamed the do
 docker-compose.yml; if that's not the case you should specify the file with a -f flag appended to the docker-compose
 command.
 
-These steps can be read in the full documentation (NOT COMPLETED YET);
+These steps can be read in the full `documentation <https://p-t-i.github.io/spectacles/>`_ (NOT COMPLETED YET);
 
 Start all containers:
 
