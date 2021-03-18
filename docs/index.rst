@@ -1,5 +1,8 @@
 .. image:: ../images/spectacles_text.png
 
+General
+-------
+
 .. include:: ../README.rst
    :start-after: ##INCLUDE_MARKER##
 
