@@ -13,8 +13,6 @@ class Config(object):
     DB_HOST = os.getenv("DB_HOST", "mysql")
     DB_BACKEND = os.getenv("DB_BACKEND", "mysql")
 
-    SQLALCHEMY_TRACK_MODIFICATIONS = getenv_bool("SQLALCHEMY_TRACK_MODIFICATIONS", "False")
-
     if DB_BACKEND == "mysql":
         SQLALCHEMY_DATABASE_URI = os.getenv(
             "SQLALCHEMY_DATABASE_URI", "sqlite:////app/data/db/spectacles.db"
@@ -47,11 +45,6 @@ class Config(object):
     SQL_DEBUG_LOGGING = getenv_bool("SQL_DEBUG_LOGGING", "False")
 
     PROPAGATE_EXCEPTIONS = getenv_bool("PROPAGATE_EXCEPTIONS", "True")
-
-    SESSION_COOKIE_NAME = os.getenv("SESSION_COOKIE_NAME", "spectacles.session")
-    SESSION_COOKIE_SECURE = getenv_bool("SESSION_COOKIE_SECURE", "True")
-    SESSION_COOKIE_HTTPONLY = getenv_bool("SESSION_COOKIE_HTTPONLY", "True")
-    SESSION_COOKIE_SAMESITE = os.getenv("SESSION_COOKIE_SAMESITE", "Lax")
 
     LOG_FILE_PATH = os.getenv("LOG_FILE_PATH", "/app/data/log/")
     LOG_FILE_NAME = os.getenv("LOG_FILE_NAME", "spectacles.log")
