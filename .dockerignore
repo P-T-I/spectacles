@@ -142,6 +142,7 @@ cython_debug/
 .dockerignore
 .gitignore
 .idea
+.github
 /.git/
 logs
 spec_dev_data
