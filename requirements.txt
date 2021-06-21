@@ -9,7 +9,7 @@ Flask-Avatars==0.2.2
 Flask-Script==2.0.6
 Flask-OIDC==1.4.0
 SQLAlchemy==1.4.18
-python-dotenv==0.17.1
+python-dotenv==0.18.0
 ansicolors==1.1.8
 WTForms==2.3.3
 Werkzeug==2.0.1
