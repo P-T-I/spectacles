@@ -8,7 +8,7 @@ Flask-Login==0.5.0
 Flask-Avatars==0.2.2
 Flask-Script==2.0.6
 Flask-OIDC==1.4.0
-SQLAlchemy==1.4.23
+SQLAlchemy==1.4.25
 python-dotenv==0.19.0
 ansicolors==1.1.8
 WTForms==2.3.3
