@@ -87,7 +87,7 @@ Configuring registry
 The registry that can be used for spectacles is a normal `docker registry <https://hub.docker.com/_/registry>`_ and
 further details and settings about that image is listed there.
 
-However for simplicity sake here is a example of the environment settings that should be set on the image:
+However for simplicity sake here is an example of the environment settings that should be set on the image:
    - REGISTRY_STORAGE_DELETE_ENABLED=true
    - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/mnt/registry/data
    - REGISTRY_AUTH=token
