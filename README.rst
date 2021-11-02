@@ -156,6 +156,7 @@ back when the login is successful.
 Now pull a image from the public docker hub and tag it for our private repository:
 
    docker pull hello-world
+   
    docker tag hello-world:latest localhost:5000/test/hello-world:latest
 
 Push the image to the private repo:
