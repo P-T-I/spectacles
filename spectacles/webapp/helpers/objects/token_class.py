@@ -12,12 +12,7 @@ from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key,
 )
 
-from spectacles.webapp.app.models import (
-    users,
-    namespaces,
-    claims,
-    claimsgroups,
-)
+from spectacles.webapp.app.models import users, namespaces, claims, claimsgroups
 from spectacles.webapp.config import Config
 from spectacles.webapp.helpers.constants.rights import repo_rights
 from spectacles.webapp.helpers.utils.times import timestampTOdatetimestring
@@ -160,11 +155,7 @@ class Token(object):
             return getattr(repo_rights, claim)
 
     def fetch_user_authorizations(self):
-        action_dict = {
-            "type": self.scope_type,
-            "name": self.scope_name,
-            "actions": [],
-        }
+        action_dict = {"type": self.scope_type, "name": self.scope_name, "actions": []}
 
         # get the user
         user = users.query.filter(users.username == self.account).first()
@@ -283,7 +274,7 @@ class Token(object):
 
         return {
             "token": jwt.encode(
-                self.claims, self.private_key, algorithm="RS256", headers=self.header,
+                self.claims, self.private_key, algorithm="RS256", headers=self.header
             ),
             "expires_in": 900,
             "issued_at": timestampTOdatetimestring(int(time.time())),

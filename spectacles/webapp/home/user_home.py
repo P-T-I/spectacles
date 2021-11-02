@@ -48,7 +48,7 @@ def upload_avatar():
         raw_filename = avatars.save_avatar(f)
         session["raw_filename"] = raw_filename
 
-        return render_template("pages/crop_pic.html", header="Crop profile picture",)
+        return render_template("pages/crop_pic.html", header="Crop profile picture")
     else:
         flash(
             "Please don't upload anything other then PNG images smaller then 1MB in size.",

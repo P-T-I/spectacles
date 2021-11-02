@@ -6,11 +6,7 @@ from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import check_password_hash
 
 from spectacles.helpers.app_logger import AppLogger
-from spectacles.webapp.app.models import (
-    users,
-    groups,
-    groupmembers,
-)
+from spectacles.webapp.app.models import users, groups, groupmembers
 from spectacles.webapp.config import Config
 from spectacles.webapp.run import login_manager, db
 from . import auth

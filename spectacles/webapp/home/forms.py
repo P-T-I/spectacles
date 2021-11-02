@@ -1,10 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import (
-    StringField,
-    ValidationError,
-    TextAreaField,
-    SubmitField,
-)
+from wtforms import StringField, ValidationError, TextAreaField, SubmitField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 from spectacles.webapp.app.models import namespaces, registry

@@ -26,7 +26,7 @@ class DockerRegistryApi(GenericApi):
         self.docker_service_name = docker_service_name
 
         super().__init__(
-            self.address, self.api_path, self.proxies, self.protocol, self.user_agent,
+            self.address, self.api_path, self.proxies, self.protocol, self.user_agent
         )
 
     def fetch_token(self, scope, service):
@@ -124,7 +124,7 @@ class DockerRegistryApi(GenericApi):
     def get_repository_digest(self, name, tag):
 
         self.set_header_field(
-            "Accept", "application/vnd.docker.distribution.manifest.v2+json",
+            "Accept", "application/vnd.docker.distribution.manifest.v2+json"
         )
 
         self.set_token_header(name=name)

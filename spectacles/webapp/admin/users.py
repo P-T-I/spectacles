@@ -4,11 +4,7 @@ import time
 from flask import render_template, url_for, redirect, request, jsonify
 from flask_login import login_required, current_user
 
-from spectacles.webapp.app.models import (
-    users,
-    groupmembers,
-    groups,
-)
+from spectacles.webapp.app.models import users, groupmembers, groups
 from spectacles.webapp.auth.forms import RegistrationForm
 from spectacles.webapp.run import db
 from . import admin

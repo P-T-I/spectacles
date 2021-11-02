@@ -3,11 +3,7 @@ import re
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.fields.html5 import EmailField
-from wtforms.validators import (
-    InputRequired,
-    ValidationError,
-    DataRequired,
-)
+from wtforms.validators import InputRequired, ValidationError, DataRequired
 
 from spectacles.webapp.app.models import users
 
@@ -17,7 +13,7 @@ class LoginForm(FlaskForm):
         "username", validators=[InputRequired()], render_kw={"placeholder": "Username"}
     )
     password = PasswordField(
-        "password", validators=[InputRequired()], render_kw={"placeholder": "Password"},
+        "password", validators=[InputRequired()], render_kw={"placeholder": "Password"}
     )
     submit = SubmitField("Login")
 
@@ -96,9 +92,7 @@ class RegistrationForm(FlaskForm):
         render_kw={"placeholder": "Username"},
     )
     email = EmailField(
-        "email",
-        validators=[DataRequired()],
-        render_kw={"placeholder": "email address"},
+        "email", validators=[DataRequired()], render_kw={"placeholder": "email address"}
     )
     password = PasswordField(
         "password",

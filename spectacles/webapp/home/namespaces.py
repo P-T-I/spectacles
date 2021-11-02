@@ -3,6 +3,7 @@ import time
 
 from flask import render_template, request, jsonify, url_for
 from flask_login import login_required, current_user
+from sqlalchemy.exc import IntegrityError
 
 from . import home
 from .forms import NamespaceForm
@@ -141,7 +142,15 @@ def add_namespaces():
             "status": msg_status.OK,
             "msg": "Namespace {} created!".format(post_data["name"]),
         }
-
+    except IntegrityError:
+        return jsonify(
+            {
+                "status": msg_status.NOK,
+                "msg": "Namespace: {} already exists and a namespace name should be unique!".format(
+                    post_data["name"]
+                ),
+            }
+        )
     except Exception as err:
         return jsonify(
             {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
@@ -398,10 +407,7 @@ def set_user_list():
 
                 db.session.commit()
 
-        return {
-            "status": msg_status.OK,
-            "msg": "Rights assigned!",
-        }
+        return {"status": msg_status.OK, "msg": "Rights assigned!"}
 
     except Exception as err:
         return jsonify(
@@ -421,10 +427,7 @@ def del_user():
 
         db.session.commit()
 
-        return {
-            "status": msg_status.OK,
-            "msg": "User assignment deleted!",
-        }
+        return {"status": msg_status.OK, "msg": "User assignment deleted!"}
 
     except Exception as err:
         return jsonify(
@@ -444,10 +447,7 @@ def del_ns_group():
 
         db.session.commit()
 
-        return {
-            "status": msg_status.OK,
-            "msg": "Group assignment deleted!",
-        }
+        return {"status": msg_status.OK, "msg": "Group assignment deleted!"}
 
     except Exception as err:
         return jsonify(
@@ -720,10 +720,7 @@ def set_custom_user_group_list():
             )
             add_claim_groups(post_data["full_group_data"], post_data["full_claim"])
 
-        return {
-            "status": msg_status.OK,
-            "msg": "Rights assigned!",
-        }
+        return {"status": msg_status.OK, "msg": "Rights assigned!"}
 
     except Exception as err:
         return jsonify(
@@ -743,10 +740,7 @@ def del_claim_user():
 
         db.session.commit()
 
-        return {
-            "status": msg_status.OK,
-            "msg": "Group assignment deleted!",
-        }
+        return {"status": msg_status.OK, "msg": "Group assignment deleted!"}
 
     except Exception as err:
         return jsonify(
@@ -766,10 +760,7 @@ def del_claim_group():
 
         db.session.commit()
 
-        return {
-            "status": msg_status.OK,
-            "msg": "User assignment deleted!",
-        }
+        return {"status": msg_status.OK, "msg": "User assignment deleted!"}
 
     except Exception as err:
         return jsonify(
