@@ -111,8 +111,8 @@ Couple of pointers:
 - the ``REGISTRY_HTTP_TLS_KEY`` should be set to the path to the registry's private key and should be set to the same
   key as ``SPECTACLES_PRIV_KEY_PATH``. The private key can be created via the command:
 
-   openssl req -newkey rsa:4096 -nodes -keyout domain.key -out domain.csr -subj "/C=XX/ST=XX/L=XXXX/O=Docker
-   Registry/CN=example.docker.reg"
+   openssl req -newkey rsa:4096 -nodes -keyout domain.key -out domain.csr -subj '/C=XX/ST=XX/L=XXXX/O=Docker
+   Registry/CN=example.docker.reg'
 
 - the ``REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE`` and the ``REGISTRY_HTTP_TLS_CERTIFICATE`` should be set to the path of the
   registry's signed certificate. The certificate can be created / signed via the command:
