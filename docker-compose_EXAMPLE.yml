@@ -46,7 +46,7 @@ services:
     volumes:
       - "./spectacles/data:/app/data"
       - "./spectacles/certs:/app/certs"
-    command: ["manager.py", "runbackground"]
+    command: ["runbackground"]
     networks:
       - spec_network
 
