@@ -1,6 +1,7 @@
 import random
 
-from flask import redirect, url_for
+import requests
+from flask import redirect, url_for, request
 from flask_login import login_user
 
 from spectacles.webapp.app.models import users
@@ -15,7 +16,7 @@ def oidc_login():
 
     username = info.get("preferred_username")
 
-    account = users.query.filter_by(name=username).first()
+    account = users.query.filter_by(username=username).first()
 
     if account:
         # password validation is done by oidc; just log the user in
@@ -25,10 +26,8 @@ def oidc_login():
         # nobody found; create user account with least privileges and log the user in
         newuser = users()
 
-        newuser.name = username
-        newuser.fullname = ""
+        newuser.username = username
         newuser.email = ""
-        newuser.phone = ""
 
         # this account is created from openid; generate random password...
         chars = (
@@ -38,8 +37,8 @@ def oidc_login():
             "#()^[]-_*%&=+/"
         )
 
-        newuser.hash_password(
-            "".join([random.SystemRandom().choice(chars) for i in range(50)])
+        newuser.password = "".join(
+            [random.SystemRandom().choice(chars) for i in range(50)]
         )
 
         newuser.generate_avatar()
@@ -47,22 +46,30 @@ def oidc_login():
         db.session.add(newuser)
         db.session.commit()
 
-        usersettings = settingsmembers()
-
-        usersettings.userid = newuser.id
-
-        usersettings.planningemails = 1
-        usersettings.planningnotifications = 1
-        usersettings.eventemails = 1
-        usersettings.eventnotifications = 1
-        usersettings.theme = 0
-
-        db.session.add(usersettings)
-        db.session.commit()
-
         login_user(newuser)
         return redirect(url_for("home.index"))
 
 
 def oidc_logout():
+
+    with requests.session() as session:
+
+        headers = {
+            "Authorization": f"Bearer {oidc.get_access_token()}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+
+        data = {
+            "client_id": f"{oidc.client_secrets.get('client_id')}",
+            "client_secret": f"{oidc.client_secrets.get('client_secret')}",
+            "refresh_token": f"{oidc.get_refresh_token()}",
+        }
+
+        session.post(
+            url=f"{oidc.client_secrets.get('issuer')}/protocol/openid-connect/logout",
+            data=data,
+            headers=headers,
+            verify=False,
+        )
+
     oidc.logout()
