@@ -73,7 +73,7 @@ Environment variables
   this example makes sure that the background process runs every 30 seconds;
 - ``SPECTACLES_WEB_TLS_KEY_PATH`` (default: */app/certs/key.pem*): Path to the TLS key for the HTTPS webserver;
 - ``SPECTACLES_WEB_TLS_CERT_PATH`` (default: */app/certs/cert.pem*): Path to the TLS certificate for the HTTPS webserver;
-- ``OPENID_LOGIN`` (default: *False*): Whether to use an openid provider for logging into spectacles (NOT SUPPORTED YET);
+- ``OPENID_LOGIN`` (default: *False*): Whether to use an openid provider for logging into spectacles;
 - ``SQL_DEBUG_LOGGING`` (default: *False*): If enabled all queries to the database are logged for debug purposes;
 - ``LOG_FILE_PATH`` (default: */app/data/log/*): Directory where to store the logging;
 - ``LOG_FILE_NAME`` (default: *spectacles.log*): Filename of the logging;
