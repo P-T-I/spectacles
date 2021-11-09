@@ -6,7 +6,6 @@ Flask-Bootstrap4==4.0.2
 Flask-FontAwesome==0.1.5
 Flask-Login==0.5.0
 Flask-Avatars==0.2.2
-Flask-Script==2.0.6
 Flask-OIDC==1.4.0
 SQLAlchemy==1.4.26
 python-dotenv==0.19.1

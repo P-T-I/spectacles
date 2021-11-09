@@ -12,6 +12,6 @@ RUN ./install.sh
 
 RUN rm ./install.sh
 
-ENTRYPOINT ["python"]
+ENTRYPOINT ["flask"]
 
-CMD ["manager.py", "runbackground"]
+CMD ["runbackground"]

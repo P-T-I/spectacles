@@ -1,4 +1,4 @@
-FROM python:3.8
+cd ..FROM python:3.8
 
 RUN pip install --upgrade pip
 
@@ -30,8 +30,8 @@ RUN mv /app/client_secrets_template.json /app/client_secrets.json
 
 RUN rm -rf /app/.docker
 
-ENTRYPOINT ["python"]
+ENTRYPOINT ["flask"]
 
-CMD ["manager.py", "runserver"]
+CMD ["runserver"]
 
 EXPOSE 5050

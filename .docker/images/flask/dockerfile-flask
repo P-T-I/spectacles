@@ -12,8 +12,8 @@ RUN ./install.sh
 
 RUN rm ./install.sh
 
-ENTRYPOINT ["python"]
+ENTRYPOINT ["flask"]
 
-CMD ["manager.py", "runserver"]
+CMD ["runserver"]
 
 EXPOSE 5050

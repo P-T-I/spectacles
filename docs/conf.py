@@ -24,7 +24,7 @@ author = "P-T-I"
 html_favicon = "../images/spectacles_round.png"
 html_logo = "../images/spectacles_round.png"
 
-html_css_files = ['./custom.css']
+html_css_files = ["./custom.css"]
 
 # -- General configuration ---------------------------------------------------
 

@@ -3,13 +3,14 @@ from gevent import monkey
 
 monkey.patch_all()
 
+import click
+from flask.cli import with_appcontext
 import logging
 import os
 import time
 from subprocess import run, PIPE, STDOUT
 from pathlib import Path
 
-from flask_script import Manager
 from gevent.pywsgi import WSGIServer
 
 from set_version import VERSION
@@ -21,8 +22,6 @@ __version__ = VERSION
 
 app = create_app(version=__version__)
 
-manager = Manager(app)
-
 logging.setLoggerClass(AppLogger)
 
 logger = logging.getLogger("spectacles")
@@ -30,7 +29,8 @@ logger = logging.getLogger("spectacles")
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
 
-@manager.command
+@click.command()
+@with_appcontext
 def runserver():
 
     # Check if this is a first run of the container
@@ -80,12 +80,13 @@ def runserver():
             log=logger,
         )
     else:
-        http_server = WSGIServer(("", 5050), app, log=logger,)
+        http_server = WSGIServer(("", 5050), app, log=logger)
 
     http_server.serve_forever()
 
 
-@manager.command
+@click.command()
+@with_appcontext
 def runbackground():
     starttime = time.time()
 
@@ -102,5 +103,5 @@ def runbackground():
         )
 
 
-if __name__ == "__main__":
-    manager.run()
+app.cli.add_command(runserver)
+app.cli.add_command(runbackground)
