@@ -23,7 +23,7 @@ def user_required(fn):
         else:
             logger.warning(
                 "User {} tried to perform illegal action to "
-                "admin protected endpoints!!".format(current_user.name)
+                "user protected endpoints!!".format(current_user.username)
             )
             abort(403)
 
@@ -40,7 +40,7 @@ def admin_required(fn):
         if current_user.role.lower() != "admin":
             logger.warning(
                 "User {} tried to perform illegal action to "
-                "admin protected endpoints!!".format(current_user.name)
+                "admin protected endpoints!!".format(current_user.username)
             )
             abort(403)
         else:
