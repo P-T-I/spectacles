@@ -18,4 +18,4 @@ cryptography==36.0.1
 alembic==1.7.4
 PyJWT==2.3.0
 Jinja2==3.0.3
-gevent==21.8.0
+gevent==21.12.0
