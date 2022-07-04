@@ -11,11 +11,11 @@
     </td>
     <td> {{count_dict[item.uri]}} </td>
     <td class="project-actions text-right">
-        <a id="del_reg_{{item.service_name|md5}}" class="btn btn-danger btn-xs" href="#" data-id="{{item.id}}">
+        <span id="del_reg_{{item.service_name|md5}}" class="btn btn-danger btn-xs" data-id="{{item.id}}">
             <i class="fas fa-trash">
             </i>
             Delete
-        </a>
+        </span>
     </td>
 </tr>
 {% endfor %}

@@ -26,11 +26,11 @@
     <td></td>
     <td class="project-actions text-right">
         {% if item.status == 0 %}
-        <a id="del_user_{{item.username|md5}}" class="btn btn-danger btn-xs" href="#" data-id="{{item.id}}">
+        <span id="del_user_{{item.username|md5}}" class="btn btn-danger btn-xs" data-id="{{item.id}}">
             <i class="fas fa-trash">
             </i>
             Delete
-        </a>
+        </span>
         {% endif %}
     </td>
 </tr>

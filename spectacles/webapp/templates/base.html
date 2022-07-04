@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Spectacles | {{ get_version() }}</title>
 
+  <base id="base_path" href="{{ url_for('home.index') }}">
+
   <link rel="shortcut icon" href="{{ url_for('static', filename='images/spectacles_round.png') }}">
 
   <!-- Font Awesome Icons -->
@@ -12,7 +14,7 @@
   <!-- Theme style -->
   <link href="{{ url_for('static', filename='css/adminlte/adminlte.min.css') }}" rel="stylesheet" />
   <!-- My style -->
-  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/style.min.css') }}" rel="stylesheet" />
   {% block head_css %}
   {% endblock %}
 
@@ -22,6 +24,8 @@
   <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap/bootstrap.bundle.min.js') }}"></script>
   <!-- AdminLTE App -->
   <script type="text/javascript" src="{{ url_for('static', filename='js/adminlte/adminlte.min.js') }}"></script>
+
+  <script> const BasePath = $("#base_path")[0].baseURI </script>
   {% block head_scripts %}
   {% endblock %}
 </head>

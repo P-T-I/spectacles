@@ -38,11 +38,11 @@
             <a id="assign_custom_{{item.name|md5}}" class="btn btn-outline-secondary" title="Set custom rights for this namespace" data-id="{{item.id}}"><i class="fas fa-cog"></i></a>
           </div>
         </div>
-        <a id="del_ns_{{item.name|md5}}" class="btn btn-danger btn-xs" href="#" data-id="{{item.id}}">
+        <span id="del_ns_{{item.name|md5}}" class="btn btn-danger btn-xs" data-id="{{item.id}}">
             <i class="fas fa-trash">
             </i>
             Delete
-        </a>
+        </span>
         {% endif %}
         {% endif %}
     </td>

@@ -9,8 +9,8 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/sweetalert2/sweetalert2.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/tagify/tagify.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/bootbox/bootbox.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/show_message.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/namespace_page.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/show_message.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/namespace_page.min.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -52,24 +52,24 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th width="1%">
+                            <th style="width: 1%">
                                 #
                             </th>
-                            <th width="10%">
+                            <th style="width: 10%">
                                 Namespace Name
                             </th>
-                            <th width="10%">
+                            <th style="width: 10%">
                                 Description
                             </th>
-                            <th width="10%">
+                            <th style="width: 10%">
                                 Registry
                             </th>
                             {% if current_user.role == "admin" %}
-                            <th width="5%">
+                            <th style="width: 5%">
                                 Owner
                             </th>
                             {% endif %}
-                            <th width="10%" class="text-center">
+                            <th style="width: 10%" class="text-center">
                             </th>
                         </tr>
                         </thead>

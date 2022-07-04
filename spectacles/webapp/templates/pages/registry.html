@@ -6,8 +6,8 @@
 
 {% block head_scripts %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/sweetalert2/sweetalert2.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/show_message.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/registry_page.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/show_message.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/registry_page.min.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -53,19 +53,19 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th width="1%">
+                            <th style="width: 1%">
                                 #
                             </th>
-                            <th width="20%" class="text-center">
+                            <th style="width: 20%" class="text-center">
                                 Service Name
                             </th>
-                            <th width="10%" class="text-center">
+                            <th style="width: 10%" class="text-center">
                                 Uri
                             </th>
-                            <th width="15%">
+                            <th style="width: 15%">
                                 Content
                             </th>
-                            <th width="10%" class="text-center">
+                            <th style="width: 10%" class="text-center">
                             </th>
                         </tr>
                         </thead>

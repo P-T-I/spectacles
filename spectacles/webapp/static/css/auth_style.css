@@ -1,26 +1,27 @@
-.login-page, .register-page {
-    background-color: #031f30;
+.login-page,
+.register-page {
+  background-color: #031f30;
 }
 
 .card {
-	box-shadow: 0 0 1px rgba(0,0,0,.125),0 1px 150px rgba(255, 255, 255, 0.51);
+  box-shadow: 0 0 1px rgb(0 0 0 / 12.5%), 0 1px 150px rgb(255 255 255 / 51%);
 }
 
 .msg {
-    color: red;
-    font-weight: bold;
-    text-align: center;
+  color: red;
+  font-weight: bold;
+  text-align: center;
 }
 
 .alert-error {
-    color: red;
-    font-weight: bold;
+  color: red;
+  font-weight: bold;
 }
 
 .alert {
-	margin-top: 25px;
-	width: 20%;
-	text-align: center;
-	transform: translate(50%,-50%);
-	right: 10%;
+  margin-top: 25px;
+  width: 20%;
+  text-align: center;
+  transform: translate(50%, -50%);
+  right: 10%;
 }

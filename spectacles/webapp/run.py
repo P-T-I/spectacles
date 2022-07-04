@@ -37,17 +37,23 @@ if config.OPENID_LOGIN:
 
 
 def create_app(version):
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(
+        __name__,
+        instance_relative_config=True,
+        static_url_path=f"{config.WEB_ROOT}/static",
+    )
 
     app.config["version"] = " v{}".format(version)
 
-    app.config["SECRET_KEY"] = str(random.getrandbits(256))
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
+    app.config["SQLALCHEMY_POOL_TIMEOUT"] = 20
 
-    app.config["SESSION_COOKIE_NAME"] = "spectacles.session"
-    app.config["SESSION_COOKIE_SECURE"] = True
-    app.config["SESSION_COOKIE_HTTPONLY"] = True
-    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+    if not config.DEBUG:
+        app.config["SESSION_COOKIE_NAME"] = "spectacles.session"
+        app.config["SESSION_COOKIE_SECURE"] = True
+        app.config["SESSION_COOKIE_HTTPONLY"] = True
+        app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
     # set max upload to 1 MB
     app.config["MAX_CONTENT_LENGTH"] = 1 * 1024 * 1024
@@ -82,23 +88,23 @@ def create_app(version):
 
     from spectacles.webapp.home import home as home_blueprint
 
-    app.register_blueprint(home_blueprint)
+    app.register_blueprint(home_blueprint, url_prefix=app.config["WEB_ROOT"])
 
     from spectacles.webapp.auth import auth as auth_blueprint
 
-    app.register_blueprint(auth_blueprint)
+    app.register_blueprint(auth_blueprint, url_prefix=app.config["WEB_ROOT"])
 
     from spectacles.webapp.token_auth import token_auth as token_auth_blueprint
 
-    app.register_blueprint(token_auth_blueprint)
+    app.register_blueprint(token_auth_blueprint, url_prefix=app.config["WEB_ROOT"])
 
     from spectacles.webapp.admin import admin as admin_blueprint
 
-    app.register_blueprint(admin_blueprint)
+    app.register_blueprint(admin_blueprint, url_prefix=app.config["WEB_ROOT"])
 
     from spectacles.webapp.errors import errors as error_blueprint
 
-    app.register_blueprint(error_blueprint)
+    app.register_blueprint(error_blueprint, url_prefix=app.config["WEB_ROOT"])
 
     if config.SQL_DEBUG_LOGGING:
 

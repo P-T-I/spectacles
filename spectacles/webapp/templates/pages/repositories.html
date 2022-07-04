@@ -6,8 +6,8 @@
 
 {% block head_scripts %}
 <script type="text/javascript" src="{{ url_for('static', filename='js/sweetalert2/sweetalert2.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/show_message.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/repositories_page.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/show_message.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/repositories_page.min.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -30,13 +30,13 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
-                                    <th width="1%">
+                                    <th style="width: 1%">
                                         #
                                     </th>
-                                    <th width="10%">
+                                    <th style="width: 10%">
                                         Repository name*
                                     </th>
-                                    <th width="10%">
+                                    <th style="width: 10%">
                                         Tags
                                     </th>
                                 </tr>
@@ -48,9 +48,9 @@
                                         {{loop.index}}
                                     </td>
                                     <td>
-                                        <a id="path_link_{{item.path|md5}}" class="bold_hover" href="#" data-id="{{item.id}}">
+                                        <span id="path_link_{{item.path|md5}}" class="bold_hover" data-id="{{item.id}}">
                                             {{item.path}}
-                                        </a>
+                                        </span>
                                     </td>
                                     <td>
                                         {% for tag in item.tags|sort(attribute='version', reverse=True) %}

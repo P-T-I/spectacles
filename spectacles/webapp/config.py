@@ -1,5 +1,6 @@
 import os
 import ast
+import random
 
 
 def getenv_bool(name: str, default: str = "False"):
@@ -12,6 +13,10 @@ class Config(object):
 
     DB_HOST = os.getenv("DB_HOST", "mysql")
     DB_BACKEND = os.getenv("DB_BACKEND", "mysql")
+
+    WEB_ROOT = os.getenv("WEB_ROOT", "")
+
+    SECRET_KEY = os.getenv("SECRET_KEY", str(random.getrandbits(256)))
 
     if DB_BACKEND == "mysql":
         SQLALCHEMY_DATABASE_URI = os.getenv(

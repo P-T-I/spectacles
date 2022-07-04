@@ -4,7 +4,7 @@
         {{loop.index}}
     </td>
     <td>
-        {{item.name|title}}
+        {{item.name|title|safe}}
     </td>
     <td>
         {% for each in item.members %}
@@ -16,16 +16,16 @@
     <td class="project-actions text-right">
         {% if item.name != 'admin' %}
 
-        <a id="add_user_{{item.name|md5}}" class="btn btn-outline-secondary btn-xs" href="#" data-id="{{item.id}}" data-name="{{item.name}}">
+        <span id="add_user_{{item.name|md5}}" class="btn btn-outline-secondary btn-xs" data-id="{{item.id}}" data-name="{{item.name}}">
             <i class="fas fa-user-plus">
             </i>
-        </a>
+        </span>
 
-        <a id="del_group_{{item.name|md5}}" class="btn btn-danger btn-xs" href="#" data-id="{{item.id}}">
+        <span id="del_group_{{item.name|md5}}" class="btn btn-danger btn-xs" data-id="{{item.id}}">
             <i class="fas fa-trash">
             </i>
             Delete
-        </a>
+        </span>
 
 
         {% endif %}

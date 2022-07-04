@@ -1,6 +1,7 @@
 import ast
 import logging
 import time
+from html import escape
 
 from flask import render_template, url_for, redirect, request, jsonify
 from flask_login import login_required, current_user
@@ -43,8 +44,8 @@ def add_groups():
         # Create variables for easy access
         newgroup = groups()
 
-        newgroup.name = form.name.data
-        newgroup.description = form.description.data
+        newgroup.name = escape(form.name.data)
+        newgroup.description = escape(form.description.data)
         newgroup.created = int(time.time())
 
         db.session.add(newgroup)

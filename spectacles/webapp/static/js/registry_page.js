@@ -1,138 +1,136 @@
 function DOMRegex(regex) {
-        let output = [];
-        for (let i of document.querySelectorAll('*')) {
-            if (regex.test(i.id)) { // or whatever attribute you want to search
-                output.push(i);
-            }
+    let output = [];
+    for (let i of document.querySelectorAll("*")) {
+        if (regex.test(i.id)) {
+            // or whatever attribute you want to search
+            output.push(i);
         }
-        return output;
     }
+    return output;
+}
 
-function SetAllEventListeners(){
-
-    $("form").each(function ()
-    {
+function SetAllEventListeners() {
+    $("form").each(function () {
         var that = $(this);
 
-        $("input:submit", that).bind("click keypress", function ()
-        {
+        $("input:submit", that).bind("click keypress", function () {
             // store the id of the submit-input on it's enclosing form
             that.data("callerid", this.id);
         });
     });
 
-    $("#registry_form").submit(function(event) {
-            /* stop form from submitting normally */
-            event.preventDefault();
+    $("#registry_form").submit(function (event) {
+        /* stop form from submitting normally */
+        event.preventDefault();
 
-            var callerId = $(this).data("callerid");
+        var callerId = $(this).data("callerid");
 
-            var form_data = ($(this).serializeArray().map(function(v){return [v.name, v.value];}))
+        var form_data = $(this)
+            .serializeArray()
+            .map(function (v) {
+                return [v.name, v.value];
+            });
 
-            // determine appropriate action(s)
-            if (callerId == "test"){
-                document.getElementById("registry_form").style.cursor = "wait";
-                document.getElementById("test").style.cursor = "wait";
-                $.ajax({
-                        type: "POST",
-                        url: "/registries/test_connection",
-                        data: JSON.stringify(form_data),
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: function(data) {
-                            showMessage("success", "Connection to registry succeeded!")
+        // determine appropriate action(s)
+        if (callerId == "test") {
+            document.getElementById("registry_form").style.cursor = "wait";
+            document.getElementById("test").style.cursor = "wait";
+            $.ajax({
+                type: "POST",
+                url: BasePath + "registries/test_connection",
+                data: JSON.stringify(form_data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    showMessage("success", "Connection to registry succeeded!");
 
-                            var service_name = document.getElementById('service_name')
-                            service_name.value = data["service"]
+                    var service_name = document.getElementById("service_name");
+                    service_name.value = data["service"];
 
-                            var button = document.getElementById('save')
-                            button.disabled = false
-                            document.getElementById("registry_form").style.cursor = "auto";
-                            document.getElementById("test").style.cursor = "auto";
-                        },
-                        error: function(xhr, ajaxOptions, thrownError) {
-                            if (xhr.status == 503) {
-                                showMessage("error", "Connection to registry refused!")
-                            } else {
-                                showMessage("error", thrownError)
-                            }
-                            document.getElementById("registry_form").style.cursor = "auto";
-                            document.getElementById("test").style.cursor = "auto";
-                        },
-                        complete: function(data) {
-                            //
-                        }
-                });
-            }
+                    var button = document.getElementById("save");
+                    button.disabled = false;
+                    document.getElementById("registry_form").style.cursor = "auto";
+                    document.getElementById("test").style.cursor = "auto";
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    if (xhr.status == 503) {
+                        showMessage("error", "Connection to registry refused!");
+                    } else {
+                        showMessage("error", thrownError);
+                    }
+                    document.getElementById("registry_form").style.cursor = "auto";
+                    document.getElementById("test").style.cursor = "auto";
+                },
+                complete: function (data) {
+                    //
+                },
+            });
+        }
 
-            if (callerId == "save"){
-                //console.log($(this))
-                $.ajax({
-                        type: "POST",
-                        url: "/registries/add",
-                        data: JSON.stringify(form_data),
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: function(data) {
-                            //
-                        },
-                        error: function(xhr, ajaxOptions, thrownError) {
-                            //
-                        },
-                        complete: function(data) {
-                            if(data.responseJSON.hasOwnProperty('registry_data')){
-                                $("#registry_data").html(data.responseJSON["registry_data"]);
-                            }
+        if (callerId === "save") {
+            //console.log($(this))
+            $.ajax({
+                type: "POST",
+                url: BasePath + "registries/add",
+                data: JSON.stringify(form_data),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    //
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    //
+                },
+                complete: function (data) {
+                    if (data.responseJSON.hasOwnProperty("registry_data")) {
+                        $("#registry_data").html(data.responseJSON["registry_data"]);
+                    }
 
-                           SetAllEventListeners()
+                    SetAllEventListeners();
 
-                           showMessage(data.responseJSON["status"], data.responseJSON["msg"])
-                        }
-                });
-            }
-
-        });
+                    showMessage(data.responseJSON["status"], data.responseJSON["msg"]);
+                },
+            });
+        }
+    });
 
     var elementsDELREGArray = DOMRegex(/^del_reg_/);
 
-    elementsDELREGArray.forEach(function(elem) {
+    elementsDELREGArray.forEach(function (elem) {
         elem.addEventListener("click", DeleteRegistry);
     });
-
 }
 
-function DeleteRegistry(evt){
-
-    json = {}
+function DeleteRegistry(evt) {
+    json = {};
     try {
-        var attrs = evt.target.parentElement.attributes
+        var attrs = evt.target.parentElement.attributes;
         json["id"] = attrs["data-id"].nodeValue;
     } catch {
-        var attrs = evt.target.attributes
+        var attrs = evt.target.attributes;
         json["id"] = attrs["data-id"].nodeValue;
     }
 
     $.ajax({
-             type: "POST",
-             url: "/registries/delete",
-             data: JSON.stringify(json),
-             contentType: "application/json; charset=utf-8",
-             dataType: "json",
-             success: function(data) {
-                 //
-             },
-             error: function(xhr, ajaxOptions, thrownError) {
-                 //
-             },
-             complete: function(data) {
-                   if(data.responseJSON.hasOwnProperty('registry_data')){
-                        $("#registry_data").html(data.responseJSON["registry_data"]);
-                   }
+        type: "POST",
+        url: BasePath + "registries/delete",
+        data: JSON.stringify(json),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            //
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            //
+        },
+        complete: function (data) {
+            if (data.responseJSON.hasOwnProperty("registry_data")) {
+                $("#registry_data").html(data.responseJSON["registry_data"]);
+            }
 
-                   SetAllEventListeners()
+            SetAllEventListeners();
 
-                   showMessage(data.responseJSON["status"], data.responseJSON["msg"])
-             }
-         });
-
+            showMessage(data.responseJSON["status"], data.responseJSON["msg"]);
+        },
+    });
 }

@@ -10,8 +10,8 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/sweetalert2/sweetalert2.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/tagify/tagify.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/bootbox/bootbox.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/show_message.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/groups_page.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/show_message.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/groups_page.min.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -90,16 +90,16 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th width="1%">
+                            <th style="width: 1%">
                                 #
                             </th>
-                            <th width="15%">
+                            <th style="width: 15%">
                                 Group name
                             </th>
-                            <th width="10%" class="text-center">
+                            <th style="width: 10%" class="text-center">
                                 Members
                             </th>
-                            <th width="10%" class="text-center">
+                            <th style="width: 10%" class="text-center">
                             </th>
                         </tr>
                         </thead>
