@@ -1,12 +1,12 @@
 import hashlib
 
-from jinja2 import evalcontextfilter
+from jinja2 import pass_eval_context
 
 from . import home
 from ..admin import admin
 
 
-@evalcontextfilter
+@pass_eval_context
 @home.app_template_filter()
 @admin.app_template_filter()
 def md5(eval_ctx, value):

@@ -17,6 +17,7 @@ from ..app.models import (
     claims,
     claimsmembers,
     claimsgroups,
+    registry,
 )
 from ..helpers.constants.common import msg_status, action_types
 from ..run import db
@@ -30,6 +31,9 @@ activity_track = ActivityTracker(action_type=action_types.USER)
 def get_namespaces():
 
     form = NamespaceForm()
+    form.registry.choices = [
+        (reg.id, reg.uri) for reg in registry.query.order_by("uri")
+    ]
 
     total_namespaces = get_total_namespaces()
 

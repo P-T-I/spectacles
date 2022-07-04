@@ -2,7 +2,6 @@ import re
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.fields.html5 import EmailField
 from wtforms.validators import InputRequired, ValidationError, DataRequired
 
 from spectacles.webapp.app.models import users
@@ -91,7 +90,7 @@ class RegistrationForm(FlaskForm):
         validators=[validate_username],
         render_kw={"placeholder": "Username"},
     )
-    email = EmailField(
+    email = StringField(
         "email", validators=[DataRequired()], render_kw={"placeholder": "email address"}
     )
     password = PasswordField(

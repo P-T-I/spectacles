@@ -1,8 +1,13 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, ValidationError, TextAreaField, SubmitField
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms import (
+    StringField,
+    ValidationError,
+    TextAreaField,
+    SubmitField,
+    SelectField,
+)
 
-from spectacles.webapp.app.models import namespaces, registry
+from spectacles.webapp.app.models import namespaces
 
 
 def validate_namespacename(form, field):
@@ -12,12 +17,7 @@ def validate_namespacename(form, field):
 
 
 class NamespaceForm(FlaskForm):
-    registry = QuerySelectField(
-        "type",
-        query_factory=lambda: registry.query,
-        allow_blank=False,
-        render_kw={"placeholder": "Registry"},
-    )
+    registry = SelectField("type", render_kw={"placeholder": "Registry"})
     name = StringField(
         "name",
         validators=[validate_namespacename],
