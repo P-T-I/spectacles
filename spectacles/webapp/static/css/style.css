@@ -4,6 +4,10 @@ a {
   background-color: transparent;
 }
 
+.bold_hover {
+  cursor: pointer;
+}
+
 .bold_hover:hover {
   font-weight: bold;
 }
