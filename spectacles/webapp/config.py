@@ -63,3 +63,5 @@ class Config(object):
     SYSLOG_ENABLE = getenv_bool("SYSLOG_ENABLE", "False")
     SYSLOG_SERVER = os.getenv("SYSLOG_SERVER", "172.16.1.1")
     SYSLOG_PORT = os.getenv("SYSLOG_PORT", "5140")
+
+    REGISTER_ENABLED = getenv_bool("REGISTER_ENABLED", "False")

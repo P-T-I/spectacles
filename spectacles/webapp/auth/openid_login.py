@@ -27,12 +27,12 @@ def oidc_login():
             if each.startswith("grp_"):
                 role = each[4:]
             else:
-                group = each.title()
+                group = each.lower()
     except TypeError:
         oidc_logout()
         abort(401)
 
-    if role is None or group is None or username is None:
+    if role is None or username is None:
         oidc_logout()
         abort(401)
 
@@ -42,45 +42,6 @@ def oidc_login():
         # Check role and group accordingly; alter when needed and save to backend
         if account.role != role:
             account.role = role
-
-        if len(account.group_member) != 0:
-            # already member of a group; check, alter when needed and save to backend
-            group_memb = account.group_member[0]
-
-            if group_memb.group.name != group:
-                # not yet in group; fetching group id
-                new_group = groups.query.filter_by(name=group).first()
-                if new_group:
-                    # existing group
-                    group_id = new_group.id
-                else:
-                    # non-existing group
-                    new_group = groups(name=group, created=int(time.time()))
-                    db.session.add(new_group)
-                    db.session.commit()
-
-                    group_id = new_group.id
-
-                group_memb.userid = group_id
-                db.session.add(group_memb)
-                db.session.commit()
-
-        else:
-            # not yet in group; fetching group id
-            new_group = groups.query.filter_by(name=group).first()
-            if new_group:
-                # exsting group
-                group_id = new_group.id
-            else:
-                # non-existing group
-                new_group = groups(name=group, created=int(time.time()))
-                db.session.add(new_group)
-                db.session.commit()
-
-                group_id = new_group.id
-
-            db.session.add(groupmembers(groupid=group_id, userid=account.id))
-            db.session.commit()
 
         db.session.add(account)
         db.session.commit()

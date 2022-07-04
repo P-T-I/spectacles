@@ -19,7 +19,8 @@ services:
     volumes:
       - "./spec_dev_data/spec_mysql_data:/var/lib/mysql"
     networks:
-      - spec_network
+      spec_network:
+        ipv4_address: 172.25.1.5
 
   phpmyadmin:
     depends_on:
@@ -82,7 +83,7 @@ services:
       - REGISTRY_STORAGE_DELETE_ENABLED=true
       - REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/data
       - REGISTRY_AUTH=token
-      - REGISTRY_AUTH_TOKEN_REALM=http://localhost:5050/token_auth
+      - REGISTRY_AUTH_TOKEN_REALM=http://localhost:5050/spec/token_auth
       - REGISTRY_AUTH_TOKEN_SERVICE="Docker registry"
       - REGISTRY_AUTH_TOKEN_ISSUER="Auth service"
       - REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/mnt/local/certs/domain.crt
@@ -96,3 +97,8 @@ services:
 
 networks:
   spec_network:
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "172.25.1.1"
+    ipam:
+      config:
+        - subnet: 172.25.1.0/24

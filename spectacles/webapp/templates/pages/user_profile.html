@@ -26,7 +26,7 @@
                     <div class="text-center">
                         <a id="change_profile_image">
                             <img class="profile-user-img img-fluid img-circle pointer"
-                                 src="/avatars/{{current_user.avatar_l}}"
+                                 src="{{ url_for('home.get_avatar', filename=current_user.avatar_l) }}"
                                  alt="User profile picture">
                         </a>
                     </div>

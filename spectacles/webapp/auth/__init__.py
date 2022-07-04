@@ -8,3 +8,6 @@ from . import views  # noqa: F401
 
 if Config().OPENID_LOGIN:
     from . import openid_login  # noqa: F401
+
+if Config().REGISTER_ENABLED:
+    from . import register  # noqa: F401

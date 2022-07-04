@@ -141,6 +141,13 @@ def create_app(version):
 
         return dict(TSToDatetime=TSToDatetime)
 
+    @app.context_processor
+    def enable_register():
+        def enable_register():
+            return app.config["REGISTER_ENABLED"]
+
+        return dict(enable_register=enable_register)
+
     @app.errorhandler(403)
     def forbidden(error):
         return (

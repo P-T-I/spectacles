@@ -5,12 +5,14 @@ from flask import request, abort, jsonify
 from spectacles.helpers.app_logger import AppLogger
 from . import token_auth
 from ..app.models import users
-from ..auth.views import verify_password
+from ..config import Config
 from ..helpers.objects.token_class import Token
 
 logging.setLoggerClass(AppLogger)
 
 logger = logging.getLogger(__name__)
+
+config = Config()
 
 
 @token_auth.route("/token_auth")
@@ -38,9 +40,14 @@ def authenticate(auth_dict):
 
     if "username" in auth_dict.keys() and "password" in auth_dict.keys():
 
-        check_user = users.query.filter(users.username == auth_dict["username"]).first()
+        if config.OPENID_LOGIN:
+            # Check credentials against OIDC provider
+            pass
+        else:
+            # Check credentials against local database
+            check_user = users.query.filter(users.username == auth_dict["username"]).first()
 
-        if check_user and check_user.verify_password(auth_dict["password"]):
-            return True
+            if check_user and check_user.verify_password(auth_dict["password"]):
+                return True
 
     return False

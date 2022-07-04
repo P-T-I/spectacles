@@ -47,9 +47,11 @@
                 </div>
                 {% endif %}
                 <!-- /.social-auth-links -->
+            {% if enable_register() %}
                 <p class="mb-0">
                     <a href="{{ url_for('auth.register') }}" class="text-center">Register</a>
                 </p>
+            {% endif %}
                 <div class="msg">{{ msg }}</div>
             </div>
             <!-- /.card-body -->
