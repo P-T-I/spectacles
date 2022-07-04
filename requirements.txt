@@ -18,5 +18,5 @@ cryptography==36.0.1
 alembic==1.7.6
 itsdangerous==2.0.1
 PyJWT==2.4.0
-Jinja2==3.0.3
+Jinja2==3.1.2
 gevent==21.12.0
