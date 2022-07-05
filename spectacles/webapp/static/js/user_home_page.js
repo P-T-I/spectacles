@@ -74,7 +74,7 @@ function ChangeProfilePic() {
             size: "small",
             title: "Change profile picture",
             show: false, // We will show it manually later
-            message: `<form id="upload_pic" action="/avatars/upload" method="post" enctype="multipart/form-data">
+            message: `<form id="upload_pic" action=`+ BasePath +`avatars/upload method="post" enctype="multipart/form-data">
                         <label class="text-muted">File Browser</label>
                         <div class="custom-file">
                           <input type="file" class="custom-file-input" id="customFile" name="filename">

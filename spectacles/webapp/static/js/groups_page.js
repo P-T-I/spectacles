@@ -160,7 +160,7 @@ function AddUserForm(evt) {
                     closeOnSelect: false,
                     enabled: 0,
                     classname: "users-list",
-                    searchKeys: ["name", "email"], // very important to set by which keys to search for suggesttions when typing
+                    searchKeys: ["name", "email"], // very important to set by which keys to search for suggestions when typing
                 },
                 templates: {
                     tag: tagTemplate,
