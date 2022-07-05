@@ -14,7 +14,7 @@
                 <img src="{{ url_for('home.get_avatar', filename=current_user.avatar_l) }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="{{ url_for('home.user_home') }}" class="d-block">{{current_user.username}}</a>
+                <a href="{{ url_for('home.user_home') }}" class="d-block">{{current_user.username|upper}}</a>
             </div>
         </div>
 

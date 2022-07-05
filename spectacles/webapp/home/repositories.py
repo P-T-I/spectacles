@@ -32,22 +32,22 @@ def fetch_repos():
 
     for register in all_registries:
 
-        filter_in = (
-            db.session.query(namespaces.id)
-            .filter(namespaces.registryid == register.id)
-            .all()
-        )
+        filter_in = namespaces.query.filter(namespaces.registryid == register.id).all()
 
         if current_user.role == "admin":
-            ret_dict[register.uri] = (
+
+            data = (
                 repository.query.filter(
                     repository.namespacesid.in_([x.id for x in filter_in])
                 )
                 .order_by(repository.path)
                 .all()
             )
+
+            ret_dict[register.uri] = sorted(data, key=lambda x: x.name)
         else:
-            ret_dict[register.uri] = (
+
+            data = (
                 repository.query.filter(
                     repository.namespacesid.in_([x.id for x in filter_in])
                 )
@@ -57,6 +57,8 @@ def fetch_repos():
                 .order_by(repository.path)
                 .all()
             )
+
+            ret_dict[register.uri] = sorted(data, key=lambda x: x.name)
 
     return ret_dict
 

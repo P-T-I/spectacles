@@ -1,4 +1,5 @@
 import ast
+import collections
 import time
 
 from flask import render_template, request, jsonify, url_for
@@ -20,7 +21,7 @@ from ..app.models import (
     registry,
 )
 from ..config import Config
-from ..helpers.constants.common import msg_status, action_types
+from ..helpers.constants.common import msg_status, action_types, access_level
 from ..run import db
 from ...helpers.activity_tracker import ActivityTracker
 
@@ -38,14 +39,115 @@ def get_namespaces():
         (reg.id, reg.uri) for reg in registry.query.order_by("uri")
     ]
 
-    total_namespaces = get_total_namespaces()
+    total_namespaces, max_rights = rights_and_namespaces()
 
     return render_template(
         "pages/namespaces.html",
         header="Namespaces",
         namespaces=total_namespaces,
+        max_rights=max_rights,
         form=form,
     )
+
+
+def rights_and_namespaces():
+
+    max_rights = collections.defaultdict(str)
+
+    if current_user.role == "admin":
+        total_namespaces = (
+            namespaces.query.filter().order_by(namespaces.name.asc()).all()
+        )
+    else:
+        total_namespaces_pers = (
+            namespaces.query.join(namespacemembers)
+            .filter(namespacemembers.userid == current_user.id)
+            .filter(namespacemembers.namespaceid == namespaces.id)
+            .order_by(namespaces.name.asc())
+            .all()
+        )
+
+        group_filter = groupmembers.query.filter(
+            groupmembers.userid == current_user.id
+        ).all()
+
+        total_namespaces_group = (
+            namespaces.query.join(namespacegroups)
+            .filter(namespacegroups.groupid.in_([x.groupid for x in group_filter]))
+            .filter(namespacegroups.namespaceid == namespaces.id)
+            .all()
+        )
+
+        total_global_namespaces = (
+            namespaces.query.filter(namespaces.O_claim != "NONE")
+            .filter(namespaces.owner != current_user.id)
+            .all()
+        )
+
+        pers_claim_filter = claimsmembers.query.filter(
+            claimsmembers.userid == current_user.id
+        ).all()
+
+        total_claims_personal = (
+            namespaces.query.join(claims)
+            .filter(claims.id.in_([x.claimsid for x in pers_claim_filter]))
+            .all()
+        )
+
+        grps = [x.groupid for x in current_user.group_member]
+
+        grp_claims_filter = claimsgroups.query.filter(
+            claimsgroups.groupid.in_(grps)
+        ).all()
+
+        total_claims_group = (
+            namespaces.query.join(claims)
+            .filter(claims.id.in_([x.claimsid for x in grp_claims_filter]))
+            .all()
+        )
+
+        for each in total_namespaces_group:
+            if not each.name in max_rights:
+                max_rights[each.name] = each.G_claim
+            else:
+                if not max_rights[each.name] == each.G_claim:
+                    if getattr(access_level, each.G_claim) > getattr(
+                        access_level, max_rights[each.name]
+                    ):
+                        max_rights[each.name] = each.G_claim
+
+        for each in total_global_namespaces:
+            if not each.name in max_rights:
+                max_rights[each.name] = each.O_claim
+            else:
+                if not max_rights[each.name] == each.O_claim:
+                    if getattr(access_level, each.O_claim) > getattr(
+                        access_level, max_rights[each.name]
+                    ):
+                        max_rights[each.name] = each.O_claim
+
+        claimed_rights = [pers_claim_filter, grp_claims_filter]
+
+        for group in claimed_rights:
+            for each in group:
+                if not each.claims.namespace.name in max_rights:
+                    max_rights[each.claims.namespace.name] = each.claims.claim
+                else:
+                    if not max_rights[each.claims.namespace.name] == each.claims.claim:
+                        if getattr(access_level, each.claims.claim) > getattr(
+                            access_level, max_rights[each.claims.namespace.name]
+                        ):
+                            max_rights[each.claims.namespace.name] = each.claims.claim
+
+        total_namespaces = (
+            total_namespaces_pers
+            + total_namespaces_group
+            + total_claims_personal
+            + total_claims_group
+            + total_global_namespaces
+        )
+
+    return sorted(list(set(total_namespaces)), key=lambda x: x.name), dict(max_rights)
 
 
 def get_total_namespaces():
@@ -63,42 +165,42 @@ def get_total_namespaces():
             .all()
         )
 
+        group_filter = groupmembers.query.filter(
+            groupmembers.userid == current_user.id
+        ).all()
+
         total_namespaces_group = (
             namespaces.query.join(namespacegroups)
-            .filter(
-                namespacegroups.groupid.in_(
-                    db.session.query(groupmembers.groupid)
-                    .filter(groupmembers.userid == current_user.id)
-                    .all()
-                )
-            )
+            .filter(namespacegroups.groupid.in_([x.groupid for x in group_filter]))
             .filter(namespacegroups.namespaceid == namespaces.id)
             .all()
         )
 
+        total_global_namespaces = (
+            namespaces.query.filter(namespaces.O_claim != "NONE")
+            .filter(namespaces.owner != current_user.id)
+            .all()
+        )
+
+        pers_claim_filter = claimsmembers.query.filter(
+            claimsmembers.userid == current_user.id
+        ).all()
+
         total_claims_personal = (
             namespaces.query.join(claims)
-            .filter(
-                claims.id.in_(
-                    db.session.query(claimsmembers.claimsid)
-                    .filter(claimsmembers.userid == current_user.id)
-                    .all()
-                )
-            )
+            .filter(claims.id.in_([x.claimsid for x in pers_claim_filter]))
             .all()
         )
 
         grps = [x.groupid for x in current_user.group_member]
 
+        grp_claims_filter = claimsgroups.query.filter(
+            claimsgroups.groupid.in_(grps)
+        ).all()
+
         total_claims_group = (
             namespaces.query.join(claims)
-            .filter(
-                claims.id.in_(
-                    db.session.query(claimsgroups.claimsid)
-                    .filter(claimsgroups.groupid.in_(grps))
-                    .all()
-                )
-            )
+            .filter(claims.id.in_([x.claimsid for x in grp_claims_filter]))
             .all()
         )
 
@@ -107,6 +209,7 @@ def get_total_namespaces():
             + total_namespaces_group
             + total_claims_personal
             + total_claims_group
+            + total_global_namespaces
         )
 
     return total_namespaces

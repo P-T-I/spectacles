@@ -1,50 +1,65 @@
 {% for item in namespaces %}
-<tr>
-    <td>
-        {{loop.index}}
-    </td>
-    <td id="ns_name">
-        {{item.name}}
-    </td>
-    <td>{{item.description}}</td>
-    <td>{{item.registry.uri}}</td>
-    {% if current_user.role == "admin" %}
-    <td width="5%">
-        {{item.user.username}}
-    </td>
-    {% endif %}
-    <td class="project-actions text-right">
-        {% if item.name != current_user.username %}
-        {% if item.owner == current_user.id or current_user.role == "admin" %}
+    <tr>
+        <td>
+            {{ loop.index }}
+        </td>
+        <td id="ns_name">
+            {{ item.name }}
+        </td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.registry.uri }}</td>
+        {% if current_user.role == "admin" %}
+            <td style="width: 5%">
+                {{ item.user.username }}
+            </td>
+        {% endif %}
+        <td class="project-actions text-right">
+            {% if item.name != current_user.username %}
+                {% if item.owner == current_user.id or current_user.role == "admin" %}
 
-        {%- set rights_dict = {
+                    {%- set rights_dict = {
                     'FULL' : 'btn-outline-success',
                     'WRITE' : 'btn-outline-info',
                     'READ' : 'btn-outline-warning',
                     'NONE' : 'btn-outline-secondary',
-               }
-        -%}
+                    }-%}
 
-        <div id="set_rights">
-          <div class="btn-group mr-2 btn-group-sm" role="group" aria-label="First group">
-            <a id="rw_pers_{{item.name|md5}}" class="btn {{rights_dict[item.P_claim]}}" title="Generic user rights" data-id="{{item.id}}"><i class="fas fa-user"></i></a>
-            <a id="rw_group_{{item.name|md5}}" class="btn {{rights_dict[item.G_claim]}}" title="Generic group rights" data-id="{{item.id}}"><i class="fas fa-users"></i></a>
-            <a id="rw_world_{{item.name|md5}}" class="btn {{rights_dict[item.O_claim]}}" title="Generic global rights" data-id="{{item.id}}"><i class="fas fa-globe-americas"></i></a>
-          </div>
-          <div class="btn-group mr-2 btn-group-sm" role="group" aria-label="Second group">
-            <a id="assign_usr_group_{{item.name|md5}}" class="btn btn-outline-secondary" title="Assign users and groups to this namespace" data-id="{{item.id}}"><i class="fas fa-chess-rook"></i></a>
-          </div>
-          <div class="btn-group btn-group-sm" role="group" aria-label="Third group">
-            <a id="assign_custom_{{item.name|md5}}" class="btn btn-outline-secondary" title="Set custom rights for this namespace" data-id="{{item.id}}"><i class="fas fa-cog"></i></a>
-          </div>
-        </div>
-        <span id="del_ns_{{item.name|md5}}" class="btn btn-danger btn-xs" data-id="{{item.id}}">
-            <i class="fas fa-trash">
-            </i>
-            Delete
-        </span>
-        {% endif %}
-        {% endif %}
-    </td>
-</tr>
+                    <div id="set_rights">
+                        <div class="btn-group mr-2 btn-group-sm" role="group" aria-label="First group">
+                            <a id="rw_pers_{{ item.name|md5 }}" class="btn {{ rights_dict[item.P_claim] }}"
+                               title="Generic user rights" data-id="{{ item.id }}"><i class="fas fa-user"></i></a>
+                            <a id="rw_group_{{ item.name|md5 }}" class="btn {{ rights_dict[item.G_claim] }}"
+                               title="Generic group rights" data-id="{{ item.id }}"><i class="fas fa-users"></i></a>
+                            <a id="rw_world_{{ item.name|md5 }}" class="btn {{ rights_dict[item.O_claim] }}"
+                               title="Generic global rights" data-id="{{ item.id }}"><i
+                                    class="fas fa-globe-americas"></i></a>
+                        </div>
+                        <div class="btn-group mr-2 btn-group-sm" role="group" aria-label="Second group">
+                            <a id="assign_usr_group_{{ item.name|md5 }}" class="btn btn-outline-secondary"
+                               title="Assign users and groups to this namespace" data-id="{{ item.id }}"><i
+                                    class="fas fa-chess-rook"></i></a>
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Third group">
+                            <a id="assign_custom_{{ item.name|md5 }}" class="btn btn-outline-secondary"
+                               title="Set custom rights for this namespace" data-id="{{ item.id }}"><i
+                                    class="fas fa-cog"></i></a>
+                        </div>
+                    </div>
+                    <span id="del_ns_{{ item.name|md5 }}" class="btn btn-danger btn-xs" data-id="{{ item.id }}">
+                        <i class="fas fa-trash"></i>Delete
+                    </span>
+                {%  else %}
+                    {%- set rights_dict = {
+                    'FULL' : 'btn-success',
+                    'WRITE' : 'btn-info',
+                    'READ' : 'btn-warning',
+                    'NONE' : 'btn-secondary',
+                    }-%}
+                    {%  if item.name in max_rights %}
+                        <span class="badge badge-pill {{ rights_dict[max_rights[item.name]] }}">{{ max_rights[item.name] }}</span>
+                    {%  endif %}
+                {% endif %}
+            {% endif %}
+        </td>
+    </tr>
 {% endfor %}

@@ -1,5 +1,4 @@
 import random
-import time
 
 import requests
 from flask import redirect, url_for, abort
@@ -20,14 +19,14 @@ def oidc_login():
 
     username = info.get("trigram", None)
 
+    username = username.lower()
+
     client_roles = info.get("client_roles")
 
     try:
         for each in client_roles:
             if each.startswith("grp_"):
                 role = each[4:]
-            else:
-                group = each.lower()
     except TypeError:
         oidc_logout()
         abort(401)
@@ -92,22 +91,23 @@ def oidc_logout():
 
     with requests.session() as session:
 
-        headers = {
-            "Authorization": f"Bearer {oidc.get_access_token()}",
-            "Content-Type": "application/x-www-form-urlencoded",
-        }
+        if oidc is not None:
+            headers = {
+                "Authorization": f"Bearer {oidc.get_access_token()}",
+                "Content-Type": "application/x-www-form-urlencoded",
+            }
 
-        data = {
-            "client_id": f"{oidc.client_secrets.get('client_id')}",
-            "client_secret": f"{oidc.client_secrets.get('client_secret')}",
-            "refresh_token": f"{oidc.get_refresh_token()}",
-        }
+            data = {
+                "client_id": f"{oidc.client_secrets.get('client_id')}",
+                "client_secret": f"{oidc.client_secrets.get('client_secret')}",
+                "refresh_token": f"{oidc.get_refresh_token()}",
+            }
 
-        session.post(
-            url=f"{oidc.client_secrets.get('issuer')}/protocol/openid-connect/logout",
-            data=data,
-            headers=headers,
-            verify=False,
-        )
+            session.post(
+                url=f"{oidc.client_secrets.get('issuer')}/protocol/openid-connect/logout",
+                data=data,
+                headers=headers,
+                verify=False,
+            )
 
     oidc.logout()
