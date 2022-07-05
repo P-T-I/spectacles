@@ -39,4 +39,4 @@ class ActivityTracker(object):
             db.session.commit()
             return True
         except Exception as err:
-            self.logger.error("Error saving activity to database: {}".format(err))
+            self.logger.error(f"Error saving activity to database: {err}")

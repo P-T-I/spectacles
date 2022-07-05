@@ -14,7 +14,7 @@ from . import auth
 @oidc.require_login
 def oidc_login():
     role = None
-    group = None
+    group_id = None
 
     info = oidc.user_getinfo(["trigram", "client_roles", "realm_roles", "groups"])
 
@@ -58,16 +58,9 @@ def oidc_login():
         newuser.role = role
 
         # not yet in group; fetching group id
-        new_group = groups.query.filter_by(name=group).first()
+        new_group = groups.query.filter_by(name=role).first()
         if new_group:
             # existing group
-            group_id = new_group.id
-        else:
-            # non-existing group
-            new_group = groups(name=group, created=int(time.time()))
-            db.session.add(new_group)
-            db.session.commit()
-
             group_id = new_group.id
 
         # this account is created from openid; generate random password...
@@ -84,8 +77,12 @@ def oidc_login():
 
         newuser.generate_avatar()
 
-        db.session.add(groupmembers(groupid=group_id, userid=newuser.id))
+        db.session.add(newuser)
         db.session.commit()
+
+        if group_id is not None:
+            db.session.add(groupmembers(groupid=group_id, userid=newuser.id))
+            db.session.commit()
 
         login_user(newuser)
         return redirect(url_for("home.index"))

@@ -266,7 +266,7 @@ class Token(object):
             .rstrip("=")
         )
 
-        payload = "{}.{}".format(b64_header, b64_claims)
+        payload = f"{b64_header}.{b64_claims}"
 
         return payload
 

@@ -106,7 +106,7 @@ class registry(db.Model):
     content = db.relationship("namespaces", backref="registry", lazy="dynamic")
 
     def __repr__(self):
-        return "{}".format(self.uri)
+        return f"{self.uri}"
 
 
 class namespaces(db.Model):

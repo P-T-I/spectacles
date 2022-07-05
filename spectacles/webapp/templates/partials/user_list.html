@@ -4,7 +4,7 @@
         {{loop.index}}
     </td>
     <td class="text-center">
-        <img alt="Avatar" class="table-avatar" src="/avatars/{{item.avatar_l}}" title="{{item.username}}">
+        <img alt="Avatar" class="table-avatar" src="{{ url_for('home.get_avatar', filename=item.avatar_l) }}" title="{{item.username}}">
     </td>
     <td>
         {{item.username|title}}

@@ -57,9 +57,9 @@ def get_count_dict():
 
         ns_count = namespaces.query.filter(namespaces.registryid == each.id).count()
 
-        count_dict[each.uri] = "{} namespaces containing {} repositories".format(
-            ns_count, repo_count
-        )
+        count_dict[
+            each.uri
+        ] = f"{ns_count} namespaces containing {repo_count} repositories"
 
     return total_registry, count_dict
 
@@ -108,9 +108,7 @@ def add_registries():
         db.session.add(reg)
         db.session.commit()
         activity_track.success(
-            "User {} added registry on uri: {}".format(
-                current_user.username, post_data["uri"]
-            )
+            f"User {current_user.username} added registry on uri: {post_data['uri']}"
         )
 
         total_registry, count_dict = get_count_dict()
@@ -125,9 +123,7 @@ def add_registries():
             "msg": "Registry added!",
         }
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
 
 
 @admin.route("/registries/delete", methods=["POST"])
@@ -140,9 +136,7 @@ def del_registries():
         registry.query.filter(registry.id == post_data["id"]).delete()
         db.session.commit()
         activity_track.danger(
-            "User {} deleted registry with ID: {}".format(
-                current_user.username, post_data["id"]
-            )
+            f"User {current_user.username} deleted registry with ID: {post_data['id']}"
         )
 
         total_registry = registry.query.filter().all()
@@ -155,6 +149,4 @@ def del_registries():
             "msg": "Registry deleted!",
         }
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})

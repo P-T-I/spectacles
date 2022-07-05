@@ -19,11 +19,14 @@ from ..app.models import (
     claimsgroups,
     registry,
 )
+from ..config import Config
 from ..helpers.constants.common import msg_status, action_types
 from ..run import db
 from ...helpers.activity_tracker import ActivityTracker
 
 activity_track = ActivityTracker(action_type=action_types.USER)
+
+config = Config()
 
 
 @home.route("/namespaces")
@@ -132,7 +135,7 @@ def add_namespaces():
         db.session.add(new_ns_member)
         db.session.commit()
         activity_track.success(
-            "User {} added namespace: {}".format(current_user.username, new_ns.name)
+            f"User {current_user.username} added namespace: {new_ns.name}"
         )
 
         total_namespaces = get_total_namespaces()
@@ -144,21 +147,17 @@ def add_namespaces():
                 namespaces=total_namespaces,
             ),
             "status": msg_status.OK,
-            "msg": "Namespace {} created!".format(post_data["name"]),
+            "msg": f"Namespace {post_data['name']} created!",
         }
     except IntegrityError:
         return jsonify(
             {
                 "status": msg_status.NOK,
-                "msg": "Namespace: {} already exists and a namespace name should be unique!".format(
-                    post_data["name"]
-                ),
+                "msg": f"Namespace: {post_data['name']} already exists and a namespace name should be unique!",
             }
         )
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
 
 
 @home.route("/namespaces/delete", methods=["POST"])
@@ -172,9 +171,7 @@ def del_group():
         ).delete()
         db.session.commit()
         activity_track.danger(
-            "User {} deleted namespace with ID: {}".format(
-                current_user.username, post_data["id"]
-            )
+            f"User {current_user.username} deleted namespace with ID: {post_data['id']}"
         )
 
         total_namespaces = get_total_namespaces()
@@ -189,9 +186,7 @@ def del_group():
             "msg": "Namespace deleted!",
         }
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
 
 
 @home.route("/namespaces/get_rights", methods=["POST"])
@@ -265,9 +260,7 @@ def set_rights():
         }
 
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
 
 
 @home.route("/namespaces/get_user_list", methods=["POST"])
@@ -298,7 +291,7 @@ def get_user_list():
         {
             "value": x.id,
             "name": x.username,
-            "avatar": "/avatars/{}".format(x.avatar_l),
+            "avatar": f"{config.WEB_ROOT}/avatars/{x.avatar_l}",
             "email": x.email,
         }
         for x in all_users
@@ -414,9 +407,7 @@ def set_user_list():
         return {"status": msg_status.OK, "msg": "Rights assigned!"}
 
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
 
 
 @home.route("/namespaces/del_user", methods=["POST"])
@@ -434,9 +425,7 @@ def del_user():
         return {"status": msg_status.OK, "msg": "User assignment deleted!"}
 
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
 
 
 @home.route("/namespaces/del_group", methods=["POST"])
@@ -454,9 +443,7 @@ def del_ns_group():
         return {"status": msg_status.OK, "msg": "Group assignment deleted!"}
 
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
 
 
 @home.route("/namespaces/get_custom_assigned_users_groups", methods=["POST"])
@@ -543,7 +530,7 @@ def get_custom_user_list():
                 {
                     "value": x.id,
                     "name": x.username,
-                    "avatar": "/avatars/{}".format(x.avatar_l),
+                    "avatar": f"{config.WEB_ROOT}/avatars/{x.avatar_l}",
                     "email": x.email,
                 }
                 for x in all_users
@@ -568,7 +555,7 @@ def get_custom_user_list():
                 {
                     "value": x.id,
                     "name": x.username,
-                    "avatar": "/avatars/{}".format(x.avatar_l),
+                    "avatar": f"{config.WEB_ROOT}/avatars/{x.avatar_l}",
                     "email": x.email,
                 }
                 for x in all_users
@@ -593,7 +580,7 @@ def get_custom_user_list():
                 {
                     "value": x.id,
                     "name": x.username,
-                    "avatar": "/avatars/{}".format(x.avatar_l),
+                    "avatar": f"{config.WEB_ROOT}/avatars/{x.avatar_l}",
                     "email": x.email,
                 }
                 for x in all_users
@@ -727,9 +714,7 @@ def set_custom_user_group_list():
         return {"status": msg_status.OK, "msg": "Rights assigned!"}
 
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
 
 
 @home.route("/namespaces/del_claim_user", methods=["POST"])
@@ -747,9 +732,7 @@ def del_claim_user():
         return {"status": msg_status.OK, "msg": "Group assignment deleted!"}
 
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
 
 
 @home.route("/namespaces/del_claim_group", methods=["POST"])
@@ -767,6 +750,4 @@ def del_claim_group():
         return {"status": msg_status.OK, "msg": "User assignment deleted!"}
 
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})

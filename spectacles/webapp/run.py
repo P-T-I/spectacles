@@ -43,7 +43,7 @@ def create_app(version):
         static_url_path=f"{config.WEB_ROOT}/static",
     )
 
-    app.config["version"] = " v{}".format(version)
+    app.config["version"] = f" v{version}"
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
@@ -115,7 +115,7 @@ def create_app(version):
             statement_hash = sha1(statement.encode("utf-8")).hexdigest()[-6:]
             conn.info.setdefault("query_start_time", []).append(time.time())
             conn.info.setdefault("statement_hash", []).append(statement_hash)
-            app.logger.debug("Start Query [{}]: {}".format(statement_hash, statement))
+            app.logger.debug(f"Start Query [{statement_hash}]: {statement}")
 
         @event.listens_for(Engine, "after_cursor_execute")
         def after_cursor_execute(

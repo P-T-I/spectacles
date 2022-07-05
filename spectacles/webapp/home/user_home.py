@@ -33,7 +33,7 @@ def user_home():
 
     return render_template(
         "/pages/user_profile.html",
-        header="User profile {}".format(current_user.username.upper()),
+        header=f"User profile {current_user.username.upper()}",
         password_form=password_form,
     )
 
@@ -108,6 +108,6 @@ def change_password():
 
     return render_template(
         "/pages/user_profile.html",
-        header="User profile {}".format(current_user.username.upper()),
+        header=f"User profile {current_user.username.upper()}",
         password_form=form,
     )

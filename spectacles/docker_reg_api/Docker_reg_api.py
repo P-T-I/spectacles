@@ -43,12 +43,10 @@ class DockerRegistryApi(GenericApi):
     def set_token_header(self, name, action="pull"):
 
         token = self.fetch_token(
-            "repository:{}:{}".format(name, action), service=self.docker_service_name
+            f"repository:{name}:{action}", service=self.docker_service_name
         )
 
-        self.set_header_field(
-            "Authorization", "Bearer {}".format(token.build_token()["token"])
-        )
+        self.set_header_field("Authorization", f"Bearer {token.build_token()['token']}")
 
     def ping(self):
 
@@ -65,8 +63,7 @@ class DockerRegistryApi(GenericApi):
 
         with self.get_session() as session:
             r = session.get(
-                "{0}/{1}/{2}".format(self.baseurl, self.api_path, resource),
-                **request_api_resource
+                f"{self.baseurl}/{self.api_path}/{resource}", **request_api_resource
             )
 
             if "Www-Authenticate" in r.headers:
@@ -84,14 +81,13 @@ class DockerRegistryApi(GenericApi):
                 token = self.fetch_token("registry:catalog:*", ret_dict["service"])
 
                 self.set_header_field(
-                    "Authorization", "Bearer {}".format(token.build_token()["token"])
+                    "Authorization", f"Bearer {token.build_token()['token']}"
                 )
 
                 resource = "_catalog"
 
                 r = session.get(
-                    "{0}/{1}/{2}".format(self.baseurl, self.api_path, resource),
-                    **request_api_resource
+                    f"{self.baseurl}/{self.api_path}/{resource}", **request_api_resource
                 )
 
                 if r.status_code == 200:
@@ -105,9 +101,7 @@ class DockerRegistryApi(GenericApi):
 
         token = self.fetch_token("registry:catalog:*", service=self.docker_service_name)
 
-        self.set_header_field(
-            "Authorization", "Bearer {}".format(token.build_token()["token"])
-        )
+        self.set_header_field("Authorization", f"Bearer {token.build_token()['token']}")
 
         resource = "_catalog"
 
@@ -117,7 +111,7 @@ class DockerRegistryApi(GenericApi):
 
         self.set_token_header(name=name)
 
-        resource = "{}/tags/list".format(name)
+        resource = f"{name}/tags/list"
 
         return self.call("GET", resource=resource)
 
@@ -129,7 +123,7 @@ class DockerRegistryApi(GenericApi):
 
         self.set_token_header(name=name)
 
-        resource = "{}/manifests/{}".format(name, tag)
+        resource = f"{name}/manifests/{tag}"
 
         result = self.call("GET", resource=resource, ret_headers=True)
 
@@ -139,6 +133,6 @@ class DockerRegistryApi(GenericApi):
 
         self.set_token_header(name=name, action="delete")
 
-        resource = "{}/manifests/{}".format(name, digest)
+        resource = f"{name}/manifests/{digest}"
 
         return self.call("DELETE", resource=resource)

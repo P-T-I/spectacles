@@ -11,6 +11,7 @@ from spectacles.webapp.run import db
 from . import admin
 from .forms import GroupForm
 from ..auth.permissions import admin_required
+from ..config import Config
 from ..helpers.constants.common import msg_status, action_types
 from ...helpers.activity_tracker import ActivityTracker
 from ...helpers.app_logger import AppLogger
@@ -20,6 +21,8 @@ logging.setLoggerClass(AppLogger)
 logger = logging.getLogger(__name__)
 
 activity_track = ActivityTracker(action_type=action_types.GROUP)
+
+config = Config()
 
 
 @admin.route("/groups")
@@ -51,7 +54,7 @@ def add_groups():
         db.session.add(newgroup)
         db.session.commit()
         activity_track.success(
-            "User {} added group: {}".format(current_user.username, newgroup.name)
+            f"User {current_user.username} added group: {newgroup.name}"
         )
 
         return redirect(url_for("admin.get_groups"))
@@ -77,7 +80,7 @@ def del_groups():
             groups.query.filter_by(id=post_data["id"]).delete()
             db.session.commit()
             activity_track.danger(
-                "User {} deleted group: {}".format(current_user.username, found_name)
+                f"User {current_user.username} deleted group: {found_name}"
             )
 
         total_groups = groups.query.filter().all()
@@ -87,12 +90,10 @@ def del_groups():
                 "partials/group_list.html", header="Groups", groups=total_groups
             ),
             "status": msg_status.OK,
-            "msg": "Group {} deleted!".format(found_name),
+            "msg": f"Group {found_name} deleted!",
         }
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
 
 
 @admin.route("/groups/get_user_list", methods=["POST"])
@@ -115,7 +116,7 @@ def get_user_list():
         {
             "value": x.id,
             "name": x.username,
-            "avatar": "/avatars/{}".format(x.avatar_l),
+            "avatar": f"{config.WEB_ROOT}/avatars/{x.avatar_l}",
             "email": x.email,
         }
         for x in all_users
@@ -154,9 +155,7 @@ def set_user_list():
         return jsonify(
             {
                 "status": msg_status.NOK,
-                "msg": "The provided data is not the correct type, expected list got {}".format(
-                    type(post_data["data"])
-                ),
+                "msg": f"The provided data is not the correct type, expected list got {type(post_data['data'])}",
             }
         )
 
@@ -183,6 +182,4 @@ def del_groupmember():
             "msg": "Group member deleted!",
         }
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})

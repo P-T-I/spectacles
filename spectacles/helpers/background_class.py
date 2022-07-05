@@ -57,9 +57,7 @@ class BackgroundTasks(object):
             )
             db.session.commit()
             if res != 0:
-                self.activity.info(
-                    "Deleted from past activities: {} entries".format(res)
-                )
+                self.activity.info(f"Deleted from past activities: {res} entries")
 
     def UpdateRegistryRepos(self):
         self.logger.info("Running UpdateRegistryRepos")
@@ -126,9 +124,7 @@ class BackgroundTasks(object):
                                 ):
                                     if NEW:
                                         self.activity.success(
-                                            "New repository discovered: {}".format(
-                                                my_repo.name
-                                            )
+                                            f"New repository discovered: {my_repo.name}"
                                         )
                                     db.session.add(my_repo)
                                     db.session.commit()
@@ -136,9 +132,7 @@ class BackgroundTasks(object):
                                     for tag in repo_list["tags"]:
 
                                         self.logger.info(
-                                            "Processing tag: {} of repo: {}".format(
-                                                tag, repo
-                                            )
+                                            f"Processing tag: {tag} of repo: {repo}"
                                         )
 
                                         digest = dr.get_repository_digest(
@@ -166,9 +160,7 @@ class BackgroundTasks(object):
                                                 updated=update_time,
                                             )
                                             self.activity.success(
-                                                "New tag {} discovered for repository: {}".format(
-                                                    my_tag.version, my_repo.name
-                                                )
+                                                f"New tag {my_tag.version} discovered for repository: {my_repo.name}"
                                             )
 
                                         db.session.add(my_tag)
@@ -182,17 +174,15 @@ class BackgroundTasks(object):
                                     db.session.commit()
                                     if del_repo != 0:
                                         self.activity.danger(
-                                            "Deleted repository: {}".format(
-                                                my_repo.name
-                                            )
+                                            f"Deleted repository: {my_repo.name}"
                                         )
 
                         # non-existing namespace
                         else:
                             log_string = (
                                 "Encountered a namespace on the registry that is not a part of spectacles "
-                                "namespace database: {}. If you would like to access this namespace you "
-                                "will have to add it!".format(namespace)
+                                f"namespace database: {namespace}. If you would like to access this namespace you "
+                                "will have to add it!"
                             )
                             self.logger.warning(log_string)
                             self.activity.warning(log_string)
@@ -201,7 +191,7 @@ class BackgroundTasks(object):
                 del_tags = tags.query.filter(tags.updated != update_time).delete()
                 db.session.commit()
                 if del_tags != 0:
-                    self.activity.info("Deleted {} old tags".format(del_tags))
+                    self.activity.info(f"Deleted {del_tags} old tags")
 
                 # deleting repositories that are not updated; assuming that they do not longer exist on the
                 # registry
@@ -210,4 +200,4 @@ class BackgroundTasks(object):
                 ).delete()
                 db.session.commit()
                 if del_rep != 0:
-                    self.activity.info("Deleted {} old tags".format(del_tags))
+                    self.activity.info(f"Deleted {del_tags} old tags")

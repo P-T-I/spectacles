@@ -100,7 +100,7 @@ def del_repo():
 
         db.session.commit()
         activity_track.danger(
-            "User {} deleted repo: {}".format(current_user.username, post_data["name"])
+            f"User {current_user.username} deleted repo: {post_data['name']}"
         )
 
         all_tags = (
@@ -114,10 +114,8 @@ def del_repo():
                 "partials/repo_details.html", repo_det=all_tags
             ),
             "status": msg_status.OK,
-            "msg": "Repository {}:{} deleted!".format(post_data["name"], selected_tag),
+            "msg": f"Repository {post_data['name']}:{selected_tag} deleted!",
         }
 
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})

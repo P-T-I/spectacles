@@ -46,7 +46,7 @@ class GenericApi(object):
         self.server = address[0]
         self.port = address[1]
         self.protocol = protocol
-        self.baseurl = "{}://{}:{}".format(self.protocol, self.server, self.port)
+        self.baseurl = f"{self.protocol}://{self.server}:{self.port}"
         self.api_path = api_path
         self.proxies = proxies
         self.user_agent = user_agent
@@ -55,7 +55,7 @@ class GenericApi(object):
 
     def __repr__(self):
         """return a string representation of the obj GenericApi"""
-        return "<<GenericApi:({}, {})>>".format(self.server, self.port)
+        return f"<<GenericApi:({self.server}, {self.port})>>"
 
     def __build_url(self, resource):
         """
@@ -67,9 +67,9 @@ class GenericApi(object):
         :rtype: str
         """
         if self.api_path is None:
-            return "{0}/{1}".format(self.baseurl, resource)
+            return f"{self.baseurl}/{resource}"
         else:
-            return "{0}/{1}/{2}".format(self.baseurl, self.api_path, resource)
+            return f"{self.baseurl}/{self.api_path}/{resource}"
 
     def __connect(
         self, method, resource, session, data=None, timeout=60, ret_headers=False
@@ -179,7 +179,7 @@ class GenericApi(object):
                     resource=resource,
                     session=session,
                     data=data,
-                    **kwargs
+                    **kwargs,
                 )
                 return result
         except requests.ConnectionError:
@@ -197,7 +197,7 @@ class GenericApi(object):
         return {
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "User-Agent": "{}".format(self.user_agent),
+            "User-Agent": f"{self.user_agent}",
         }
 
     @property

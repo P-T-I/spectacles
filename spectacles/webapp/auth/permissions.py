@@ -22,8 +22,7 @@ def user_required(fn):
             return fn(*args, **kwargs)
         else:
             logger.warning(
-                "User {} tried to perform illegal action to "
-                "user protected endpoints!!".format(current_user.username)
+                f"User {current_user.username} tried to perform illegal action to user protected endpoints!!"
             )
             abort(403)
 
@@ -39,8 +38,7 @@ def admin_required(fn):
     def wrapper(*args, **kwargs):
         if current_user.role.lower() != "admin":
             logger.warning(
-                "User {} tried to perform illegal action to "
-                "admin protected endpoints!!".format(current_user.username)
+                f"User {current_user.username} tried to perform illegal action to admin protected endpoints!!"
             )
             abort(403)
         else:

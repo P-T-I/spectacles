@@ -22,7 +22,7 @@ def index():
 
     get_data = dict(request.args)
 
-    logger.info("Requested resource: {}".format(get_data))
+    logger.info(f"Requested resource: {get_data}")
 
     if hasattr(r, "authorization") and r.authorization is not None:
         authentication = r.authorization
@@ -45,7 +45,9 @@ def authenticate(auth_dict):
             pass
         else:
             # Check credentials against local database
-            check_user = users.query.filter(users.username == auth_dict["username"]).first()
+            check_user = users.query.filter(
+                users.username == auth_dict["username"]
+            ).first()
 
             if check_user and check_user.verify_password(auth_dict["password"]):
                 return True

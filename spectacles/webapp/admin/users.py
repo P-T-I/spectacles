@@ -51,7 +51,7 @@ def add_users():
         db.session.add(newuser)
         db.session.commit()
         activity_track.success(
-            "User {} added: {}".format(current_user.username, newuser.username)
+            f"User {current_user.username} added: {newuser.username}"
         )
 
         return redirect(url_for("admin.get_users"))
@@ -77,7 +77,7 @@ def del_users():
             users.query.filter_by(id=post_data["id"]).delete()
             db.session.commit()
             activity_track.danger(
-                "User {} deleted: {}".format(current_user.username, found_username)
+                f"User {current_user.username} deleted: {found_username}"
             )
 
         total_users = users.query.filter().all()
@@ -87,12 +87,10 @@ def del_users():
                 "partials/user_list.html", header="Users", users=total_users
             ),
             "status": msg_status.OK,
-            "msg": "User {} deleted!".format(found_username),
+            "msg": f"User {found_username} deleted!",
         }
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
 
 
 @admin.route("/users/set_admin", methods=["POST"])
@@ -102,7 +100,7 @@ def set_admin_users():
 
     post_data = dict(request.json)
 
-    logger.info("set_admin_users Post_data received: {}".format(post_data))
+    logger.info(f"set_admin_users Post_data received: {post_data}")
 
     try:
         my_user = users.query.filter_by(id=post_data["id"]).first()
@@ -132,9 +130,7 @@ def set_admin_users():
                         "partials/user_list.html", header="Users", users=total_users
                     ),
                     "status": msg_status.OK,
-                    "msg": "User {} set to role: {}".format(
-                        my_user.username, my_user.role
-                    ),
+                    "msg": f"User {my_user.username} set to role: {my_user.role}",
                 }
             )
         else:
@@ -145,9 +141,7 @@ def set_admin_users():
                 }
             )
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
 
 
 @admin.route("/users/del_group", methods=["POST"])
@@ -172,6 +166,4 @@ def del_group():
             "msg": "Group membership deleted!",
         }
     except Exception as err:
-        return jsonify(
-            {"status": msg_status.NOK, "msg": "Error encountered: {}".format(err)}
-        )
+        return jsonify({"status": msg_status.NOK, "msg": f"Error encountered: {err}"})
