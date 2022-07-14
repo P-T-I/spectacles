@@ -15,7 +15,7 @@ Werkzeug==2.1.2
 requests==2.28.1
 mysqlclient==2.1.1
 cryptography==37.0.2
-alembic==1.8.0
+alembic==1.8.1
 itsdangerous==2.0.1
 PyJWT==2.4.0
 Jinja2==3.1.2
