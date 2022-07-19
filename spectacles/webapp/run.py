@@ -1,6 +1,5 @@
 import logging
 import os
-import random
 import time
 from hashlib import sha1
 from pathlib import Path
@@ -48,6 +47,9 @@ def create_app(version):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
     app.config["SQLALCHEMY_POOL_TIMEOUT"] = 20
+
+    # Cache-control
+    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 300
 
     if not config.DEBUG:
         app.config["SESSION_COOKIE_NAME"] = "spectacles.session"

@@ -18,12 +18,14 @@ class Config(object):
 
     SECRET_KEY = os.getenv("SECRET_KEY", str(random.getrandbits(256)))
 
-    if DB_BACKEND == "mysql":
-        SQLALCHEMY_DATABASE_URI = os.getenv(
-            "SQLALCHEMY_DATABASE_URI", "sqlite:////app/data/db/spectacles.db"
-        )
-    else:
-        SQLALCHEMY_DATABASE_URI = "sqlite:////app/data/db/spectacles.db"
+    MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "spectacles")
+    MYSQL_USER = os.getenv("MYSQL_USER", "spectacles")
+    MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "secret")
+
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "SQLALCHEMY_DATABASE_URI",
+        f"mysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{DB_HOST}/{MYSQL_DATABASE}",
+    )
 
     AVATARS_SAVE_PATH = os.getenv("AVATARS_SAVE_PATH", "/app/data/avatars/")
 
@@ -51,6 +53,13 @@ class Config(object):
     OIDC_SCOPES = os.getenv("OIDC_SCOPES", ["openid"])
     OIDC_INTROSPECTION_AUTH_METHOD = os.getenv(
         "OIDC_INTROSPECTION_AUTH_METHOD", "client_secret_post"
+    )
+    OIDC_VALID_ISSUERS = os.getenv("OIDC_VALID_ISSUERS", "https://OIDC_VALID_ISSUERS")
+    OVERWRITE_REDIRECT_URI = os.getenv("OVERWRITE_REDIRECT_URI", False)
+    OIDC_CALLBACK_ROUTE = os.getenv("OIDC_CALLBACK_ROUTE", "/oidc_callback")
+    OIDC_ID_TOKEN_COOKIE_PATH = os.getenv("OIDC_ID_TOKEN_COOKIE_PATH", "/")
+    OIDC_ID_TOKEN_COOKIE_NAME = os.getenv(
+        "OIDC_ID_TOKEN_COOKIE_NAME", "spec_oidc_cookie"
     )
 
     SQL_DEBUG_LOGGING = getenv_bool("SQL_DEBUG_LOGGING", "False")

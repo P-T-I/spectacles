@@ -164,11 +164,16 @@ class Token(object):
             namespaces.name == self.scope_namespace
         ).first()
 
-        # check if user is admin
-        if user.status == 99 or user.role == "admin":
-            # admins have full rights by default
-            action_dict["actions"] = getattr(repo_rights, "FULL")
+        if user is not None:
+            # containerd doesn't forward a user in request, return read only rights
+            action_dict["actions"] = getattr(repo_rights, "READ")
             return action_dict
+        else:
+            # check if user is admin
+            if user.status == 99 or user.role == "admin":
+                # admins have full rights by default
+                action_dict["actions"] = getattr(repo_rights, "FULL")
+                return action_dict
 
         # first check for specific user claims
         user_claims = [
