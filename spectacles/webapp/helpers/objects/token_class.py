@@ -164,7 +164,7 @@ class Token(object):
             namespaces.name == self.scope_namespace
         ).first()
 
-        if user is not None:
+        if user is None:
             # containerd doesn't forward a user in request, return read only rights
             action_dict["actions"] = getattr(repo_rights, "READ")
             return action_dict
