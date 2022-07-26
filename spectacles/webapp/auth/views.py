@@ -37,6 +37,8 @@ def logout():
         oidc_logout()
     except ImportError:
         pass
+    except Exception:
+        pass
 
     # Redirect to login page
     return redirect(url_for("auth.func_login"))

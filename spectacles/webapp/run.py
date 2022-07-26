@@ -49,7 +49,7 @@ def create_app(version):
     app.config["SQLALCHEMY_POOL_TIMEOUT"] = 20
 
     # Cache-control
-    app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 300
+    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 300
 
     if not config.DEBUG:
         app.config["SESSION_COOKIE_NAME"] = "spectacles.session"

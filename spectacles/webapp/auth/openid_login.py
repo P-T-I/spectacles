@@ -1,3 +1,4 @@
+import logging
 import random
 
 import requests
@@ -7,6 +8,11 @@ from flask_login import login_user
 from spectacles.webapp.app.models import users, groups, groupmembers
 from spectacles.webapp.run import db, oidc
 from . import auth
+from ...helpers.app_logger import AppLogger
+
+logging.setLoggerClass(AppLogger)
+
+logger = logging.getLogger(__name__)
 
 
 @auth.route("/oidc_login")
@@ -16,6 +22,8 @@ def oidc_login():
     group_id = None
 
     info = oidc.user_getinfo(["trigram", "client_roles", "realm_roles", "groups"])
+
+    logger.info(f"Retrieved userinfo: {info}")
 
     username = info.get("trigram", None)
 
@@ -36,6 +44,8 @@ def oidc_login():
         abort(401)
 
     account = users.query.filter_by(username=username).first()
+
+    logger.info(f"Got account: {account}")
 
     if account:
         # Check role and group accordingly; alter when needed and save to backend
@@ -89,25 +99,28 @@ def oidc_login():
 
 def oidc_logout():
 
-    with requests.session() as session:
+    try:
+        with requests.session() as session:
 
-        if oidc is not None:
-            headers = {
-                "Authorization": f"Bearer {oidc.get_access_token()}",
-                "Content-Type": "application/x-www-form-urlencoded",
-            }
+            if oidc is not None:
+                headers = {
+                    "Authorization": f"Bearer {oidc.get_access_token()}",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                }
 
-            data = {
-                "client_id": f"{oidc.client_secrets.get('client_id')}",
-                "client_secret": f"{oidc.client_secrets.get('client_secret')}",
-                "refresh_token": f"{oidc.get_refresh_token()}",
-            }
+                data = {
+                    "client_id": f"{oidc.client_secrets.get('client_id')}",
+                    "client_secret": f"{oidc.client_secrets.get('client_secret')}",
+                    "refresh_token": f"{oidc.get_refresh_token()}",
+                }
 
-            session.post(
-                url=f"{oidc.client_secrets.get('issuer')}/protocol/openid-connect/logout",
-                data=data,
-                headers=headers,
-                verify=False,
-            )
+                session.post(
+                    url=f"{oidc.client_secrets.get('issuer')}/protocol/openid-connect/logout",
+                    data=data,
+                    headers=headers,
+                    verify=False,
+                )
 
-    oidc.logout()
+        oidc.logout()
+    except Exception:
+        raise
