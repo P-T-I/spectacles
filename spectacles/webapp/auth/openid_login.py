@@ -122,5 +122,5 @@ def oidc_logout():
                 )
 
         oidc.logout()
-    except Exception:
+    except TypeError:
         raise

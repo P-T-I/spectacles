@@ -31,17 +31,21 @@ def load_user(user_id):
 def logout():
     logout_user()
 
-    try:
-        from .openid_login import oidc_logout
+    if config.OPENID_LOGIN:
+        try:
+            from .openid_login import oidc_logout
 
-        oidc_logout()
-    except ImportError:
-        pass
-    except Exception:
-        pass
+            oidc_logout()
+        except ImportError:
+            pass
+        except TypeError:
+            pass
 
-    # Redirect to login page
-    return redirect(url_for("auth.func_login"))
+    if config.PORTAL_URL is not None:
+        return redirect(config.PORTAL_URL)
+    else:
+        # Redirect to login page
+        return redirect(url_for("auth.func_login"))
 
 
 def verify_password(password, password_hash):
