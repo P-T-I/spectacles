@@ -97,8 +97,10 @@ def authenticate(auth_dict, get_data):
 
                         return True, get_data
                 elif str(result.status_code).startswith("5"):
+                    logger.error(f"{result}")
                     raise ConnectionError
                 elif str(result.status_code).startswith("4"):
+                    logger.error(f"{result}")
                     raise ConnectionRefusedError
 
         else:
