@@ -48,9 +48,6 @@ def create_app(version):
     app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
     app.config["SQLALCHEMY_POOL_TIMEOUT"] = 20
 
-    # Cache-control
-    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 300
-
     if not config.DEBUG:
         app.config["SESSION_COOKIE_NAME"] = "spectacles.session"
         app.config["SESSION_COOKIE_SECURE"] = True
@@ -86,7 +83,7 @@ def create_app(version):
     login_manager.login_message = "You must be logged in to access this page!!!"
     login_manager.login_message_category = "danger"
     login_manager.login_view = "auth.func_login"
-    login_manager.session_protection = "strong"
+    login_manager.session_protection = None
 
     from spectacles.webapp.home import home as home_blueprint
 
