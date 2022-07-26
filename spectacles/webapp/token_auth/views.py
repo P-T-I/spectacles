@@ -52,6 +52,8 @@ def authenticate(auth_dict, get_data):
 
         if config.OPENID_LOGIN:
             logger.info("Authenticating against OIDC provider...")
+
+            logger.info(f"Issuer: {oidc.client_secrets.get('issuer')}")
             # Check credentials against OIDC provider
             with requests.session() as session:
                 headers = {"Content-Type": "application/x-www-form-urlencoded"}
@@ -97,10 +99,10 @@ def authenticate(auth_dict, get_data):
 
                         return True, get_data
                 elif str(result.status_code).startswith("5"):
-                    logger.error(f"{result}")
+                    logger.error(f"{result} --> {result.content.decode('utf-8')}")
                     raise ConnectionError
                 elif str(result.status_code).startswith("4"):
-                    logger.error(f"{result}")
+                    logger.error(f"{result} --> {result.content.decode('utf-8')}")
                     raise ConnectionRefusedError
 
         else:
