@@ -83,7 +83,7 @@ def create_app(version):
     login_manager.login_message = "You must be logged in to access this page!!!"
     login_manager.login_message_category = "danger"
     login_manager.login_view = "auth.func_login"
-    login_manager.session_protection = None
+    login_manager.session_protection = "strong"
 
     from spectacles.webapp.home import home as home_blueprint
 
