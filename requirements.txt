@@ -11,7 +11,7 @@ SQLAlchemy==1.4.39
 python-dotenv==0.20.0
 ansicolors==1.1.8
 WTForms==3.0.1
-Werkzeug==2.1.2
+Werkzeug==2.2.3
 requests==2.28.1
 mysqlclient==2.1.1
 cryptography==37.0.2
