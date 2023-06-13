@@ -4,10 +4,11 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dependencies &mdash; CveXplore  documentation</title>
+  <title>Database support &mdash; Spectacles  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    <link rel="shortcut icon" href="_static/CveExplore_icon.png"/>
+      <link rel="stylesheet" href="_static/./custom.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/spectacles_round.png"/>
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -15,9 +16,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -29,7 +28,8 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="#" class="icon icon-home"> CveXplore
+            <a href="#" class="icon icon-home"> Spectacles
+            <img src="_static/spectacles_round.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -43,17 +43,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="general/general.html">Dependencies</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Package documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">Webserver documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="package/core.html">Core</a></li>
-<li class="toctree-l1"><a class="reference internal" href="package/common.html">Common</a></li>
-<li class="toctree-l1"><a class="reference internal" href="package/database.html">Database</a></li>
-<li class="toctree-l1"><a class="reference internal" href="package/api.html">API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="package/objects.html">Objects</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">CLI documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="cli/cli.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="web/web.html">User management</a></li>
 </ul>
 
         </div>
@@ -62,15 +54,15 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">CveXplore</a>
+          <a href="#">Spectacles</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">Dependencies</li>
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li>Database support</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -80,323 +72,156 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <img alt="_images/CveExplore_logo.png" src="_images/CveExplore_logo.png" />
-<a class="reference external image-reference" href="https://GitHub.com/cve-search/CveXplore/releases/"><img alt="https://img.shields.io/github/release/cve-search/CveXplore.svg" src="https://img.shields.io/github/release/cve-search/CveXplore.svg" /></a>
+  <img alt="_images/spectacles_text.png" src="_images/spectacles_text.png" />
+<a class="reference external image-reference" href="https://GitHub.com/P-T-I/spectacles/releases/"><img alt="https://img.shields.io/github/release/P-T-I/spectacles.svg" src="https://img.shields.io/github/release/P-T-I/spectacles.svg" /></a>
 <a class="reference external image-reference" href="https://www.gnu.org/licenses/gpl-3.0"><img alt="https://img.shields.io/badge/License-GPLv3-blue.svg" src="https://img.shields.io/badge/License-GPLv3-blue.svg" /></a>
-<a class="reference external image-reference" href="https://GitHub.com/cve-search/CveXplore"><img alt="https://badgen.net/badge/Github/repo/green?icon=github" src="https://badgen.net/badge/Github/repo/green?icon=github" /></a>
-<p>The CveXplore package aims to provide an object related way to interact with the data collected or hosted by a
-cve-search instance. It provides an ambiguous way to interact either to the cve-search mongodb or to the cve-search API.</p>
-<p>From version 0.2.5 onwards CveXplore has the possibility to initialize and update the database without the need of any of
-the cve-search binaries and thus providing the same functionality as cve-search but without the GUI components.</p>
-<p>A click command line functionality is being build but for now still in progress…</p>
-<p>All the data provided by this interaction is converted into objects before being returned. And thus providing a way to
-interact with objects rather then with raw data.</p>
-<section id="dependencies">
-<h1>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading"></a></h1>
-<p>As stated you will need to have one of two things; in order to fully use this package you need access to:</p>
+<a class="reference external image-reference" href="https://GitHub.com/P-T-I/spectacles"><img alt="https://badgen.net/badge/Github/repo/green?icon=github" src="https://badgen.net/badge/Github/repo/green?icon=github" /></a>
+<p>Spectacles is a docker image which can be used to act as an authorization server for docker v2 registries. It provides
+a web interface to allow you full control over the available repositories in your private registry. Spectacles has a
+fine grained user management system and allows these user READ, WRITE or FULL access to repositories via the use of
+fully configurable namespaces.</p>
+<section id="database-support">
+<h1>Database support<a class="headerlink" href="#database-support" title="Permalink to this headline"></a></h1>
+<p>Spectacles can be used with different sql databases and has been tested with sqllite and mysql as database backends.
+In order to fully make use of the functionalities of spectacles; an external mysql instance is highly advised.</p>
+<p>This is because a local sqllite database will (for the moment) limit spectacles ability to fetch updates from the
+registry via a (second spectacles instance) background process and fully persist spectacles state.
+See <a class="reference internal" href="#configuring-spectacles">Configuring spectacles</a> for more details.</p>
+</section>
+<section id="configuring-spectacles">
+<h1>Configuring spectacles<a class="headerlink" href="#configuring-spectacles" title="Permalink to this headline"></a></h1>
+<p>As mentioned in the previous paragraph spectacles needs 2 containers in order to be fully functional; 1 for the webserver
+and 1 for a background process. The webserver container is the default with which the image is build and handles all
+gui related actions and inputs. The background container is responsible for periodically contacting the registry and
+updating the repository tag entries in the database. In order to activate the background process the command for the
+spectacles image need to be overwritten with <code class="docutils literal notranslate"><span class="pre">[&quot;runbackground&quot;]</span></code>. As shown in the docker-compose_EXAMPLE.yml
+file.</p>
+<section id="data-persistence">
+<h2>Data Persistence<a class="headerlink" href="#data-persistence" title="Permalink to this headline"></a></h2>
+<p>All data that should be able to survive a container rebuild/restart (like avatars, logs, registry certs, and sqllite
+database) is saved by spectacles in the <cite>/app/data</cite> folder inside the container. So a volume should be mounted from
+the host to the <cite>/app/data</cite> folder. As shown in the docker-compose_EXAMPLE.yml file.</p>
+</section>
+<section id="setup-tls-for-spectacles-webserver">
+<h2>Setup TLS for spectacles webserver<a class="headerlink" href="#setup-tls-for-spectacles-webserver" title="Permalink to this headline"></a></h2>
+<p>By default spectacles will run a HTTP webserver; if you would like to use a HTTPS webserver then mount an additional
+volume containing the key en certificate (in pem format) into the container and set the environment variables
+<code class="docutils literal notranslate"><span class="pre">SPECTACLES_WEB_TLS_KEY_PATH</span></code> and <code class="docutils literal notranslate"><span class="pre">SPECTACLES_WEB_TLS_CERT_PATH</span></code> accordingly.</p>
+</section>
+<section id="environment-variables">
+<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline"></a></h2>
 <ul class="simple">
-<li><p>A cve-search mongodb instance</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DB_HOST</span></code> (default: <em>mysql</em>): IP-address or FQDN of the MYSQL database;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DB_BACKEND</span></code> (default: <em>mysql</em>): Select which backend you would like to use for spectacles. Choices are ‘mysql’ or
+‘other’;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SQLALCHEMY_DATABASE_URI</span></code> (default: <em>sqlite:////app/data/db/spectacles.db</em>): The database URI that should be used
+for the connection. Examples:</p>
+<ul>
+<li><p>sqlite:////tmp/test.db</p></li>
+<li><p>mysql://username:password&#64;server/db</p></li>
 </ul>
-<p>OR</p>
-<ul class="simple">
-<li><p>A cve-search API instance</p></li>
-</ul>
-<p>Both of them can be easily created on a physical machine or via a docker instance of cve-search;
-please check <a class="reference external" href="https://github.com/cve-search/cve-search">cve-search</a> or
-<a class="reference external" href="https://github.com/cve-search/CVE-Search-Docker">CVE-Search-Docker</a> for further details.</p>
-</section>
-<section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
-<p>Package is hosted on pypi, so just run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>CveXplore
-</pre></div>
-</div>
-</section>
-<section id="documentation">
-<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this heading"></a></h1>
-<p>Check <a class="reference external" href="https://cve-search.github.io/CveXplore/">github pages documentation</a></p>
-</section>
-<section id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h1>
-<section id="local-database-populate-update">
-<h2>Local Database populate / update<a class="headerlink" href="#local-database-populate-update" title="Permalink to this heading"></a></h2>
-<p>As of version 0.2.5 CveXplore can populate and update a local mongodb instance from either the command line:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># cvexplore database initialize</span>
-<span class="c1"># cvexplore database update</span>
-</pre></div>
-</div>
-<p>Check the <a class="reference external" href="https://cve-search.github.io/CveXplore/cli/cli.html">CLI Documentation</a> for more information.</p>
-<p>Or via the the CveXplore object:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CveXplore</span> <span class="kn">import</span> <span class="n">CveXplore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span> <span class="o">=</span> <span class="n">CveXplore</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">populate</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
-<section id="instantiation">
-<h2>Instantiation<a class="headerlink" href="#instantiation" title="Permalink to this heading"></a></h2>
-<p>CveXplore can be instantiated with different parameters, depending to which data source you’re going to connect to.
-If no parameters are given it is assumed that you’re going to connect to a mongodb database running on localhost with
-default port and security settings (Cve Search default parameters).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CveXplore</span> <span class="kn">import</span> <span class="n">CveXplore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span> <span class="o">=</span> <span class="n">CveXplore</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span><span class="o">.</span><span class="n">version</span>
-<span class="go">&#39;0.1.2&#39;</span>
-</pre></div>
-</div>
-<p>To let CveXplore connect to an mongodb with specific parameters:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CveXplore</span> <span class="kn">import</span> <span class="n">CveXplore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span> <span class="o">=</span> <span class="n">CveXplore</span><span class="p">(</span><span class="n">mongodb_connection_details</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;192.168.1.1&quot;</span><span class="p">,</span> <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="mi">27017</span><span class="p">})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span><span class="o">.</span><span class="n">version</span>
-<span class="go">&#39;0.1.2&#39;</span>
-</pre></div>
-</div>
-<p>And to let CveXplore talk to an Cve Search API (only query POST endpoint needed):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CveXplore</span> <span class="kn">import</span> <span class="n">CveXplore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span> <span class="o">=</span> <span class="n">CveXplore</span><span class="p">(</span><span class="n">api_connection_details</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;address&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;mylocal.cve-search.int&quot;</span><span class="p">,</span> <span class="mi">443</span><span class="p">),</span> <span class="s2">&quot;api_path&quot;</span><span class="p">:</span> <span class="s2">&quot;api&quot;</span><span class="p">})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span><span class="o">.</span><span class="n">version</span>
-<span class="go">&#39;0.1.2&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="query-for-data">
-<h2>Query for data<a class="headerlink" href="#query-for-data" title="Permalink to this heading"></a></h2>
-<p>CveXplore supports multiple methods to query for data.</p>
-<p>The queries are limited to the following collections:</p>
-<ul class="simple">
-<li><p>capec;</p></li>
-<li><p>cpe;</p></li>
-<li><p>cwe;</p></li>
-<li><p>via4;</p></li>
-<li><p>cves;</p></li>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">AVATARS_SAVE_PATH</span></code> (default: <em>/app/data/avatars/</em>): Path where to store the avatars created for spectacles users;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SPECTACLES_PRIV_KEY_PATH</span></code> (default: <em>/app/data/certs/domain.key</em>): Path to where the private key used by the
+registry to validate the created tokens from spectacles. This should be the same key that is created in the paragraph
+<a class="reference internal" href="#configuring-registry">Configuring registry</a> and set to the environment variable <code class="docutils literal notranslate"><span class="pre">REGISTRY_HTTP_TLS_KEY</span></code> of the docker registry image;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SPECTACLES_ISSUER_NAME</span></code> (default: <em>Auth service</em>): Name you wish to give to the spectacles instance. Should be set
+to the same value as the environment variable <code class="docutils literal notranslate"><span class="pre">REGISTRY_AUTH_TOKEN_ISSUER</span></code> of the docker registry image;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SPECTACLES_BACKGROUND_UPDATE</span></code> (default: <em>30</em>): Specify the interval for the background process in seconds. 30 in
+this example makes sure that the background process runs every 30 seconds;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SPECTACLES_WEB_TLS_KEY_PATH</span></code> (default: <em>/app/certs/key.pem</em>): Path to the TLS key for the HTTPS webserver;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SPECTACLES_WEB_TLS_CERT_PATH</span></code> (default: <em>/app/certs/cert.pem</em>): Path to the TLS certificate for the HTTPS webserver;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OPENID_LOGIN</span></code> (default: <em>False</em>): Whether to use an openid provider for logging into spectacles;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SQL_DEBUG_LOGGING</span></code> (default: <em>False</em>): If enabled all queries to the database are logged for debug purposes;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LOG_FILE_PATH</span></code> (default: <em>/app/data/log/</em>): Directory where to store the logging;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LOG_FILE_NAME</span></code> (default: <em>spectacles.log</em>): Filename of the logging;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYSLOG_ENABLE</span></code> (default: <em>False</em>): Whether to enable logging to a syslog server;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYSLOG_SERVER</span></code> (default: <em>172.16.1.1</em>): IP address or FQDN of the syslog server;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SYSLOG_PORT</span></code> (default: <em>5140</em>): UDP port of the syslog server;</p></li>
 </ul>
 </section>
-<section id="free-format-query">
-<h2>Free format query<a class="headerlink" href="#free-format-query" title="Permalink to this heading"></a></h2>
-<p>Besides this restriction the queries can be free format on given parameters (returning a direct object or a
-list of objects); to get a ‘capec’ with the id of 1 you could use:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CveXplore</span> <span class="kn">import</span> <span class="n">CveXplore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span> <span class="o">=</span> <span class="n">CveXplore</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">get_single_store_entry</span><span class="p">(</span><span class="s2">&quot;capec&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span>
-<span class="go">&lt;&lt; Capec:1 &gt;&gt;</span>
-</pre></div>
-</div>
-<p>The above example is perfect when you would expect a single result from your query; if a query to a single collection
-could yield multiple results you better use:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CveXplore</span> <span class="kn">import</span> <span class="n">CveXplore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span> <span class="o">=</span> <span class="n">CveXplore</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">get_single_store_entries</span><span class="p">((</span><span class="s2">&quot;cves&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;cvss&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$eq&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">}}))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span>
-<span class="go">[&lt;&lt; Cves:CVE-2011-0387 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2015-1935 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2014-3053 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2010-4031 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2016-1338 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2013-3633 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2017-14444 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2017-14446 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2017-14445 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2016-2354 &gt;&gt;]</span>
-</pre></div>
-</div>
-<p>This type of query has a default limit of 10; which can be altered to a higher number if needed or disabled by setting
-the limit to 0:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CveXplore</span> <span class="kn">import</span> <span class="n">CveXplore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span> <span class="o">=</span> <span class="n">CveXplore</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">get_single_store_entries</span><span class="p">((</span><span class="s2">&quot;cves&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;cvss&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;$eq&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">}}),</span> <span class="n">limit</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-<span class="go">32</span>
-</pre></div>
-</div>
-<p>If you need to query multiple collections at once you could use:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CveXplore</span> <span class="kn">import</span> <span class="n">CveXplore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span> <span class="o">=</span> <span class="n">CveXplore</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">get_multi_store_entries</span><span class="p">([(</span><span class="s2">&quot;CWE&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;78&quot;</span><span class="p">}),</span> <span class="p">(</span><span class="s2">&quot;cves&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;CVE-2009-0018&quot;</span><span class="p">})])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span>
-<span class="go">[&lt;&lt; Cwe:78 &gt;&gt;, &lt;&lt; Cves:CVE-2009-0018 &gt;&gt;]</span>
-</pre></div>
-</div>
 </section>
-<section id="collection-specific-query">
-<h2>Collection specific query<a class="headerlink" href="#collection-specific-query" title="Permalink to this heading"></a></h2>
-<p>By using the collection specific attributes you can drill down to a specific field to query (returning an iterator to
-iterate over the requested results):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CveXplore</span> <span class="kn">import</span> <span class="n">CveXplore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span> <span class="o">=</span> <span class="n">CveXplore</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">capec</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">each</span><span class="p">)</span>
-<span class="gp">...</span>
-<span class="go">&lt;&lt; Capec:1 &gt;&gt;</span>
-</pre></div>
-</div>
-<p>If you would limit (or sort / skip) the returned results you could append additional commands to your original query:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CveXplore</span> <span class="kn">import</span> <span class="n">CveXplore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span> <span class="o">=</span> <span class="n">CveXplore</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">cves</span><span class="o">.</span><span class="n">cvss</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
-<span class="go">32</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">cves</span><span class="o">.</span><span class="n">cvss</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
-<span class="go">10</span>
-</pre></div>
-</div>
-<p>If you would like to sort the results:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CveXplore</span> <span class="kn">import</span> <span class="n">CveXplore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span> <span class="o">=</span> <span class="n">CveXplore</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">cves</span><span class="o">.</span><span class="n">cvss</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">DESCENDING</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-<span class="go">[&lt;&lt; Cves:CVE-2020-5735 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2020-13122 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2018-2926 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2018-17022 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2017-3807 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2017-17223 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2017-16347 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2017-16346 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2017-16345 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2017-16344 &gt;&gt;]</span>
-</pre></div>
-</div>
+<section id="configuring-registry">
+<h1>Configuring registry<a class="headerlink" href="#configuring-registry" title="Permalink to this headline"></a></h1>
+<p>The registry that can be used for spectacles is a normal <a class="reference external" href="https://hub.docker.com/_/registry">docker registry</a> and
+further details and settings about that image is listed there.</p>
+<dl class="simple">
+<dt>However for simplicity sake here is an example of the environment settings that should be set on the image:</dt><dd><ul class="simple">
+<li><p>REGISTRY_STORAGE_DELETE_ENABLED=true</p></li>
+<li><p>REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/mnt/registry/data</p></li>
+<li><p>REGISTRY_AUTH=token</p></li>
+<li><p>REGISTRY_AUTH_TOKEN_REALM=https://localhost:5050/token_auth</p></li>
+<li><p>REGISTRY_AUTH_TOKEN_SERVICE=”Docker registry”</p></li>
+<li><p>REGISTRY_AUTH_TOKEN_ISSUER=”Auth service”</p></li>
+<li><p>REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE=/mnt/local/certs/domain.crt</p></li>
+<li><p>REGISTRY_HTTP_TLS_CERTIFICATE=/mnt/local/certs/domain.crt</p></li>
+<li><p>REGISTRY_HTTP_TLS_KEY=/mnt/local/certs/domain.key</p></li>
+</ul>
+</dd>
+</dl>
+<p>Couple of pointers:</p>
+<ul>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">REGISTRY_STORAGE_DELETE_ENABLED</span></code> variable controls whether or not the registry let’s you ‘delete’ a
+repository / tag.
+Please keep in mind that, although the repository / tag seems deleted, it’s not really gone until you run the registry’s
+garbage collector. More details in the <a class="reference external" href="https://docs.docker.com/registry/">documentation</a>;</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">REGISTRY_AUTH_TOKEN_REALM</span></code> should be set to the IP address / FQDN of the spectacles webserver and should point
+to the token_auth endpoint;</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">REGISTRY_AUTH_TOKEN_ISSUER</span></code> should be set to the same value as <code class="docutils literal notranslate"><span class="pre">SPECTACLES_ISSUER_NAME</span></code> from the previous
+paragraph;</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">REGISTRY_HTTP_TLS_KEY</span></code> should be set to the path to the registry’s private key and should be set to the same
+key as <code class="docutils literal notranslate"><span class="pre">SPECTACLES_PRIV_KEY_PATH</span></code>. The private key can be created via the command:</p>
+<blockquote>
+<div><p>openssl req -newkey rsa:4096 -nodes -keyout domain.key -out domain.csr -subj ‘/C=XX/ST=XX/L=XXXX/O=Docker
+Registry/CN=example.docker.reg’</p>
+</div></blockquote>
+</li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">REGISTRY_AUTH_TOKEN_ROOTCERTBUNDLE</span></code> and the <code class="docutils literal notranslate"><span class="pre">REGISTRY_HTTP_TLS_CERTIFICATE</span></code> should be set to the path of the
+registry’s signed certificate. The certificate can be created / signed via the command:</p>
+<blockquote>
+<div><p>openssl x509 -signkey domain.key -in domain.csr -req -days 3650 -out domain.crt</p>
+</div></blockquote>
+</li>
+<li><p>if you would like to persist the registry’s data you should mount a volume to the /mnt/registry/data;</p></li>
+<li><p>the certificate and key created earlier should be mounted into the /mnt/local/certs.</p></li>
+</ul>
 </section>
-<section id="collection-specific-functions">
-<h2>Collection specific functions<a class="headerlink" href="#collection-specific-functions" title="Permalink to this heading"></a></h2>
-<p>Some collections are equipped with specific functions; like the ‘cves’ collection has a function to query cve’s based
-on a given vendor:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">CveXplore</span> <span class="kn">import</span> <span class="n">CveXplore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cvx</span> <span class="o">=</span> <span class="n">CveXplore</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">cves</span><span class="o">.</span><span class="n">get_cves_for_vendor</span><span class="p">(</span><span class="s2">&quot;microsoft&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span>
-<span class="go">[&lt;&lt; Cves:CVE-2018-8540 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2018-8476 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2018-8154 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2018-8500 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2018-8626 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2018-8421 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2018-8327 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2018-8302 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2018-8273 &gt;&gt;,</span>
-<span class="go">&lt;&lt; Cves:CVE-2017-8658 &gt;&gt;]</span>
-</pre></div>
-</div>
-<p>When objects can be linked together, like for instance related capecs for a given cve, these are automatically queried
-from the data source and inserted into the requested object, so building on the example above, requesting related
-capecs from the CVE-2018-8540, could be done directly:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">capec</span>
-<span class="go">[&lt;&lt; Capec:77 &gt;&gt;, &lt;&lt; Capec:242 &gt;&gt;, &lt;&lt; Capec:35 &gt;&gt;]</span>
-</pre></div>
-</div>
-<p>Or by iterating the generator function of the cves object:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">iter_capec</span><span class="p">():</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">each</span><span class="p">)</span>
-<span class="gp">...</span>
-<span class="go">&lt;&lt; Capec:77 &gt;&gt;</span>
-<span class="go">&lt;&lt; Capec:242 &gt;&gt;</span>
-<span class="go">&lt;&lt; Capec:35 &gt;&gt;</span>
-</pre></div>
-</div>
-<p>All returned objects can be serialized into a dictionary with the to_dict() function:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">cvx</span><span class="o">.</span><span class="n">capec</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-<span class="go">{&#39;execution_flow&#39;: {&#39;1&#39;: {&#39;Description&#39;: &#39;[Survey] The attacker surveys the &#39;</span>
-<span class="go">                                      &#39;target application, possibly as a &#39;</span>
-<span class="go">                                      &#39;valid and authenticated user&#39;,</span>
-<span class="go">                       &#39;Phase&#39;: &#39;Explore&#39;,</span>
-<span class="go">                       &#39;Techniques&#39;: [&#39;Spidering web sites for all &#39;</span>
-<span class="go">                                      &#39;available links&#39;,</span>
-<span class="go">                                      &#39;Brute force guessing of resource &#39;</span>
-<span class="go">                                      &#39;names&#39;,</span>
-<span class="go">                                      &#39;Brute force guessing of user names / &#39;</span>
-<span class="go">                                      &#39;credentials&#39;,</span>
-<span class="go">                                      &#39;Brute force guessing of function &#39;</span>
-<span class="go">                                      &#39;names / actions&#39;]},</span>
-<span class="go">                 &#39;2&#39;: {&#39;Description&#39;: &#39;[Identify Functionality] At each &#39;</span>
-<span class="go">                                      &#39;step, the attacker notes the &#39;</span>
-<span class="go">                                      &#39;resource or functionality access &#39;</span>
-<span class="go">                                      &#39;mechanism invoked upon performing &#39;</span>
-<span class="go">                                      &#39;specific actions&#39;,</span>
-<span class="go">                       &#39;Phase&#39;: &#39;Explore&#39;,</span>
-<span class="go">                       &#39;Techniques&#39;: [&#39;Use the web inventory of all forms &#39;</span>
-<span class="go">                                      &#39;and inputs and apply attack data to &#39;</span>
-<span class="go">                                      &#39;those inputs.&#39;,</span>
-<span class="go">                                      &#39;Use a packet sniffer to capture and &#39;</span>
-<span class="go">                                      &#39;record network traffic&#39;,</span>
-<span class="go">                                      &#39;Execute the software in a debugger &#39;</span>
-<span class="go">                                      &#39;and record API calls into the &#39;</span>
-<span class="go">                                      &#39;operating system or important &#39;</span>
-<span class="go">                                      &#39;libraries. This might occur in an &#39;</span>
-<span class="go">                                      &#39;environment other than a production &#39;</span>
-<span class="go">                                      &#39;environment, in order to find &#39;</span>
-<span class="go">                                      &#39;weaknesses that can be exploited in &#39;</span>
-<span class="go">                                      &#39;a production environment.&#39;]},</span>
-<span class="go">                 &#39;3&#39;: {&#39;Description&#39;: &#39;[Iterate over access capabilities] &#39;</span>
-<span class="go">                                      &#39;Possibly as a valid user, the &#39;</span>
-<span class="go">                                      &#39;attacker then tries to access each &#39;</span>
-<span class="go">                                      &#39;of the noted access mechanisms &#39;</span>
-<span class="go">                                      &#39;directly in order to perform &#39;</span>
-<span class="go">                                      &#39;functions not constrained by the &#39;</span>
-<span class="go">                                      &#39;ACLs.&#39;,</span>
-<span class="go">                       &#39;Phase&#39;: &#39;Experiment&#39;,</span>
-<span class="go">                       &#39;Techniques&#39;: [&#39;Fuzzing of API parameters (URL &#39;</span>
-<span class="go">                                      &#39;parameters, OS API parameters, &#39;</span>
-<span class="go">                                      &#39;protocol parameters)&#39;]}},</span>
-<span class="go">&#39;id&#39;: &#39;1&#39;,</span>
-<span class="go">&#39;loa&#39;: &#39;High&#39;,</span>
-<span class="go">&#39;name&#39;: &#39;Accessing Functionality Not Properly Constrained by ACLs&#39;,</span>
-<span class="go">&#39;prerequisites&#39;: &#39;The application must be navigable in a manner that &#39;</span>
-<span class="go">               &#39;associates elements (subsections) of the application with &#39;</span>
-<span class="go">               &#39;ACLs. The various resources, or individual URLs, must be &#39;</span>
-<span class="go">               &#39;somehow discoverable by the attacker The administrator must &#39;</span>
-<span class="go">               &#39;have forgotten to associate an ACL or has associated an &#39;</span>
-<span class="go">               &#39;inappropriately permissive ACL with a particular navigable &#39;</span>
-<span class="go">               &#39;resource.&#39;,</span>
-<span class="go">&#39;related_capecs&#39;: [&#39;122&#39;],</span>
-<span class="go">&#39;related_weakness&#39;: [&#39;1191&#39;,</span>
-<span class="go">                   &#39;1193&#39;,</span>
-<span class="go">                   &#39;1220&#39;,</span>
-<span class="go">                   &#39;1224&#39;,</span>
-<span class="go">                   &#39;1244&#39;,</span>
-<span class="go">                   &#39;1252&#39;,</span>
-<span class="go">                   &#39;1257&#39;,</span>
-<span class="go">                   &#39;1262&#39;,</span>
-<span class="go">                   &#39;1268&#39;,</span>
-<span class="go">                   &#39;1283&#39;,</span>
-<span class="go">                   &#39;276&#39;,</span>
-<span class="go">                   &#39;285&#39;,</span>
-<span class="go">                   &#39;434&#39;,</span>
-<span class="go">                   &#39;693&#39;,</span>
-<span class="go">                   &#39;721&#39;,</span>
-<span class="go">                   &#39;732&#39;],</span>
-<span class="go">&#39;solutions&#39;: &#39;In a more general setting, the administrator must mark every &#39;</span>
-<span class="go">           &#39;resource besides the ones supposed to be exposed to the user as &#39;</span>
-<span class="go">           &#39;accessible by a role impossible for the user to assume. The &#39;</span>
-<span class="go">           &#39;default security setting must be to deny access and then grant &#39;</span>
-<span class="go">           &#39;access only to those resources intended by business logic.&#39;,</span>
-<span class="go">&#39;summary&#39;: &#39;In applications, particularly web applications, access to &#39;</span>
-<span class="go">         &#39;functionality is mitigated by an authorization framework. This &#39;</span>
-<span class="go">         &#39;framework maps Access Control Lists (ACLs) to elements of the &#39;</span>
-<span class="go">         &quot;application&#39;s functionality; particularly URL&#39;s for web apps. In &quot;</span>
-<span class="go">         &#39;the case that the administrator failed to specify an ACL for a &#39;</span>
-<span class="go">         &#39;particular element, an attacker may be able to access it with &#39;</span>
-<span class="go">         &#39;impunity. An attacker with the ability to access functionality &#39;</span>
-<span class="go">         &#39;not properly constrained by ACLs can obtain sensitive information &#39;</span>
-<span class="go">         &#39;and possibly compromise the entire application. Such an attacker &#39;</span>
-<span class="go">         &#39;can access resources that must be available only to users at a &#39;</span>
-<span class="go">         &#39;higher privilege level, can access management sections of the &#39;</span>
-<span class="go">         &#39;application, or can run queries for data that they otherwise not &#39;</span>
-<span class="go">         &#39;supposed to.&#39;,</span>
-<span class="go">&#39;taxonomy&#39;: {&#39;ATTACK&#39;: {&#39;1574_010&#39;: {&#39;Entry_ID&#39;: &#39;1574.010&#39;,</span>
-<span class="go">                                   &#39;Entry_Name&#39;: &#39;Hijack Execution Flow: &#39;</span>
-<span class="go">                                                 &#39;ServicesFile Permissions &#39;</span>
-<span class="go">                                                 &#39;Weakness&#39;,</span>
-<span class="go">                                   &#39;URL&#39;: &#39;https://attack.mitre.org/techniques/T1574/010&#39;}}},</span>
-<span class="go">&#39;typical_severity&#39;: &#39;High&#39;}</span>
-</pre></div>
-</div>
+<section id="quick-start">
+<h1>Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline"></a></h1>
+<p>The easiest way to quickly setup a full suite is to use the provided docker-compose_EXAMPLE.yml. Once that file is
+tweaked to your specifications all steps below assume that you’ve renamed the docker-compose_EXAMPLE.yml to
+docker-compose.yml; if that’s not the case you should specify the file with a -f flag appended to the docker-compose
+command.</p>
+<p>These steps can be read in the full <a class="reference external" href="https://p-t-i.github.io/spectacles/">documentation</a> (NOT COMPLETED YET);</p>
+<p>Start all containers:</p>
+<blockquote>
+<div><p>docker-compose up</p>
+</div></blockquote>
+<p>Once the containers are up and running; navigate to http(s)://localhost:5050 and register your first user. (The first
+registered user will automatically be made an administrative user.)</p>
+<p>Once logged-in navigate to the ‘Registries’ page and add your first registry.</p>
+<p>Once successful add a namespace to the registry you’ve just configured by navigating to the namespaces page and create
+the namespace ‘test’.</p>
+<p>Now your set to login to your registry and push your first repository.</p>
+<p>From the command line (assuming your registry runs on the default port of 5000):</p>
+<blockquote>
+<div><p>docker login localhost:5000</p>
+</div></blockquote>
+<p>It will request your username and password (from the admin user you’ve just created within spectacles) and will report
+back when the login is successful.</p>
+<p>Now pull a image from the public docker hub and tag it for our private repository:</p>
+<blockquote>
+<div><p>docker pull hello-world</p>
+<p>docker tag hello-world:latest localhost:5000/test/hello-world:latest</p>
+</div></blockquote>
+<p>Push the image to the private repo:</p>
+<blockquote>
+<div><p>docker push localhost:5000/test/hello-world:latest</p>
+</div></blockquote>
+<p>Once the sheduled background process has completed it will show up within spectacles.</p>
+</section>
+<section id="general">
+<h1>General<a class="headerlink" href="#general" title="Permalink to this headline"></a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">General documentation</span></p>
 <ul>
@@ -404,57 +229,18 @@ capecs from the CVE-2018-8540, could be done directly:</p>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Package documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">Webserver documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="package/core.html">Core</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="package/core.html#main">Main</a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/core.html#CveXplore.main.CveXplore"><code class="docutils literal notranslate"><span class="pre">CveXplore</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="package/common.html">Common</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="package/common.html#module-CveXplore.common.cpe_converters">General tools and converters</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="package/database.html">Database</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="package/database.html#module-CveXplore.database.connection.mongo_db">Database connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/database.html#module-CveXplore.database.helpers.generic_db">Database helpers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/database.html#module-CveXplore.database.maintenance.main_updater">Database Maintenance</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="package/api.html">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="package/api.html#module-CveXplore.api.connection.api_db">API connection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/api.html#module-CveXplore.api.helpers.cve_search_api">API helpers</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="package/objects.html">Objects</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="package/objects.html#capec">capec</a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/objects.html#CveXplore.objects.capec.Capec"><code class="docutils literal notranslate"><span class="pre">Capec</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/objects.html#cpe">cpe</a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/objects.html#CveXplore.objects.cpe.Cpe"><code class="docutils literal notranslate"><span class="pre">Cpe</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/objects.html#cves">cves</a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/objects.html#CveXplore.objects.cves.Cves"><code class="docutils literal notranslate"><span class="pre">Cves</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/objects.html#cwe">cwe</a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/objects.html#CveXplore.objects.cwe.Cwe"><code class="docutils literal notranslate"><span class="pre">Cwe</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/objects.html#via4">via4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="package/objects.html#CveXplore.objects.via4.Via4"><code class="docutils literal notranslate"><span class="pre">Via4</span></code></a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">CLI documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="cli/cli.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="web/web.html">User management</a></li>
 </ul>
 </div>
 <section id="indices-and-tables">
-<h3>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h3>
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</section>
 </section>
 </section>
 
@@ -468,7 +254,7 @@ capecs from the CVE-2018-8540, could be done directly:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, Paul Tikken.</p>
+    <p>&#169; Copyright 2021, P-T-I.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

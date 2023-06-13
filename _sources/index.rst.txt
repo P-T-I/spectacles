@@ -1,7 +1,10 @@
-.. image:: ../images/CveExplore_logo.png
+.. image:: ../images/spectacles_text.png
 
 .. include:: ../README.rst
    :start-after: ##INCLUDE_MARKER##
+
+General
+-------
 
 .. toctree::
    :maxdepth: 2
@@ -11,20 +14,9 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Package documentation
+   :caption: Webserver documentation
 
-   /package/core
-   /package/common
-   /package/database
-   /package/api
-   /package/objects
-
-.. toctree::
-   :maxdepth: 2
-   :caption: CLI documentation
-
-   /cli/cli
-
+   /web/web
 
 Indices and tables
 ==================

@@ -4,10 +4,11 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dependencies &mdash; CveXplore  documentation</title>
+  <title>Dependencies &mdash; Spectacles  documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-    <link rel="shortcut icon" href="../_static/CveExplore_icon.png"/>
+      <link rel="stylesheet" href="../_static/./custom.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/spectacles_round.png"/>
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -15,14 +16,12 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Core" href="../package/core.html" />
-    <link rel="prev" title="Dependencies" href="../index.html" /> 
+    <link rel="next" title="User management" href="../web/web.html" />
+    <link rel="prev" title="Database support" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -30,7 +29,8 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> CveXplore
+            <a href="../index.html" class="icon icon-home"> Spectacles
+            <img src="../_static/spectacles_round.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -44,17 +44,9 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Dependencies</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Package documentation</span></p>
+<p class="caption" role="heading"><span class="caption-text">Webserver documentation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../package/core.html">Core</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../package/common.html">Common</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../package/database.html">Database</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../package/api.html">API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../package/objects.html">Objects</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">CLI documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../cli/cli.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../web/web.html">User management</a></li>
 </ul>
 
         </div>
@@ -63,15 +55,15 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">CveXplore</a>
+          <a href="../index.html">Spectacles</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">Dependencies</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Dependencies</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/general/general.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -82,18 +74,31 @@
            <div itemprop="articleBody">
              
   <section id="dependencies">
-<h1>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading"></a></h1>
-<p>For normal operations CveXplore has the following dependencies:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pymongo</span><span class="o">&gt;=</span><span class="mf">4.0.1</span>
-<span class="n">requests</span><span class="o">==</span><span class="mf">2.28.1</span>
-<span class="n">urllib3</span><span class="o">==</span><span class="mf">1.26.13</span>
-<span class="n">tqdm</span><span class="o">==</span><span class="mf">4.62.3</span>
-<span class="n">python</span><span class="o">-</span><span class="n">dateutil</span><span class="o">==</span><span class="mf">2.8.2</span>
-<span class="n">click</span><span class="o">==</span><span class="mf">8.0.3</span>
-<span class="n">ijson</span><span class="o">==</span><span class="mf">3.1.4</span>
+<h1>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h1>
+<p>For normal operations spectacles has the following dependencies:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Flask</span><span class="o">==</span><span class="mf">2.2.5</span>
+<span class="n">Flask_SQLAlchemy</span><span class="o">==</span><span class="mf">2.5.1</span>
+<span class="n">Flask</span><span class="o">-</span><span class="n">WTF</span><span class="o">==</span><span class="mf">1.0.1</span>
+<span class="n">Flask</span><span class="o">-</span><span class="n">Migrate</span><span class="o">==</span><span class="mf">3.1.0</span>
+<span class="n">Flask</span><span class="o">-</span><span class="n">Bootstrap4</span><span class="o">==</span><span class="mf">4.0.2</span>
+<span class="n">Flask</span><span class="o">-</span><span class="n">FontAwesome</span><span class="o">==</span><span class="mf">0.1.5</span>
+<span class="n">Flask</span><span class="o">-</span><span class="n">Login</span><span class="o">==</span><span class="mf">0.6.1</span>
+<span class="n">Flask</span><span class="o">-</span><span class="n">Avatars</span><span class="o">==</span><span class="mf">0.2.2</span>
+<span class="n">Flask</span><span class="o">-</span><span class="n">OIDC</span><span class="o">==</span><span class="mf">1.4.0</span>
+<span class="n">SQLAlchemy</span><span class="o">==</span><span class="mf">1.4.39</span>
+<span class="n">python</span><span class="o">-</span><span class="n">dotenv</span><span class="o">==</span><span class="mf">0.20.0</span>
 <span class="n">ansicolors</span><span class="o">==</span><span class="mf">1.1.8</span>
-<span class="n">pandas</span><span class="o">==</span><span class="mf">1.5.2</span>
-<span class="n">dicttoxml</span><span class="o">==</span><span class="mf">1.7.16</span>
+<span class="n">WTForms</span><span class="o">==</span><span class="mf">3.0.1</span>
+<span class="n">Werkzeug</span><span class="o">==</span><span class="mf">2.2.3</span>
+<span class="n">requests</span><span class="o">==</span><span class="mf">2.28.1</span>
+<span class="n">mysqlclient</span><span class="o">==</span><span class="mf">2.1.1</span>
+<span class="n">cryptography</span><span class="o">==</span><span class="mf">41.0.0</span>
+<span class="n">alembic</span><span class="o">==</span><span class="mf">1.9.1</span>
+<span class="n">itsdangerous</span><span class="o">==</span><span class="mf">2.0.1</span>
+<span class="n">PyJWT</span><span class="o">==</span><span class="mf">2.4.0</span>
+<span class="n">Jinja2</span><span class="o">==</span><span class="mf">3.1.2</span>
+<span class="n">gevent</span><span class="o">==</span><span class="mf">21.12.0</span>
+<span class="n">setuptools</span><span class="o">&gt;=</span><span class="mf">65.5.1</span> <span class="c1"># not directly required, pinned by Snyk to avoid a vulnerability</span>
 </pre></div>
 </div>
 </section>
@@ -102,14 +107,14 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="Dependencies" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../package/core.html" class="btn btn-neutral float-right" title="Core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="Database support" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../web/web.html" class="btn btn-neutral float-right" title="User management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, Paul Tikken.</p>
+    <p>&#169; Copyright 2021, P-T-I.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
