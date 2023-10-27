@@ -11,10 +11,10 @@ SQLAlchemy==1.4.39
 python-dotenv==0.20.0
 ansicolors==1.1.8
 WTForms==3.0.1
-Werkzeug==2.2.3
+Werkzeug==3.0.1
 requests==2.28.1
 mysqlclient==2.1.1
-cryptography==41.0.0
+cryptography==41.0.5
 alembic==1.9.1
 itsdangerous==2.0.1
 PyJWT==2.4.0
