@@ -14,10 +14,11 @@ WTForms==3.0.1
 Werkzeug==2.2.3
 requests==2.28.1
 mysqlclient==2.1.1
-cryptography==41.0.0
+cryptography==42.0.2
 alembic==1.9.1
 itsdangerous==2.0.1
 PyJWT==2.4.0
 Jinja2==3.1.2
 gevent==21.12.0
 setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
+pillow>=10.2.0 # not directly required, pinned by Snyk to avoid a vulnerability
